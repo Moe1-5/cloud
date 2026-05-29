@@ -1,0 +1,91 @@
+# === Environment ===
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# === Dependencies ===
+node_modules/
+.pnp
+.pnp.js
+vendor/
+
+# === Build outputs ===
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+*.tsbuildinfo
+
+# === Testing ===
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+*.snap
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# === Editors ===
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# === Java / Kotlin ===
+*.class
+*.jar
+*.war
+*.ear
+target/
+*.iml
+.gradle/
+build/
+
+# === Dart / Flutter ===
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# === Rust ===
+target/
+Cargo.lock
+
+# === Misc ===
+*.tmp
+*.bak
+.cache/
+tmp/
+.turbo/
