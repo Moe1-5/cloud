@@ -1,5 +1,7 @@
 # Docs Index
 
+> Docs-only sub-index. The master file map for the whole repo is the root `INDEX.md`;
+> this file routes within `docs/` only.
 > Claude reads this to route to the right file without scanning all docs.
 > Update this table whenever a doc is added, removed, or changes scope.
 
