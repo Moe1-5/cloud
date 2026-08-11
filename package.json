@@ -1,0 +1,35 @@
+{
+  "name": "aws-cloud-fullstack-base",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node.js, TypeScript, React, and AWS DynamoDB base for the DDAC cloud application assignment.",
+  "type": "module",
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend",
+    "packages/shared"
+  ],
+  "scripts": {
+    "predev": "npm run build --workspace packages/shared",
+    "dev": "concurrently \"npm run dev --workspace apps/backend\" \"npm run dev --workspace apps/frontend\"",
+    "build": "npm run build --workspace packages/shared && npm run build --workspace apps/backend && npm run build --workspace apps/frontend",
+    "start": "node apps/backend/dist/server.js",
+    "lint": "eslint .",
+    "test": "npm run build --workspace packages/shared && npm run test --workspace apps/backend",
+    "typecheck": "npm run build --workspace packages/shared && npm run typecheck --workspace apps/backend && npm run typecheck --workspace apps/frontend",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "concurrently": "^9.2.0",
+    "eslint": "^9.33.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

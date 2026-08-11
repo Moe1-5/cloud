@@ -1,27 +1,27 @@
 # Current State
 
-> Keep this under 40 lines. Claude reads this first — be precise, not comprehensive.
+> Keep this under 40 lines. Claude reads this first - be precise, not comprehensive.
 > Update whenever: sprint changes, major decision is made, stack is finalized.
 
 ## Project
-**Name:**
-**Description:**
-**Stage:** [ ] Scaffolding  [ ] MVP  [ ] Feature-complete  [ ] Production
+**Name:** AWS Cloud Full-Stack Base
+**Description:** React, Node.js, TypeScript, and DynamoDB starter for DDAC Task 1.
+**Stage:** [x] Scaffolding  [ ] MVP  [ ] Feature-complete  [ ] Production
 
 ## Active Sprint
-**Sprint:**
-**Goal:**
-**Blocking:**
+**Sprint:** Sprint 1
+**Goal:** Initialize project and scaffold core frontend/backend/cloud structure.
+**Blocking:** None
 
 ## Tech Stack
-> One line — e.g. "React 19 + FastAPI + PostgreSQL, deployed Vercel + Railway"
+React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
 
 ## Last Decision
-> Copy the most recent entry title from `docs/decisions.md`
+2026-08-11 Full-stack TypeScript monorepo for AWS deployment
 
 ## Status Flags
-- [ ] Tests configured
-- [ ] CI/CD active
+- [x] Tests configured
+- [x] CI/CD active
 - [ ] Auth implemented
 - [ ] First deploy done
-- [ ] Database migrations tracked
+- [x] Database migrations tracked

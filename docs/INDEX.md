@@ -9,6 +9,7 @@
 |-------|------|---------------|
 | Tech stack, folder structure, patterns | `architecture.md` | Framework choices, src/ layout, key patterns |
 | Decision log (ADR) | `decisions.md` | Append-only record of architectural decisions and their rationale |
+| AWS deployment | `aws-deployment.md` | DynamoDB, Elastic Beanstalk, and EC2 deployment steps |
 
 ---
 
