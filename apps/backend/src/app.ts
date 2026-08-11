@@ -4,9 +4,14 @@ import helmet from "helmet";
 import path from "node:path";
 import { pinoHttp } from "pino-http";
 import { fileURLToPath } from "node:url";
+
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
-import { projectRouter, normalizeApiError } from "./features/projects/projectRoutes.js";
+import { disasterRouter } from "./features/disasters/disasterRoutes.js";
+import {
+  projectRouter,
+  normalizeApiError,
+} from "./features/projects/projectRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,14 +20,21 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
+
   app.use(
     cors({
       origin: env.CORS_ORIGIN,
-      credentials: true
+      credentials: true,
     })
   );
+
   app.use(express.json());
-  app.use(pinoHttp({ logger }));
+
+  app.use(
+    pinoHttp({
+      logger,
+    })
+  );
 
   app.get("/health", (_request, response) => {
     response.json({
@@ -32,37 +44,62 @@ export function createApp() {
         database: {
           provider: "dynamodb",
           tableName: env.DYNAMODB_TABLE_NAME,
-          region: env.AWS_REGION
-        }
-      }
+          region: env.AWS_REGION,
+        },
+      },
     });
   });
 
   app.use("/api/projects", projectRouter);
+  app.use("/api/disasters", disasterRouter);
 
   if (env.SERVE_STATIC_FRONTEND) {
     const frontendDistPath = path.isAbsolute(env.FRONTEND_DIST_PATH)
       ? env.FRONTEND_DIST_PATH
-      : path.resolve(__dirname, "../../../", env.FRONTEND_DIST_PATH);
+      : path.resolve(
+          __dirname,
+          "../../../",
+          env.FRONTEND_DIST_PATH
+        );
 
     app.use(express.static(frontendDistPath));
+
     app.get("*", (_request, response) => {
-      response.sendFile(path.join(frontendDistPath, "index.html"));
+      response.sendFile(
+        path.join(frontendDistPath, "index.html")
+      );
     });
   }
 
-  app.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
-    const normalizedError = normalizeApiError(error);
-    const logMethod = normalizedError.statusCode >= 500 ? logger.error.bind(logger) : logger.warn.bind(logger);
-    logMethod({ error }, normalizedError.message);
+  app.use(
+    (
+      error: unknown,
+      _request: express.Request,
+      response: express.Response,
+      _next: express.NextFunction
+    ) => {
+      const normalizedError = normalizeApiError(error);
 
-    response.status(normalizedError.statusCode).json({
-      error: {
-        message: normalizedError.message,
-        details: normalizedError.details
-      }
-    });
-  });
+      const logMethod =
+        normalizedError.statusCode >= 500
+          ? logger.error.bind(logger)
+          : logger.warn.bind(logger);
+
+      logMethod(
+        { error },
+        normalizedError.message
+      );
+
+      response
+        .status(normalizedError.statusCode)
+        .json({
+          error: {
+            message: normalizedError.message,
+            details: normalizedError.details,
+          },
+        });
+    }
+  );
 
   return app;
 }

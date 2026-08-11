@@ -1,92 +1,189 @@
-import type { CreateProjectInput, ProjectRecord, ProjectStatus } from "@ddac/shared";
-import { PROJECT_STATUS_VALUES } from "@ddac/shared";
-import { CheckCircle2, Cloud, Database, Loader2, Plus, RefreshCw, Trash2 } from "lucide-react";
+import type {
+  CreateDisasterInput,
+  DisasterRecord,
+  DisasterSeverity,
+  DisasterStatus,
+} from "@ddac/shared";
+
+import {
+  DISASTER_SEVERITY_VALUES,
+  DISASTER_STATUS_VALUES,
+} from "@ddac/shared";
+
+import {
+  AlertTriangle,
+  Loader2,
+  MapPin,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
+
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  createProject,
-  deleteProject,
-  listProjects,
-  updateProject
-} from "./api/projectsApi.js";
 
-const initialFormState: CreateProjectInput = {
+import {
+  createDisaster,
+  deleteDisaster,
+  listDisasters,
+  updateDisaster,
+} from "./api/disastersApi.js";
+
+const initialFormState: CreateDisasterInput = {
   title: "",
+  disasterType: "",
+  location: "",
   description: "",
-  ownerName: "",
-  status: "planning"
+  severity: "medium",
+  status: "active",
+  startDate: "",
 };
 
-const statusLabels: Record<ProjectStatus, string> = {
-  planning: "Planning",
+const severityLabels: Record<DisasterSeverity, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+  critical: "Critical",
+};
+
+const statusLabels: Record<DisasterStatus, string> = {
   active: "Active",
-  completed: "Completed"
+  monitoring: "Monitoring",
+  resolved: "Resolved",
 };
 
 export function App() {
-  const [projects, setProjects] = useState<ProjectRecord[]>([]);
-  const [formState, setFormState] = useState<CreateProjectInput>(initialFormState);
+  const [disasters, setDisasters] = useState<DisasterRecord[]>([]);
+  const [formState, setFormState] =
+    useState<CreateDisasterInput>(initialFormState);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] =
+    useState<string | null>(null);
 
   const activeCount = useMemo(
-    () => projects.filter((project) => project.status === "active").length,
-    [projects]
+    () =>
+      disasters.filter(
+        (disaster) => disaster.status === "active"
+      ).length,
+    [disasters]
   );
 
-  async function refreshProjects() {
+  const criticalCount = useMemo(
+    () =>
+      disasters.filter(
+        (disaster) => disaster.severity === "critical"
+      ).length,
+    [disasters]
+  );
+
+  async function refreshDisasters() {
     setIsLoading(true);
     setErrorMessage(null);
+
     try {
-      const nextProjects = await listProjects();
-      setProjects(nextProjects);
+      const nextDisasters = await listDisasters();
+      setDisasters(nextDisasters);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load projects.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to load disasters."
+      );
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    void refreshProjects();
+    void refreshDisasters();
   }, []);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
+
     setIsSaving(true);
     setErrorMessage(null);
 
     try {
-      const createdProject = await createProject(formState);
-      setProjects((currentProjects) => [createdProject, ...currentProjects]);
+      const createdDisaster =
+        await createDisaster(formState);
+
+      setDisasters((currentDisasters) => [
+        createdDisaster,
+        ...currentDisasters,
+      ]);
+
       setFormState(initialFormState);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to create project.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to create disaster."
+      );
     } finally {
       setIsSaving(false);
     }
   }
 
-  async function handleStatusChange(project: ProjectRecord, status: ProjectStatus) {
+  async function handleStatusChange(
+    disaster: DisasterRecord,
+    status: DisasterStatus
+  ) {
     setErrorMessage(null);
+
     try {
-      const updatedProject = await updateProject(project.id, { status });
-      setProjects((currentProjects) =>
-        currentProjects.map((item) => (item.id === project.id ? updatedProject : item))
+      const updatedDisaster = await updateDisaster(
+        disaster.id,
+        {
+          status,
+        }
+      );
+
+      setDisasters((currentDisasters) =>
+        currentDisasters.map((item) =>
+          item.id === disaster.id
+            ? updatedDisaster
+            : item
+        )
       );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to update project.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to update disaster."
+      );
     }
   }
 
-  async function handleDelete(projectId: string) {
+  async function handleDelete(disasterId: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this disaster?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     setErrorMessage(null);
+
     try {
-      await deleteProject(projectId);
-      setProjects((currentProjects) => currentProjects.filter((project) => project.id !== projectId));
+      await deleteDisaster(disasterId);
+
+      setDisasters((currentDisasters) =>
+        currentDisasters.filter(
+          (disaster) => disaster.id !== disasterId
+        )
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to delete project.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to delete disaster."
+      );
     }
   }
 
@@ -95,54 +192,97 @@ export function App() {
       <section className="top-band">
         <div className="top-band__content">
           <div>
-            <p className="eyebrow">AWS cloud application base</p>
-            <h1>DDAC Project Workspace</h1>
+            <p className="eyebrow">
+              Disaster Relief Coordination System
+            </p>
+
+            <h1>Disaster Information Management</h1>
+
             <p className="intro">
-              Track project modules, owners, and implementation status while demonstrating
-              DynamoDB create, read, update, and delete operations through a Node.js API.
+              Publish and maintain current disaster information
+              so relief personnel and affected communities can
+              access accurate emergency updates.
             </p>
           </div>
-          <div className="status-strip" aria-label="Project summary">
-            <div>
-              <span>{projects.length}</span>
-              <small>Total records</small>
-            </div>
+
+          <div
+            className="status-strip"
+            aria-label="Disaster summary"
+          >
             <div>
               <span>{activeCount}</span>
-              <small>Active builds</small>
+              <small>Active disasters</small>
+            </div>
+
+            <div>
+              <span>{criticalCount}</span>
+              <small>Critical alerts</small>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="workspace-grid" aria-label="Project management workspace">
-        <form className="project-form" onSubmit={handleSubmit}>
+      <section
+        className="workspace-grid"
+        aria-label="Disaster management workspace"
+      >
+        <form
+          className="project-form"
+          onSubmit={handleSubmit}
+        >
           <div className="section-title">
             <Plus size={18} aria-hidden="true" />
-            <h2>Add Module</h2>
+            <h2>Add Disaster</h2>
           </div>
 
           <label>
-            Title
+            Disaster title
             <input
               required
               minLength={3}
               maxLength={120}
               value={formState.title}
-              onChange={(event) => setFormState({ ...formState, title: event.target.value })}
-              placeholder="Backend API integration"
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  title: event.target.value,
+                })
+              }
+              placeholder="Kuala Lumpur Flash Flood"
             />
           </label>
 
           <label>
-            Owner
+            Disaster type
             <input
               required
               minLength={2}
-              maxLength={120}
-              value={formState.ownerName}
-              onChange={(event) => setFormState({ ...formState, ownerName: event.target.value })}
-              placeholder="Team member name"
+              maxLength={100}
+              value={formState.disasterType}
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  disasterType: event.target.value,
+                })
+              }
+              placeholder="Flood"
+            />
+          </label>
+
+          <label>
+            Location
+            <input
+              required
+              minLength={2}
+              maxLength={200}
+              value={formState.location}
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  location: event.target.value,
+                })
+              }
+              placeholder="Kuala Lumpur"
             />
           </label>
 
@@ -151,11 +291,42 @@ export function App() {
             <textarea
               required
               minLength={10}
-              maxLength={1000}
+              maxLength={1500}
               value={formState.description}
-              onChange={(event) => setFormState({ ...formState, description: event.target.value })}
-              placeholder="Describe the feature, database workflow, or frontend screen."
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  description: event.target.value,
+                })
+              }
+              placeholder="Provide a short description of the disaster and affected areas."
             />
+          </label>
+
+          <label>
+            Severity
+            <select
+              value={formState.severity}
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  severity:
+                    event.target
+                      .value as DisasterSeverity,
+                })
+              }
+            >
+              {DISASTER_SEVERITY_VALUES.map(
+                (severity) => (
+                  <option
+                    key={severity}
+                    value={severity}
+                  >
+                    {severityLabels[severity]}
+                  </option>
+                )
+              )}
+            </select>
           </label>
 
           <label>
@@ -163,10 +334,14 @@ export function App() {
             <select
               value={formState.status}
               onChange={(event) =>
-                setFormState({ ...formState, status: event.target.value as ProjectStatus })
+                setFormState({
+                  ...formState,
+                  status:
+                    event.target.value as DisasterStatus,
+                })
               }
             >
-              {PROJECT_STATUS_VALUES.map((status) => (
+              {DISASTER_STATUS_VALUES.map((status) => (
                 <option key={status} value={status}>
                   {statusLabels[status]}
                 </option>
@@ -174,72 +349,181 @@ export function App() {
             </select>
           </label>
 
-          <button className="primary-button" type="submit" disabled={isSaving}>
-            {isSaving ? <Loader2 className="spin" size={18} aria-hidden="true" /> : <Plus size={18} />}
-            Save record
+          <label>
+            Start date
+            <input
+              required
+              type="date"
+              value={formState.startDate}
+              onChange={(event) =>
+                setFormState({
+                  ...formState,
+                  startDate: event.target.value,
+                })
+              }
+            />
+          </label>
+
+          <button
+            className="primary-button"
+            type="submit"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <Loader2
+                className="spin"
+                size={18}
+                aria-hidden="true"
+              />
+            ) : (
+              <Plus size={18} aria-hidden="true" />
+            )}
+
+            {isSaving
+              ? "Saving..."
+              : "Publish disaster"}
           </button>
         </form>
 
-        <section className="project-list" aria-live="polite">
+        <section
+          className="project-list"
+          aria-live="polite"
+        >
           <div className="list-header">
             <div className="section-title">
-              <Database size={18} aria-hidden="true" />
-              <h2>DynamoDB Records</h2>
+              <AlertTriangle
+                size={18}
+                aria-hidden="true"
+              />
+
+              <h2>Current Disaster Records</h2>
             </div>
-            <button className="icon-button" type="button" onClick={refreshProjects} aria-label="Refresh records">
-              <RefreshCw size={18} aria-hidden="true" />
+
+            <button
+              className="icon-button"
+              type="button"
+              onClick={() => void refreshDisasters()}
+              aria-label="Refresh disaster records"
+            >
+              <RefreshCw
+                size={18}
+                aria-hidden="true"
+              />
             </button>
           </div>
 
-          {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
+          {errorMessage ? (
+            <div className="error-banner">
+              {errorMessage}
+            </div>
+          ) : null}
 
           {isLoading ? (
             <div className="loading-state">
-              <Loader2 className="spin" size={24} aria-hidden="true" />
-              Loading records
+              <Loader2
+                className="spin"
+                size={24}
+                aria-hidden="true"
+              />
+
+              Loading disasters
             </div>
-          ) : projects.length === 0 ? (
+          ) : disasters.length === 0 ? (
             <div className="empty-state">
-              <Cloud size={32} aria-hidden="true" />
-              <h3>No records yet</h3>
-              <p>Create the first module to verify the full frontend, backend, and cloud database workflow.</p>
+              <AlertTriangle
+                size={32}
+                aria-hidden="true"
+              />
+
+              <h3>No disaster records</h3>
+
+              <p>
+                Add the first disaster record using the form
+                to test the disaster information workflow.
+              </p>
             </div>
           ) : (
             <div className="records">
-              {projects.map((project) => (
-                <article className="record-card" key={project.id}>
+              {disasters.map((disaster) => (
+                <article
+                  className="record-card"
+                  key={disaster.id}
+                >
                   <div className="record-card__main">
                     <div>
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
+                      <h3>{disaster.title}</h3>
+
+                      <p>{disaster.description}</p>
                     </div>
+
                     <button
                       className="icon-button danger"
                       type="button"
-                      onClick={() => void handleDelete(project.id)}
-                      aria-label={`Delete ${project.title}`}
+                      onClick={() =>
+                        void handleDelete(disaster.id)
+                      }
+                      aria-label={`Delete ${disaster.title}`}
                     >
-                      <Trash2 size={18} aria-hidden="true" />
+                      <Trash2
+                        size={18}
+                        aria-hidden="true"
+                      />
                     </button>
                   </div>
 
                   <div className="record-meta">
-                    <span>{project.ownerName}</span>
-                    <span>{new Date(project.updatedAt).toLocaleDateString()}</span>
+                    <span>
+                      {disaster.disasterType}
+                    </span>
+
+                    <span>
+                      <MapPin
+                        size={13}
+                        aria-hidden="true"
+                      />{" "}
+                      {disaster.location}
+                    </span>
+
+                    <span>
+                      Severity:{" "}
+                      {severityLabels[
+                        disaster.severity
+                      ]}
+                    </span>
+
+                    <span>
+                      Started:{" "}
+                      {new Date(
+                        disaster.startDate
+                      ).toLocaleDateString()}
+                    </span>
                   </div>
 
-                  <div className="segmented-control" aria-label={`Status for ${project.title}`}>
-                    {PROJECT_STATUS_VALUES.map((status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        className={project.status === status ? "selected" : ""}
-                        onClick={() => void handleStatusChange(project, status)}
-                      >
-                        {project.status === status ? <CheckCircle2 size={14} aria-hidden="true" /> : null}
-                        {statusLabels[status]}
-                      </button>
-                    ))}
+                  <div
+                    className="segmented-control"
+                    aria-label={`Status for ${disaster.title}`}
+                  >
+                    {DISASTER_STATUS_VALUES.map(
+                      (status) => (
+                        <button
+                          key={status}
+                          type="button"
+                          className={
+                            disaster.status === status
+                              ? "selected"
+                              : ""
+                          }
+                          onClick={() =>
+                            void handleStatusChange(
+                              disaster,
+                              status
+                            )
+                          }
+                        >
+                          {statusLabels[status]}
+                        </button>
+                      )
+                    )}
                   </div>
                 </article>
               ))}

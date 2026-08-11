@@ -39,3 +39,65 @@ export interface ApiErrorResponse {
     details?: unknown;
   };
 }
+
+export const DISASTER_SEVERITY_VALUES = [
+  "low",
+  "medium",
+  "high",
+  "critical",
+] as const;
+
+export type DisasterSeverity =
+  (typeof DISASTER_SEVERITY_VALUES)[number];
+
+export const DISASTER_STATUS_VALUES = [
+  "active",
+  "monitoring",
+  "resolved",
+] as const;
+
+export type DisasterStatus =
+  (typeof DISASTER_STATUS_VALUES)[number];
+
+export interface DisasterRecord {
+  id: string;
+  entityType: "disaster";
+  title: string;
+  disasterType: string;
+  location: string;
+  description: string;
+  severity: DisasterSeverity;
+  status: DisasterStatus;
+  startDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CreateDisasterInput = Pick<
+  DisasterRecord,
+  | "title"
+  | "disasterType"
+  | "location"
+  | "description"
+  | "severity"
+  | "startDate"
+> &
+  Partial<Pick<DisasterRecord, "status">>;
+
+type DisasterMutableFields = Pick<
+  DisasterRecord,
+  | "title"
+  | "disasterType"
+  | "location"
+  | "description"
+  | "severity"
+  | "status"
+  | "startDate"
+>;
+
+export type UpdateDisasterInput = {
+  [Key in keyof DisasterMutableFields]?:
+    | DisasterMutableFields[Key]
+    | undefined;
+};
+
