@@ -5,7 +5,7 @@
 
 | Sprint | File | Goal |
 |--------|------|------|
-| Sprint 1 | `tasks/sprints/sprint-01-init.md` | Initialize project and scaffold |
+| Sprint 2 | `tasks/sprints/sprint-02-disaster-info.md` | Build Disaster Information & Relief Locations |
 
 ---
 

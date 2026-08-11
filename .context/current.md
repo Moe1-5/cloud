@@ -4,13 +4,13 @@
 > Update whenever: sprint changes, major decision is made, stack is finalized.
 
 ## Project
-**Name:** AWS Cloud Full-Stack Base
-**Description:** React, Node.js, TypeScript, and DynamoDB starter for DDAC Task 1.
-**Stage:** [x] Scaffolding  [ ] MVP  [ ] Feature-complete  [ ] Production
+**Name:** Disaster Relief Coordination System
+**Description:** Cloud-based platform for disaster information, relief coordination, resources, volunteers, victims, and emergency assistance.
+**Stage:** [ ] Scaffolding  [x] MVP  [ ] Feature-complete  [ ] Production
 
 ## Active Sprint
-**Sprint:** Sprint 1
-**Goal:** Initialize project and scaffold core frontend/backend/cloud structure.
+**Sprint:** Sprint 2
+**Goal:** Build Disaster Information, Shelter, and Relief Service management.
 **Blocking:** None
 
 ## Tech Stack
