@@ -71,6 +71,7 @@
 | `apps/backend/tests/emergencyRequests.test.ts`   | Profile, ownership, public request, and coordinator workflow coverage.                   |
 | `apps/backend/tests/reports.test.ts`             | Student 3 operational-report aggregation coverage.                                       |
 | `apps/frontend/`                                 | Vite React TypeScript frontend for Student 3 relief operations.                          |
+| `apps/frontend/public/favicon.svg`               | ReliefOps teal, mint, and white browser identity mark.                                   |
 | `apps/frontend/src/features/resources/`          | Responsive resource inventory workspace.                                                 |
 | `apps/frontend/src/features/distributions/`      | Distribution scheduling, status tracking, filtering, and activity monitoring workspace.  |
 | `apps/frontend/src/features/emergency-requests/` | Affected-user profile/request and coordinator case-management workspace.                 |

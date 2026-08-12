@@ -9,8 +9,7 @@
 
 ## In Progress
 
-- [ ] Add a site favicon in a separate implementation session to resolve the sole browser network error
-- [ ] Complete a fresh one-pass browser interaction checklist in a separately authorised fix session
+- No open Sprint 3 implementation items; keep active until the user explicitly closes the sprint.
 
 ## Todo
 
@@ -36,7 +35,7 @@
 - [x] Add resource API behavior tests
 - [x] Run lint, typecheck, tests, and production build
 - [x] Verify the resource and distribution layouts at a 390-pixel mobile viewport
-- [ ] Perform one complete browser/system-test pass - functional checks passed, but the final browser-error check failed
+- [x] Perform one complete browser/system-test pass
 
 ## Out of Scope
 

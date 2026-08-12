@@ -13,7 +13,7 @@
 
 **Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
 **Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
-**Blocking:** All scoped mobile functional and responsive checks pass. The sole browser error is a missing `/favicon.ico` returning HTTP 404; authentication, DynamoDB, and teammate-data integration also remain open.
+**Blocking:** Student 3 functional, responsive, and browser-error checks pass. Authentication, DynamoDB, and teammate-data integration require the shared team contracts or explicit merges.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 
 ## Last Decision
 
-2026-08-13 Release follow-up distribution actions immediately after authoritative API success
+2026-08-13 Use an explicit ReliefOps favicon and project metadata to complete the browser quality gate
 
 ## Status Flags
 
