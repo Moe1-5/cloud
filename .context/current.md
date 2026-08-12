@@ -4,22 +4,27 @@
 > Update whenever: sprint changes, major decision is made, stack is finalized.
 
 ## Project
-**Name:** AWS Cloud Full-Stack Base
-**Description:** React, Node.js, TypeScript, and DynamoDB starter for DDAC Task 1.
-**Stage:** [x] Scaffolding  [ ] MVP  [ ] Feature-complete  [ ] Production
+
+**Name:** Disaster Relief Coordination System
+**Description:** AWS full-stack platform for disaster information, resources, people, and emergency requests.
+**Stage:** [ ] Scaffolding [x] MVP [ ] Feature-complete [ ] Production
 
 ## Active Sprint
-**Sprint:** Sprint 1
-**Goal:** Initialize project and scaffold core frontend/backend/cloud structure.
-**Blocking:** None
+
+**Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
+**Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
+**Blocking:** Sprint 3 visual QA found mobile horizontal overflow; fix requires a separate implementation session before browser interactions are tested.
 
 ## Tech Stack
+
 React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
 
 ## Last Decision
-2026-08-11 Full-stack TypeScript monorepo for AWS deployment
+
+2026-08-13 Expose Student 3 operational metrics through a dedicated report boundary
 
 ## Status Flags
+
 - [x] Tests configured
 - [x] CI/CD active
 - [ ] Auth implemented
