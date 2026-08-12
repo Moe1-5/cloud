@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Investigate why the second mobile status action did not visibly advance the new distribution to delivered
+- [ ] Complete shared browser runtime-error verification with Sprint 6
 
 ## Todo
 
@@ -20,7 +20,7 @@
 - [x] Create distribution history and filtering UI
 - [x] Create ongoing relief-activity overview and status indicators
 - [x] Add API behavior tests
-- [ ] Complete responsive frontend browser verification
+- [x] Complete responsive frontend browser verification
 
 ## Out of Scope
 
@@ -46,6 +46,12 @@
 - What changed: Updated the distribution workspace to insert successful create and status responses into the register immediately, refresh supporting inventory and activity data without blanking the register, and announce accessible success messages. Updated the ESLint global ignores so generated browser profiles under the temporary test directory are not analyzed as project source.
 - Why: The previous mobile pass recorded a successful distribution API response but could not observe the new card while the workspace performed a full loading refresh.
 - Status: Typecheck, lint, fifteen automated tests, and the production build pass. The fresh mobile pass verified resource CRUD, distribution creation with visible confirmation, and the transition to in transit. It stopped at the next finding because the new distribution did not visibly advance to delivered; the retained server log contained the first status PATCH but no second status request at the time of observation. Emergency, coordinator, and report checks were not reached.
+
+### 2026-08-13 - Release follow-up distribution actions after API success
+
+- What changed: Split mutation follow-up refreshes from the distribution register, released the active status control as soon as the authoritative API response was applied, and refreshed only inventory and activity support data in the background.
+- Why: The previous pass rendered the new in-transit state while keeping the follow-up delivery button disabled until an unrelated workspace refresh completed.
+- Status: Typecheck, lint, fifteen automated tests, and the production build pass. The remaining mobile checklist verified an enabled delivery action and successful delivery, all affected-user request operations, all coordinator case transitions, report loading, and phone-width containment. The pass stopped only at its final browser runtime or log-error assertion; the harness did not emit the captured message text, so that shared quality finding remains open in Sprint 6.
 
 ---
 

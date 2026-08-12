@@ -13,7 +13,7 @@
 
 **Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
 **Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
-**Blocking:** Mobile overflow and distribution creation confirmation are fixed. The latest linear browser pass stopped when the second status action did not visibly advance the new distribution from in transit to delivered; later workflows remain unverified.
+**Blocking:** All scoped mobile functional and responsive checks now pass. The final browser runtime or log-error assertion failed without emitting the captured message text; authentication, DynamoDB, and teammate-data integration also remain open.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 
 ## Last Decision
 
-2026-08-13 Confirm successful distribution mutations immediately without blanking the register during supporting-data refresh
+2026-08-13 Release follow-up distribution actions immediately after authoritative API success
 
 ## Status Flags
 

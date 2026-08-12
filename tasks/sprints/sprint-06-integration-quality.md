@@ -11,7 +11,7 @@
 
 - [ ] Integrate authentication after the shared team auth contract is available
 - [ ] Replace local repositories with the agreed DynamoDB persistence implementation
-- [ ] Investigate the distribution delivery-transition finding before a new browser/system pass
+- [ ] Identify and resolve the browser runtime or console error reported after all functional checks passed
 
 ## Todo
 

@@ -111,10 +111,25 @@ export function DistributionWorkspace() {
     });
   }, [distributions, searchQuery, statusFilter]);
 
-  async function refreshWorkspace(showLoadingState = true) {
-    if (showLoadingState) {
-      setIsLoading(true);
-    }
+  function applySupportingData(
+    nextResources: ResourceRecord[],
+    activityResponse: { data: ReliefActivityRecord[]; summary: ReliefActivitySummary }
+  ) {
+    const availableResources = nextResources.filter((resource) => resource.quantity > 0);
+
+    setResources(nextResources);
+    setActivities(activityResponse.data);
+    setSummary(activityResponse.summary);
+    setFormState((currentForm) => ({
+      ...currentForm,
+      resourceId: availableResources.some((resource) => resource.id === currentForm.resourceId)
+        ? currentForm.resourceId
+        : (availableResources[0]?.id ?? "")
+    }));
+  }
+
+  async function refreshWorkspace() {
+    setIsLoading(true);
     setErrorMessage(null);
 
     try {
@@ -123,26 +138,30 @@ export function DistributionWorkspace() {
         listResources(),
         getReliefActivities()
       ]);
-      const availableResources = nextResources.filter((resource) => resource.quantity > 0);
 
       setDistributions(nextDistributions);
-      setResources(nextResources);
-      setActivities(activityResponse.data);
-      setSummary(activityResponse.summary);
-      setFormState((currentForm) => ({
-        ...currentForm,
-        resourceId: availableResources.some((resource) => resource.id === currentForm.resourceId)
-          ? currentForm.resourceId
-          : (availableResources[0]?.id ?? "")
-      }));
+      applySupportingData(nextResources, activityResponse);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to load distribution operations."
       );
     } finally {
-      if (showLoadingState) {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
+    }
+  }
+
+  async function refreshSupportingData() {
+    try {
+      const [nextResources, activityResponse] = await Promise.all([
+        listResources(),
+        getReliefActivities()
+      ]);
+
+      applySupportingData(nextResources, activityResponse);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to refresh supporting distribution data."
+      );
     }
   }
 
@@ -176,7 +195,8 @@ export function DistributionWorkspace() {
       setSuccessMessage(
         `Distribution to ${createdDistribution.destination} was reserved and scheduled.`
       );
-      await refreshWorkspace(false);
+      setIsSaving(false);
+      void refreshSupportingData();
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to record the distribution."
@@ -204,7 +224,8 @@ export function DistributionWorkspace() {
       setSuccessMessage(
         `${updatedDistribution.resourceName} is now ${STATUS_LABELS[updatedDistribution.status].toLowerCase()}.`
       );
-      await refreshWorkspace(false);
+      setUpdatingId(null);
+      void refreshSupportingData();
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to update distribution status."

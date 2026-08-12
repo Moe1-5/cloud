@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Investigate the distribution delivery-transition finding from the latest mobile browser pass
+- [ ] Identify the browser runtime or console error reported after the completed mobile functional checklist
 - [ ] Complete a fresh one-pass browser interaction checklist in a separately authorised fix session
 
 ## Todo
@@ -36,7 +36,7 @@
 - [x] Add resource API behavior tests
 - [x] Run lint, typecheck, tests, and production build
 - [x] Verify the resource and distribution layouts at a 390-pixel mobile viewport
-- [ ] Perform one complete browser/system-test pass - stopped on distribution scheduling confirmation
+- [ ] Perform one complete browser/system-test pass - functional checks passed, but the final browser-error check failed
 
 ## Out of Scope
 
