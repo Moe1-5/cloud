@@ -74,6 +74,8 @@ p {
 
 .app-shell {
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .site-header {
@@ -86,6 +88,7 @@ p {
 
 .site-header__content {
   width: min(1240px, calc(100% - 32px));
+  min-width: 0;
   min-height: 74px;
   margin: 0 auto;
   display: flex;
@@ -130,6 +133,7 @@ p {
 }
 
 .primary-nav {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -137,6 +141,7 @@ p {
 }
 
 .primary-nav__item {
+  min-width: 0;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -195,6 +200,7 @@ button.primary-nav__item {
 
 .hero__content {
   width: min(1240px, calc(100% - 32px));
+  min-width: 0;
   min-height: 338px;
   margin: 0 auto;
   display: grid;
@@ -224,6 +230,7 @@ h1 {
   font-size: clamp(2.35rem, 5vw, 4.5rem);
   line-height: 1.02;
   letter-spacing: -0.045em;
+  overflow-wrap: break-word;
 }
 
 .intro {
@@ -232,6 +239,7 @@ h1 {
   color: #d3e0e6;
   font-size: 1.03rem;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .hero-callout {
@@ -268,10 +276,12 @@ h1 {
   color: #b9cbd3;
   font-size: 0.84rem;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .resource-workspace {
   width: min(1240px, calc(100% - 32px));
+  min-width: 0;
   margin: -36px auto 72px;
   position: relative;
   z-index: 2;
@@ -285,6 +295,7 @@ h1 {
 }
 
 .summary-card {
+  min-width: 0;
   min-height: 104px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -347,6 +358,7 @@ h1 {
 }
 
 .workspace-grid {
+  min-width: 0;
   display: grid;
   grid-template-columns: 350px minmax(0, 1fr);
   gap: 18px;
@@ -354,6 +366,7 @@ h1 {
 }
 
 .panel {
+  min-width: 0;
   border: 1px solid var(--color-border);
   border-radius: 9px;
   background: var(--color-panel);
@@ -421,6 +434,7 @@ label {
 input,
 select,
 textarea {
+  min-width: 0;
   width: 100%;
   min-height: 42px;
   border: 1px solid #cbd6dc;
@@ -1567,6 +1581,7 @@ textarea:focus {
   .primary-nav {
     order: 3;
     width: 100%;
+    max-width: 100%;
   }
 
   .hero__content,
@@ -1612,7 +1627,7 @@ textarea:focus {
   .site-header__content,
   .hero__content,
   .resource-workspace {
-    width: min(100% - 20px, 1240px);
+    width: min(calc(100% - 20px), 1240px);
   }
 
   .brand small {
@@ -1620,7 +1635,21 @@ textarea:focus {
   }
 
   .primary-nav__item {
+    width: 100%;
     padding: 0 9px;
+    justify-content: flex-start;
+    line-height: 1.25;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .primary-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .primary-nav__item svg {
+    flex: 0 0 auto;
   }
 
   .summary-grid {

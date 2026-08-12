@@ -9,8 +9,8 @@
 
 ## In Progress
 
-- [ ] Resolve the mobile horizontal-overflow finding in a separate fix session
-- [ ] Complete the remaining one-pass browser interaction checklist after that fix
+- [ ] Investigate the distribution scheduling confirmation failure found by the mobile browser pass
+- [ ] Complete a fresh one-pass browser interaction checklist in a separately authorised fix session
 
 ## Todo
 
@@ -35,7 +35,8 @@
 
 - [x] Add resource API behavior tests
 - [x] Run lint, typecheck, tests, and production build
-- [ ] Perform one browser/system-test pass after implementation - stopped on mobile overflow finding
+- [x] Verify the resource and distribution layouts at a 390-pixel mobile viewport
+- [ ] Perform one complete browser/system-test pass - stopped on distribution scheduling confirmation
 
 ## Out of Scope
 
@@ -63,6 +64,12 @@
 - What changed: Added shared resource contracts, validated resource CRUD routes with local seeded storage, API behavior tests, a shared frontend request helper, the Resource Workspace, and a responsive navy-and-teal application shell.
 - Why: Student 3 owns relief-resource records, quantities, locations, and the frontend design for the Student 3 workflows.
 - Status: Lint, typecheck, four automated tests, and the production build pass. Desktop rendering and initial inventory loading passed visual inspection. The system-test pass stopped when the 390-pixel mobile view showed horizontal overflow; browser interactions were not attempted after that finding.
+
+### 2026-08-13 - Fix mobile page overflow and resume system verification
+
+- What changed: Constrained the application shell and workspace children to the viewport, corrected the phone container width calculation, allowed long content to wrap, and changed the phone navigation into a two-column grid.
+- Why: The first browser pass found page-level horizontal overflow and clipped navigation at a 390-pixel viewport.
+- Status: Typecheck, lint, fifteen automated tests, and the production build pass. The resource and distribution layouts now fit the mobile viewport, and mobile resource create, filter, update, and delete checks passed. The single browser pass then stopped because the distribution scheduling confirmation was not found, even though the API log recorded a successful HTTP 201 response; later workflow checks were not run.
 
 ---
 

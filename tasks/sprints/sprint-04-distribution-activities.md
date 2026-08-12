@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Complete responsive browser verification after the Sprint 3 mobile-overflow fix is explicitly authorised and implemented
+- [ ] Investigate why the mobile browser check did not find the newly scheduled distribution after the API returned HTTP 201
 
 ## Todo
 
@@ -34,6 +34,12 @@
 - What changed: Added shared distribution and relief-activity contracts, validated distribution and activity API routes, immutable inventory reservation and cancellation restoration, guarded status transitions, eight total backend tests, a typed frontend client, distribution scheduling and filtering UI, status actions, and an operational activity timeline.
 - Why: Student 3 owns resource distribution tracking and monitoring of ongoing relief activities.
 - Status: Typecheck, lint, eight automated tests, and the production build pass. Browser verification was not repeated because Sprint 3 has an unresolved mobile-overflow finding and repository policy requires a separate explicitly authorised fix session.
+
+### 2026-08-13 - Verify the mobile distribution layout
+
+- What changed: Confirmed that the distribution workspace, scheduling form, register, and navigation stay within a 390-pixel viewport after the shared responsive CSS fix.
+- Why: Distribution controls must remain usable on a phone-sized browser even though the product is a website rather than a native mobile application.
+- Status: The layout check passed. The test submitted a distribution and the API returned HTTP 201, but the expected new card was not found by the browser assertion, so the pass stopped before status-transition checks and the verification item remains open.
 
 ---
 

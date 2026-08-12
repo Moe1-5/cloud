@@ -11,7 +11,7 @@
 
 - [ ] Integrate authentication after the shared team auth contract is available
 - [ ] Replace local repositories with the agreed DynamoDB persistence implementation
-- [ ] Complete browser/system verification after the mobile-overflow fix is explicitly authorised
+- [ ] Investigate the distribution scheduling confirmation finding before a new browser/system pass
 
 ## Todo
 
@@ -31,6 +31,12 @@
 - What changed: Added an aggregated Student 3 report contract and API, report behavior coverage, and a coordinator report workspace for inventory health, distribution completion, represented households, and emergency-case readiness.
 - Why: Student 3 shares responsibility for overall reporting and needs a clean reporting boundary for later integration into the team dashboard.
 - Status: Typecheck, lint, fifteen automated tests, and the production build pass. Authentication, DynamoDB cutover, teammate data reconciliation, browser QA, and final team report assembly remain open integration items.
+
+### 2026-08-13 - Record responsive quality evidence
+
+- What changed: Added phone-width containment and wrapping rules across the application shell, navigation, workspace grids, panels, controls, and headings.
+- Why: Responsive web behavior is required for the Student 3 workspaces to remain usable on smaller browser viewports.
+- Status: Static checks, automated tests, and production builds pass. A single mobile browser pass verified the resource workspace and distribution layout, then stopped at a distribution scheduling confirmation assertion. Emergency, coordinator, and report browser checks were not reached.
 
 ---
 

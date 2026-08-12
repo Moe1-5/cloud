@@ -10,7 +10,7 @@
 ## In Progress
 
 - [ ] Consume Student 1 disaster and relief-information records after the team explicitly merges that integration
-- [ ] Complete responsive browser verification after the existing mobile-overflow finding is fixed
+- [ ] Complete responsive browser verification after the earlier distribution scheduling finding is handled in a separate fix session
 
 ## Todo
 
@@ -23,7 +23,7 @@
 - [x] Assign responsible relief personnel
 - [x] Update emergency-case status with an audit-friendly timeline
 - [x] Add API behavior tests
-- [ ] Complete responsive frontend browser verification
+- [ ] Complete responsive frontend browser verification - not reached after the distribution check stopped the linear pass
 
 ## Integration Notes
 

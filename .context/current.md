@@ -13,7 +13,7 @@
 
 **Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
 **Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
-**Blocking:** Sprint 3 visual QA found mobile horizontal overflow; fix requires a separate implementation session before browser interactions are tested.
+**Blocking:** Mobile overflow is fixed. The resumed linear browser pass stopped when distribution scheduling returned HTTP 201 but its expected confirmation card was not found; later workflows remain unverified.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 
 ## Last Decision
 
-2026-08-13 Expose Student 3 operational metrics through a dedicated report boundary
+2026-08-13 Keep the responsive fix and browser failure evidence separate from any follow-up distribution correction
 
 ## Status Flags
 

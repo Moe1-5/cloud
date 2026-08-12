@@ -73,11 +73,12 @@
 - Fifteen automated backend behavior tests pass across health, resource, distribution, profile, emergency, and report features.
 - Production builds pass for shared, backend, and frontend workspaces.
 - Desktop visual rendering and initial resource loading passed the first system-test pass.
-- The same pass stopped on a 390-pixel mobile horizontal-overflow finding. Browser create, edit, filter, delete, distribution, emergency, and report interactions have not been system-tested after that finding, in accordance with repository test policy.
+- The responsive fix removed page-level horizontal overflow at a 390-pixel viewport. The resource and distribution screens fit the viewport, navigation wraps into two columns, and resource create, filter, update, and delete checks passed.
+- The resumed linear pass stopped at the first new finding: distribution scheduling returned HTTP 201, but the expected new card was not found by the browser assertion. Distribution transitions, emergency, coordinator, and report interactions were not reached, in accordance with repository test policy.
 
 ## Known Open Work
 
-- Explicitly authorise and implement the mobile-overflow fix in a separate session, then run one fresh browser checklist.
+- Investigate the distribution scheduling confirmation finding in a separate fix session, then run one fresh browser checklist.
 - Merge the team authentication contract and role-aware routing.
 - Merge Student 1 public information and Student 2 assignment data only when the user decides.
 - Replace local Student 3 repositories with DynamoDB persistence and transactional inventory operations.
