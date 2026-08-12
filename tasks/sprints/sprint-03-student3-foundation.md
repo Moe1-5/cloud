@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Identify the browser runtime or console error reported after the completed mobile functional checklist
+- [ ] Add a site favicon in a separate implementation session to resolve the sole browser network error
 - [ ] Complete a fresh one-pass browser interaction checklist in a separately authorised fix session
 
 ## Todo

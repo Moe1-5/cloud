@@ -13,7 +13,7 @@
 
 **Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
 **Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
-**Blocking:** All scoped mobile functional and responsive checks now pass. The final browser runtime or log-error assertion failed without emitting the captured message text; authentication, DynamoDB, and teammate-data integration also remain open.
+**Blocking:** All scoped mobile functional and responsive checks pass. The sole browser error is a missing `/favicon.ico` returning HTTP 404; authentication, DynamoDB, and teammate-data integration also remain open.
 
 ## Tech Stack
 

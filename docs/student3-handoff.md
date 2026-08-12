@@ -76,11 +76,11 @@
 - The responsive fix removed page-level horizontal overflow at a 390-pixel viewport. The resource and distribution screens fit the viewport, navigation wraps into two columns, and resource create, filter, update, and delete checks passed.
 - The distribution confirmation correction now inserts successful create and status responses immediately and announces an accessible status message. A fresh pass verified resource CRUD, distribution creation, its visible confirmation, and advancement to in transit.
 - A separate remaining-items pass verified the delivery transition, affected-user request submission, edit, update, and cancellation, coordinator priority, assignment, response, and resolution transitions, report loading, and phone-width containment across those workspaces.
-- The remaining-items pass stopped only at its final browser runtime or log-error assertion. The harness did not emit the captured message text after throwing, so the exact page-level error still needs a separate diagnostic pass; backend requests and all functional assertions completed successfully.
+- The remaining-items pass stopped only at its final browser runtime or log-error assertion. A separate diagnostic-only observation identified the sole message as a network error for the missing `/favicon.ico`, which returned HTTP 404; no JavaScript runtime exception was reported.
 
 ## Known Open Work
 
-- Identify the page-level browser runtime or console error in a separate diagnostic pass, then verify only that open check.
+- Add the missing site favicon in a separate implementation session, then verify only the open browser-error check.
 - Merge the team authentication contract and role-aware routing.
 - Merge Student 1 public information and Student 2 assignment data only when the user decides.
 - Replace local Student 3 repositories with DynamoDB persistence and transactional inventory operations.
