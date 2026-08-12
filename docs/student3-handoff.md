@@ -74,11 +74,12 @@
 - Production builds pass for shared, backend, and frontend workspaces.
 - Desktop visual rendering and initial resource loading passed the first system-test pass.
 - The responsive fix removed page-level horizontal overflow at a 390-pixel viewport. The resource and distribution screens fit the viewport, navigation wraps into two columns, and resource create, filter, update, and delete checks passed.
-- The resumed linear pass stopped at the first new finding: distribution scheduling returned HTTP 201, but the expected new card was not found by the browser assertion. Distribution transitions, emergency, coordinator, and report interactions were not reached, in accordance with repository test policy.
+- The distribution confirmation correction now inserts successful create and status responses immediately and announces an accessible status message. A fresh pass verified resource CRUD, distribution creation, its visible confirmation, and advancement to in transit.
+- The fresh linear pass stopped at the next finding: the second status action did not visibly advance the new distribution to delivered. Emergency, coordinator, and report interactions were not reached, in accordance with repository test policy.
 
 ## Known Open Work
 
-- Investigate the distribution scheduling confirmation finding in a separate fix session, then run one fresh browser checklist.
+- Investigate the distribution delivery-transition finding in a separate fix session, then run one fresh browser checklist.
 - Merge the team authentication contract and role-aware routing.
 - Merge Student 1 public information and Student 2 assignment data only when the user decides.
 - Replace local Student 3 repositories with DynamoDB persistence and transactional inventory operations.

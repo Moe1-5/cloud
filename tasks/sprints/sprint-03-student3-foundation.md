@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Investigate the distribution scheduling confirmation failure found by the mobile browser pass
+- [ ] Investigate the distribution delivery-transition finding from the latest mobile browser pass
 - [ ] Complete a fresh one-pass browser interaction checklist in a separately authorised fix session
 
 ## Todo

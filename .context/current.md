@@ -13,7 +13,7 @@
 
 **Sprint:** Sprint 6 (Student 3 delivery track; earlier sprints remain open until explicitly closed)
 **Goal:** Prepare Student 3 reporting, quality evidence, and a controlled team-integration handoff.
-**Blocking:** Mobile overflow is fixed. The resumed linear browser pass stopped when distribution scheduling returned HTTP 201 but its expected confirmation card was not found; later workflows remain unverified.
+**Blocking:** Mobile overflow and distribution creation confirmation are fixed. The latest linear browser pass stopped when the second status action did not visibly advance the new distribution from in transit to delivered; later workflows remain unverified.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 
 ## Last Decision
 
-2026-08-13 Keep the responsive fix and browser failure evidence separate from any follow-up distribution correction
+2026-08-13 Confirm successful distribution mutations immediately without blanking the register during supporting-data refresh
 
 ## Status Flags
 

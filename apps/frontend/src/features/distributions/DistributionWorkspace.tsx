@@ -86,6 +86,7 @@ export function DistributionWorkspace() {
   const [isSaving, setIsSaving] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const selectedResource = useMemo(
     () => resources.find((resource) => resource.id === formState.resourceId),
@@ -110,8 +111,10 @@ export function DistributionWorkspace() {
     });
   }, [distributions, searchQuery, statusFilter]);
 
-  async function refreshWorkspace() {
-    setIsLoading(true);
+  async function refreshWorkspace(showLoadingState = true) {
+    if (showLoadingState) {
+      setIsLoading(true);
+    }
     setErrorMessage(null);
 
     try {
@@ -137,7 +140,9 @@ export function DistributionWorkspace() {
         error instanceof Error ? error.message : "Unable to load distribution operations."
       );
     } finally {
-      setIsLoading(false);
+      if (showLoadingState) {
+        setIsLoading(false);
+      }
     }
   }
 
@@ -149,6 +154,7 @@ export function DistributionWorkspace() {
     event.preventDefault();
     setIsSaving(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
       const input: CreateDistributionInput = {
@@ -160,9 +166,17 @@ export function DistributionWorkspace() {
         notes: formState.notes.trim() || undefined
       };
 
-      await createDistribution(input);
+      const createdDistribution = await createDistribution(input);
+
+      setDistributions((currentDistributions) => [
+        createdDistribution,
+        ...currentDistributions.filter((distribution) => distribution.id !== createdDistribution.id)
+      ]);
       setFormState(getInitialForm(formState.resourceId));
-      await refreshWorkspace();
+      setSuccessMessage(
+        `Distribution to ${createdDistribution.destination} was reserved and scheduled.`
+      );
+      await refreshWorkspace(false);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to record the distribution."
@@ -175,10 +189,22 @@ export function DistributionWorkspace() {
   async function handleStatusChange(distribution: DistributionRecord, status: DistributionStatus) {
     setUpdatingId(distribution.id);
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
-      await updateDistributionStatus(distribution.id, status);
-      await refreshWorkspace();
+      const updatedDistribution = await updateDistributionStatus(distribution.id, status);
+
+      setDistributions((currentDistributions) =>
+        currentDistributions.map((currentDistribution) =>
+          currentDistribution.id === updatedDistribution.id
+            ? updatedDistribution
+            : currentDistribution
+        )
+      );
+      setSuccessMessage(
+        `${updatedDistribution.resourceName} is now ${STATUS_LABELS[updatedDistribution.status].toLowerCase()}.`
+      );
+      await refreshWorkspace(false);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to update distribution status."
@@ -349,7 +375,10 @@ export function DistributionWorkspace() {
               <button
                 className="icon-button"
                 type="button"
-                onClick={() => void refreshWorkspace()}
+                onClick={() => {
+                  setSuccessMessage(null);
+                  void refreshWorkspace();
+                }}
                 aria-label="Refresh distribution operations"
               >
                 <RefreshCw size={18} aria-hidden="true" />
@@ -387,6 +416,13 @@ export function DistributionWorkspace() {
               <div className="error-banner" role="alert">
                 <AlertTriangle size={18} aria-hidden="true" />
                 {errorMessage}
+              </div>
+            ) : null}
+
+            {successMessage ? (
+              <div className="success-banner" role="status">
+                <CheckCircle2 size={18} aria-hidden="true" />
+                {successMessage}
               </div>
             ) : null}
 

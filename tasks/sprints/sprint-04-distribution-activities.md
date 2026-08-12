@@ -9,7 +9,7 @@
 
 ## In Progress
 
-- [ ] Investigate why the mobile browser check did not find the newly scheduled distribution after the API returned HTTP 201
+- [ ] Investigate why the second mobile status action did not visibly advance the new distribution to delivered
 
 ## Todo
 
@@ -40,6 +40,12 @@
 - What changed: Confirmed that the distribution workspace, scheduling form, register, and navigation stay within a 390-pixel viewport after the shared responsive CSS fix.
 - Why: Distribution controls must remain usable on a phone-sized browser even though the product is a website rather than a native mobile application.
 - Status: The layout check passed. The test submitted a distribution and the API returned HTTP 201, but the expected new card was not found by the browser assertion, so the pass stopped before status-transition checks and the verification item remains open.
+
+### 2026-08-13 - Add immediate distribution confirmation
+
+- What changed: Updated the distribution workspace to insert successful create and status responses into the register immediately, refresh supporting inventory and activity data without blanking the register, and announce accessible success messages. Updated the ESLint global ignores so generated browser profiles under the temporary test directory are not analyzed as project source.
+- Why: The previous mobile pass recorded a successful distribution API response but could not observe the new card while the workspace performed a full loading refresh.
+- Status: Typecheck, lint, fifteen automated tests, and the production build pass. The fresh mobile pass verified resource CRUD, distribution creation with visible confirmation, and the transition to in transit. It stopped at the next finding because the new distribution did not visibly advance to delivered; the retained server log contained the first status PATCH but no second status request at the time of observation. Emergency, coordinator, and report checks were not reached.
 
 ---
 

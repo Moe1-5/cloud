@@ -600,6 +600,20 @@ textarea:focus {
   font-weight: 700;
 }
 
+.success-banner {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 15px;
+  border: 1px solid #a9d9cc;
+  border-radius: 6px;
+  background: #e6f5f0;
+  color: #0d675e;
+  padding: 12px;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
 .state-panel {
   min-height: 280px;
   display: grid;

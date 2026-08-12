@@ -5,23 +5,32 @@
 > When a lesson hasn't been violated in 2+ sprints, move it to `## Internalized`.
 
 ## Format
+
 ```
 ### [YYYY-MM-DD] Short title
-**Problem:** What went wrong  
-**Rule:** The rule to prevent it  
+**Problem:** What went wrong
+**Rule:** The rule to prevent it
 **Why:** The reason this matters
 ```
 
 ---
 
 ## Active
+
 > Lessons that still need active enforcement. Claude reads these with full attention.
 
 <!-- Add new lessons here -->
 
+### 2026-08-13 - Keep temporary browser artifacts outside lint scope
+
+**Problem:** A local Chrome profile under the ignored `tmp/` directory caused ESLint to analyze generated browser-extension files instead of only repository source and tooling files.
+**Rule:** Keep generated test-artifact exclusions aligned between `.gitignore` and the ESLint global ignore list before running repository-wide lint.
+**Why:** Browser profiles contain third-party generated JavaScript that is not owned by the project and can obscure the actual lint result.
+
 ---
 
 ## Internalized
+
 > Lessons that are no longer being violated. Kept for reference, not daily enforcement.
 
 <!-- Lessons migrate here from Active when they've been consistently followed -->
