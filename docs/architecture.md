@@ -25,11 +25,13 @@ apps/
     src/
       config/                 # Environment, logger, AWS clients
       features/projects/      # Project CRUD API and DynamoDB access
+      features/victims/       # Victim records, search, needs, and assistance history
+      features/volunteers/    # Volunteer availability and task assignment
       shared/                 # Backend errors and cross-feature helpers
   frontend/
     src/
       api/                    # Browser API clients
-      App.tsx                 # First project-management screen
+      App.tsx                 # Victim and volunteer coordinator dashboard
 packages/
   shared/
     src/                      # Cross-app TypeScript contracts

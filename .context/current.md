@@ -5,12 +5,12 @@
 
 ## Project
 **Name:** AWS Cloud Full-Stack Base
-**Description:** React, Node.js, TypeScript, and DynamoDB starter for DDAC Task 1.
-**Stage:** [x] Scaffolding  [ ] MVP  [ ] Feature-complete  [ ] Production
+**Description:** Disaster relief coordination system using React, Node.js, TypeScript, and DynamoDB.
+**Stage:** [x] Scaffolding  [x] MVP  [ ] Feature-complete  [ ] Production
 
 ## Active Sprint
 **Sprint:** Sprint 1
-**Goal:** Initialize project and scaffold core frontend/backend/cloud structure.
+**Goal:** Complete Student 2 victim and volunteer workflows while the shared scaffold sprint remains open.
 **Blocking:** None
 
 ## Tech Stack
@@ -25,3 +25,4 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 - [ ] Auth implemented
 - [ ] First deploy done
 - [x] Database migrations tracked
+- [x] Student 2 victim and volunteer modules implemented

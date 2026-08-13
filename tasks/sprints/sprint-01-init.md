@@ -46,6 +46,11 @@
 - Why: The repository should be clean and predictable before pushing to GitHub.
 - Status: Git whitespace checks pass; the next step is pushing the prepared commit to the intended GitHub remote.
 
+### 2026-08-14 - Start Student 2 assignment modules
+- What changed: Created victim and volunteer sprints and connected their frontend, backend, shared contracts, and DynamoDB workflows to the scaffold.
+- Why: Sprint 1 remains the lowest-numbered active sprint, while the workload matrix defines Student 2's role as victim and volunteer management.
+- Status: Both Student 2 modules are implemented; local verification and deployed AWS integration remain open.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

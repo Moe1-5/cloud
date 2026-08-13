@@ -6,6 +6,8 @@
 | Sprint | File | Goal |
 |--------|------|------|
 | Sprint 1 | `tasks/sprints/sprint-01-init.md` | Initialize project and scaffold |
+| Sprint 3 | `tasks/sprints/sprint-03-victim-management.md` | Implement Student 2 victim management |
+| Sprint 4 | `tasks/sprints/sprint-04-volunteer-management.md` | Implement Student 2 volunteer management |
 
 ---
 

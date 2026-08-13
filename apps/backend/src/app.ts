@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { projectRouter, normalizeApiError } from "./features/projects/projectRoutes.js";
+import { victimRouter } from "./features/victims/victimRoutes.js";
+import { volunteerRouter } from "./features/volunteers/volunteerRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +41,8 @@ export function createApp() {
   });
 
   app.use("/api/projects", projectRouter);
+  app.use("/api/victims", victimRouter);
+  app.use("/api/volunteers", volunteerRouter);
 
   if (env.SERVE_STATIC_FRONTEND) {
     const frontendDistPath = path.isAbsolute(env.FRONTEND_DIST_PATH)
