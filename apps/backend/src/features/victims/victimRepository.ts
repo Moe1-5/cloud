@@ -28,7 +28,15 @@ export async function createVictim(input: CreateVictimInput): Promise<VictimReco
 
 export async function updateVictim(id: string, input: UpdateVictimInput): Promise<VictimRecord> {
   const current = await getVictim(id);
-  const updated = { ...current, ...input, id: current.id, identificationNumber: current.identificationNumber, updatedAt: new Date().toISOString() };
+  const updated: VictimRecord = {
+    ...current,
+    fullName: input.fullName ?? current.fullName,
+    phoneNumber: input.phoneNumber ?? current.phoneNumber,
+    location: input.location ?? current.location,
+    assistanceNeeds: input.assistanceNeeds ?? current.assistanceNeeds,
+    status: input.status ?? current.status,
+    updatedAt: new Date().toISOString()
+  };
   await dynamoDb.send(new PutCommand({ TableName: tableName, Item: updated, ConditionExpression: "attribute_exists(id)" }));
   return updated;
 }

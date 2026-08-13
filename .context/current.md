@@ -10,7 +10,7 @@
 
 ## Active Sprint
 **Sprint:** Sprint 1
-**Goal:** Complete Student 2 victim and volunteer workflows while the shared scaffold sprint remains open.
+**Goal:** Complete shared scaffold integration after Student 2 victim and volunteer delivery.
 **Blocking:** None
 
 ## Tech Stack
@@ -26,3 +26,4 @@ React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS 
 - [ ] First deploy done
 - [x] Database migrations tracked
 - [x] Student 2 victim and volunteer modules implemented
+- [x] Student 2 implementation sprints closed

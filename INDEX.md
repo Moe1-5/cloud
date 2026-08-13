@@ -98,8 +98,8 @@
 | `active.md` | Routing table for active sprint files. |
 | `lessons.md` | Active and internalized assistant lessons. |
 | `sprints/sprint-01-init.md` | Initial scaffold sprint and session log. |
-| `sprints/sprint-03-victim-management.md` | Student 2 victim registration, search, needs, and assistance-history sprint. |
-| `sprints/sprint-04-volunteer-management.md` | Student 2 volunteer information, availability, and task-assignment sprint. |
+| `archive/sprint-03-victim-management.md` | Closed Student 2 victim registration, search, needs, and assistance-history sprint. |
+| `archive/sprint-04-volunteer-management.md` | Closed Student 2 volunteer information, availability, and task-assignment sprint. |
 | `archive/` | Closed sprint audit trail when sprints are explicitly closed. |
 
 ---
