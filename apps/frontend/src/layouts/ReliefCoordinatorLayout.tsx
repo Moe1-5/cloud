@@ -1,0 +1,124 @@
+import { useState } from "react";
+
+import {
+  AlertTriangle,
+  HeartPulse,
+  Home,
+} from "lucide-react";
+
+import { DisasterManagement } from "../pages/relief/DisasterManagement.js";
+import { ReliefServicesManagement } from "../pages/relief/ReliefServicesManagement.js";
+import { ShelterManagement } from "../pages/relief/ShelterManagement.js";
+
+type ReliefPage =
+  | "disasters"
+  | "shelters"
+  | "reliefServices";
+
+export function ReliefCoordinatorLayout() {
+  const [currentPage, setCurrentPage] =
+    useState<ReliefPage>("disasters");
+
+  function buttonStyle(page: ReliefPage) {
+    return {
+      border: "none",
+      borderRadius: "6px",
+      padding: "9px 14px",
+      display: "flex",
+      alignItems: "center",
+      gap: "7px",
+      cursor: "pointer",
+      background:
+        currentPage === page
+          ? "#0f766e"
+          : "#1e293b",
+      color: "white",
+    };
+  }
+
+  return (
+    <div>
+      <header
+        style={{
+          background: "#0f172a",
+          color: "white",
+          padding: "14px 20px",
+        }}
+      >
+        <div
+          style={{
+            width: "min(1180px, calc(100% - 20px))",
+            margin: "0 auto",
+          }}
+        >
+          <h2>Relief Coordinator</h2>
+
+          <nav
+            style={{
+              display: "flex",
+              gap: "10px",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              type="button"
+              style={buttonStyle(
+                "disasters"
+              )}
+              onClick={() =>
+                setCurrentPage(
+                  "disasters"
+                )
+              }
+            >
+              <AlertTriangle size={16} />
+              Disasters
+            </button>
+
+            <button
+              type="button"
+              style={buttonStyle(
+                "shelters"
+              )}
+              onClick={() =>
+                setCurrentPage(
+                  "shelters"
+                )
+              }
+            >
+              <Home size={16} />
+              Shelters
+            </button>
+
+            <button
+              type="button"
+              style={buttonStyle(
+                "reliefServices"
+              )}
+              onClick={() =>
+                setCurrentPage(
+                  "reliefServices"
+                )
+              }
+            >
+              <HeartPulse size={16} />
+              Relief Services
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      {currentPage === "disasters" && (
+        <DisasterManagement />
+      )}
+
+      {currentPage === "shelters" && (
+        <ShelterManagement />
+      )}
+
+      {currentPage === "reliefServices" && (
+        <ReliefServicesManagement />
+      )}
+    </div>
+  );
+}

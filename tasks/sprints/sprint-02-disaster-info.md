@@ -1,32 +1,33 @@
 # Sprint 02 - Disaster Information & Relief Locations
 
-**Goal:** Build the core Student 1 disaster-information features and replace the generic starter project functionality with the actual Disaster Relief Coordination System domain.
+**Goal:** Build the Student 1 Relief Coordinator functionality for managing disaster information, evacuation centres, food distribution points, and medical services.
 
 **Start:** 2026-08-12
-**End:** [Date]
+**End:** 2026-08-15
 
 ---
 
 ## In Progress
 
-- [ ] Create full Edit Disaster form
-- [ ] Continue Disaster Information Management improvements
+- [ ] Connect Relief Coordinator modules to the team's final DynamoDB table
 
 ---
 
 ## Todo
 
 ### Disaster Information
+
 - [x] Create disaster data model
 - [x] Create disaster list page
 - [x] Create Add Disaster form
-- [ ] Create full Edit Disaster form
-- [ ] Create Disaster Details view
+- [x] Create Edit Disaster form
+- [x] Create Disaster Details view
 - [x] Add Delete Disaster functionality
 - [x] Add disaster severity
 - [x] Add disaster status
 
 ### Disaster Backend
+
 - [x] Create GET /api/disasters
 - [x] Create POST /api/disasters
 - [x] Create GET /api/disasters/:id
@@ -35,107 +36,312 @@
 - [x] Add request validation
 
 ### Shelters / Evacuation Centres
-- [ ] Create shelter data model
-- [ ] Create shelter list page
-- [ ] Create Add Shelter form
-- [ ] Create Edit Shelter form
-- [ ] Add Delete Shelter functionality
-- [ ] Track shelter location
-- [ ] Track shelter capacity
-- [ ] Track shelter availability/status
+
+- [x] Create shelter data model
+- [x] Create shelter list page
+- [x] Create Add Shelter form
+- [x] Create Edit Shelter form
+- [x] Create Shelter Details view
+- [x] Add Delete Shelter functionality
+- [x] Track shelter location
+- [x] Track maximum capacity
+- [x] Track current occupancy
+- [x] Calculate available spaces
+- [x] Track shelter status
+- [x] Store contact information
+- [x] Store shelter notes
+
+### Shelter Backend
+
+- [x] Create GET /api/shelters
+- [x] Create POST /api/shelters
+- [x] Create GET /api/shelters/:id
+- [x] Create PATCH /api/shelters/:id
+- [x] Create DELETE /api/shelters/:id
+- [x] Add request validation
+- [x] Create temporary local repository
 
 ### Relief Services
-- [ ] Create relief-service data model
-- [ ] Support Food Distribution services
-- [ ] Support Medical Services
-- [ ] Create relief-service list page
-- [ ] Add relief-service information
-- [ ] Edit relief-service information
-- [ ] Delete relief-service information
+
+- [x] Create relief-service data model
+- [x] Support Food Distribution services
+- [x] Support Medical Services
+- [x] Create relief-service list page
+- [x] Create Add Relief Service form
+- [x] Add Edit Relief Service functionality
+- [x] Add Delete Relief Service functionality
+- [x] Track service location
+- [x] Track contact information
+- [x] Track operating hours
+- [x] Track service status
+- [x] Support Available status
+- [x] Support Limited status
+- [x] Support Closed status
+
+### Relief Services Backend
+
+- [x] Create GET /api/relief-services
+- [x] Create POST /api/relief-services
+- [x] Create GET /api/relief-services/:id
+- [x] Create PATCH /api/relief-services/:id
+- [x] Create DELETE /api/relief-services/:id
+- [x] Add request validation
+- [x] Create temporary local repository
 
 ### Application UI
-- [x] Replace starter Projects UI with Disaster Information interface
-- [x] Create initial Disaster Relief frontend screen
-- [ ] Create full application navigation
-- [ ] Add Dashboard
-- [ ] Add Disasters navigation
-- [ ] Add Shelters navigation
-- [ ] Add Relief Services navigation
-- [ ] Make all pages responsive
+
+- [x] Replace generic starter Projects interface
+- [x] Create Disaster Management page
+- [x] Create Shelter Management page
+- [x] Create Relief Services Management page
+- [x] Create Relief Coordinator layout
+- [x] Add Disaster navigation
+- [x] Add Shelter navigation
+- [x] Add Relief Services navigation
+- [x] Separate Relief Coordinator functionality from Admin functionality
+- [x] Add role-based layout structure
+
+### Activity Logging
+
+- [x] Log disaster creation
+- [x] Log disaster updates
+- [x] Log disaster deletion
+- [x] Log shelter creation
+- [x] Log shelter updates
+- [x] Log shelter status changes
+- [x] Log shelter deletion
+- [x] Log relief-service creation
+- [x] Log relief-service updates
+- [x] Log relief-service status changes
+- [x] Log relief-service deletion
 
 ### Local Development
-- [x] Add temporary in-memory disaster repository
-- [x] Allow disaster CRUD development without active AWS credentials
-- [ ] Restore DynamoDB repository for final cloud integration
+
+- [x] Allow development without active AWS Academy credentials
+- [x] Use temporary in-memory Disaster repository
+- [x] Use temporary in-memory Shelter repository
+- [x] Use temporary in-memory Relief Service repository
+- [ ] Replace temporary repositories with DynamoDB
 
 ### Testing
-- [x] Run typecheck after shared disaster model
-- [x] Run typecheck after disaster schemas
-- [x] Run typecheck after disaster repository
-- [x] Run typecheck after disaster routes
-- [x] Run typecheck after frontend API integration
-- [ ] Complete disaster CRUD testing
-- [ ] Run lint
-- [ ] Run backend tests
-- [ ] Run production build
 
----
+- [x] TypeScript typecheck passes
+- [x] Lint passes
+- [x] Production build passes
+- [x] Test Disaster create
+- [x] Test Disaster read
+- [x] Test Disaster edit
+- [x] Test Disaster status update
+- [x] Test Disaster delete
+- [x] Test Shelter create
+- [x] Test Shelter read
+- [x] Test Shelter edit
+- [x] Test Shelter status update
+- [x] Test Shelter delete
+- [x] Test Relief Service create
+- [x] Test Relief Service edit
+- [x] Test Relief Service status update
+- [x] Test Relief Service delete
+- [x] Test Food Distribution service
+- [x] Test Medical service
+- [x] Test Relief Coordinator navigation
 
-## Out of Scope for Sprint 02
+### AWS Integration
 
-- User account administration
-- Roles and permissions
-- Relief organisation management
-- System activity logs
-- Reports
-- Final authentication implementation
-- AWS deployment
-
-These will be implemented in later sprints.
+- [ ] Connect Disaster repository to DynamoDB
+- [ ] Connect Shelter repository to DynamoDB
+- [ ] Connect Relief Service repository to DynamoDB
+- [ ] Test DynamoDB Create operations
+- [ ] Test DynamoDB Read operations
+- [ ] Test DynamoDB Update operations
+- [ ] Test DynamoDB Delete operations
+- [ ] Verify persistence after backend restart
+- [ ] Integrate with team AWS infrastructure
 
 ---
 
 ## Done
 
-- [x] Created shared disaster types
-- [x] Added disaster severity and status constants
-- [x] Added CreateDisasterInput and UpdateDisasterInput
-- [x] Added Zod disaster request validation
-- [x] Added Disaster REST API routes
-- [x] Registered /api/disasters in Express
-- [x] Added frontend disaster API client
-- [x] Replaced generic Project Workspace with Disaster Information Management
-- [x] Added disaster creation workflow
-- [x] Added disaster list/read workflow
-- [x] Added disaster status update workflow
-- [x] Added disaster deletion workflow
-- [x] Added temporary in-memory storage for local development
-- [x] Verified TypeScript typecheck passes
+- [x] Disaster Information Management
+- [x] Shelter / Evacuation Centre Management
+- [x] Food Distribution Management
+- [x] Medical Service Management
+- [x] Relief Coordinator frontend layout
+- [x] Relief Coordinator REST APIs
+- [x] Local CRUD functionality
+- [x] Automatic activity logging
+- [x] Local validation
+- [x] Typecheck
+- [x] Lint
+- [x] Production build
+- [x] Manual browser testing
+
+---
+
+## API Endpoints
+
+### Disasters
+
+GET /api/disasters
+
+POST /api/disasters
+
+GET /api/disasters/:id
+
+PATCH /api/disasters/:id
+
+DELETE /api/disasters/:id
+
+### Shelters
+
+GET /api/shelters
+
+POST /api/shelters
+
+GET /api/shelters/:id
+
+PATCH /api/shelters/:id
+
+DELETE /api/shelters/:id
+
+### Relief Services
+
+GET /api/relief-services
+
+POST /api/relief-services
+
+GET /api/relief-services/:id
+
+PATCH /api/relief-services/:id
+
+DELETE /api/relief-services/:id
+
+---
+
+## Frontend Structure
+
+apps/frontend/src/
+
+pages/
+- relief/
+  - DisasterManagement.tsx
+  - ShelterManagement.tsx
+  - ReliefServicesManagement.tsx
+
+layouts/
+- ReliefCoordinatorLayout.tsx
+
+api/
+- disastersApi.ts
+- sheltersApi.ts
+- reliefServicesApi.ts
+
+---
+
+## Backend Structure
+
+apps/backend/src/features/
+
+disasters/
+- disasterRepository.ts
+- disasterRoutes.ts
+- disasterSchemas.ts
+
+shelters/
+- shelterRepository.ts
+- shelterRoutes.ts
+- shelterSchemas.ts
+
+reliefServices/
+- reliefServiceRepository.ts
+- reliefServiceRoutes.ts
+- reliefServiceSchemas.ts
 
 ---
 
 ## Session Log
 
-### 2026-08-12 - Start Disaster Information sprint
-- What changed: Created Sprint 02 plan for Disaster Information, Shelters, and Relief Services.
-- Why: These functions form the first implementation phase of the Disaster Relief Coordination System and correspond to Student 1's assigned workload.
-- Status: Sprint started; Disaster Information Management selected as the first implementation target.
+### 2026-08-12 - Sprint 02 Started
 
-### 2026-08-12 - Implement Disaster Information CRUD foundation
-- What changed: Added shared DisasterRecord types, disaster severity/status values, create/update input types, Zod validation schemas, disaster repository functions, and disaster API routes.
-- Why: Student 1 is responsible for publishing and updating disaster information, so a complete backend CRUD foundation is required.
-- Status: Disaster API routes compile successfully and are registered under /api/disasters.
+- Created the Sprint 02 implementation plan.
+- Selected Disaster Information Management as the first Student 1 feature.
 
-### 2026-08-12 - Build Disaster Information frontend
-- What changed: Added disastersApi.ts and replaced the generic Project Workspace frontend with a Disaster Information Management interface containing an Add Disaster form, disaster summary counters, disaster record list, status updates, and delete functionality.
-- Why: Sprint 02 requires the starter project interface to be replaced with real disaster-relief functionality assigned to Student 1.
-- Status: Frontend-to-backend disaster workflows are working locally. Create, list, status update, and delete are implemented.
+### 2026-08-12 - Disaster Backend
 
-### 2026-08-12 - Add temporary local development storage
-- What changed: Replaced the active disaster repository implementation with temporary in-memory storage for local development.
-- Why: AWS Academy temporary credentials had expired and DynamoDB access was unavailable during development.
-- Status: Disaster CRUD can be developed and tested without AWS. Data is temporary and resets when the backend restarts. Final DynamoDB integration remains required before submission.
+- Created shared Disaster models.
+- Added disaster severity and status types.
+- Added validation schemas.
+- Added REST CRUD endpoints.
+- Added local repository implementation.
+
+### 2026-08-12 - Disaster Frontend
+
+- Replaced the generic Project Workspace.
+- Created Disaster Information Management interface.
+- Added create, list, status update and delete functionality.
+
+### 2026-08-15 - Complete Disaster CRUD
+
+- Added full disaster editing.
+- Added Disaster Details view.
+- Added automatic activity logging.
+- Moved the interface into DisasterManagement.tsx.
+
+### 2026-08-15 - Shelter Management
+
+- Added Shelter shared models and validation.
+- Added Shelter CRUD backend.
+- Added Shelter Management frontend.
+- Added capacity and occupancy management.
+- Added available-space calculation.
+- Added automatic activity logging.
+
+### 2026-08-15 - Relief Services
+
+- Added Food Distribution and Medical Service types.
+- Added Relief Service backend CRUD.
+- Added Relief Services frontend.
+- Added service availability management.
+- Added automatic activity logging.
+
+### 2026-08-15 - Role-Based Structure
+
+- Created ReliefCoordinatorLayout.
+- Separated Relief Coordinator functionality from Administration functionality.
+- Prepared the layout for team integration.
+
+### 2026-08-15 - Local Testing Complete
+
+- npm run typecheck passed.
+- npm run lint passed.
+- npm run build passed.
+- Disaster CRUD manually tested.
+- Shelter CRUD manually tested.
+- Relief Service CRUD manually tested.
+- Relief Coordinator navigation tested successfully.
 
 ---
 
-> When Sprint 02 is complete: move this file to `tasks/archive/sprint-02-disaster-info.md`, remove its row from `tasks/active.md`, and update `.context/current.md`.
+## Remaining Work
+
+Sprint 02 functionality is complete locally.
+
+The remaining work is AWS integration:
+
+1. Obtain the team's final DynamoDB configuration.
+2. Replace temporary local repositories with DynamoDB operations.
+3. Test storage, retrieval, update and deletion.
+4. Confirm records survive application restarts.
+5. Perform final integrated testing after team branches are merged.
+
+---
+
+## Sprint Status
+
+**Local Development:** Complete
+
+**AWS DynamoDB Integration:** Pending team infrastructure
+
+**Team Integration:** Pending
+
+> Keep Sprint 02 available until DynamoDB integration has been completed.

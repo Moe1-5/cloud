@@ -7,20 +7,35 @@ import { fileURLToPath } from "node:url";
 
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
+
+import { activityLogRouter } from "./features/activityLogs/activityLogRoutes.js";
 import { disasterRouter } from "./features/disasters/disasterRoutes.js";
+import { organisationRouter } from "./features/organisations/organisationRoutes.js";
+
 import {
   projectRouter,
   normalizeApiError,
 } from "./features/projects/projectRoutes.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { reliefServiceRouter } from "./features/reliefServices/reliefServiceRoutes.js";
+import { shelterRouter } from "./features/shelters/shelterRoutes.js";
+import { userRouter } from "./features/users/userRoutes.js";
+
+const __filename = fileURLToPath(
+  import.meta.url
+);
+
+const __dirname = path.dirname(
+  __filename
+);
 
 export function createApp() {
   const app = express();
 
+  // Security middleware
   app.use(helmet());
 
+  // CORS
   app.use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -28,48 +43,129 @@ export function createApp() {
     })
   );
 
+  // Allow JSON request bodies
   app.use(express.json());
 
+  // Request logging
   app.use(
     pinoHttp({
       logger,
     })
   );
 
-  app.get("/health", (_request, response) => {
-    response.json({
-      data: {
-        status: "ok",
-        environment: env.APP_ENV,
-        database: {
-          provider: "dynamodb",
-          tableName: env.DYNAMODB_TABLE_NAME,
-          region: env.AWS_REGION,
-        },
-      },
-    });
-  });
+  // ==========================================
+  // Health Check
+  // ==========================================
 
-  app.use("/api/projects", projectRouter);
-  app.use("/api/disasters", disasterRouter);
+  app.get(
+    "/health",
+    (_request, response) => {
+      response.json({
+        data: {
+          status: "ok",
+
+          environment:
+            env.APP_ENV,
+
+          database: {
+            provider:
+              "dynamodb",
+
+            tableName:
+              env.DYNAMODB_TABLE_NAME,
+
+            region:
+              env.AWS_REGION,
+          },
+        },
+      });
+    }
+  );
+
+  // ==========================================
+  // API Routes
+  // ==========================================
+
+  // Original starter route
+  app.use(
+    "/api/projects",
+    projectRouter
+  );
+
+  // Disaster Information
+  app.use(
+    "/api/disasters",
+    disasterRouter
+  );
+
+  // Shelter / Evacuation Centre
+  app.use(
+    "/api/shelters",
+    shelterRouter
+  );
+
+  // Food Distribution + Medical Services
+  app.use(
+    "/api/relief-services",
+    reliefServiceRouter
+  );
+
+  // User Account Management
+  app.use(
+    "/api/users",
+    userRouter
+  );
+
+  // Relief Organisation Management
+  app.use(
+    "/api/organisations",
+    organisationRouter
+  );
+
+  // System Activity Logs
+  app.use(
+    "/api/activity-logs",
+    activityLogRouter
+  );
+
+  // ==========================================
+  // Static Frontend
+  // ==========================================
 
   if (env.SERVE_STATIC_FRONTEND) {
-    const frontendDistPath = path.isAbsolute(env.FRONTEND_DIST_PATH)
-      ? env.FRONTEND_DIST_PATH
-      : path.resolve(
-          __dirname,
-          "../../../",
-          env.FRONTEND_DIST_PATH
+    const frontendDistPath =
+      path.isAbsolute(
+        env.FRONTEND_DIST_PATH
+      )
+        ? env.FRONTEND_DIST_PATH
+        : path.resolve(
+            __dirname,
+            "../../../",
+            env.FRONTEND_DIST_PATH
+          );
+
+    app.use(
+      express.static(
+        frontendDistPath
+      )
+    );
+
+    app.get(
+      "*",
+      (_request, response) => {
+        response.sendFile(
+          path.join(
+            frontendDistPath,
+            "index.html"
+          )
         );
-
-    app.use(express.static(frontendDistPath));
-
-    app.get("*", (_request, response) => {
-      response.sendFile(
-        path.join(frontendDistPath, "index.html")
-      );
-    });
+      }
+    );
   }
+
+  // ==========================================
+  // Error Handling
+  // ==========================================
 
   app.use(
     (
@@ -78,24 +174,39 @@ export function createApp() {
       response: express.Response,
       _next: express.NextFunction
     ) => {
-      const normalizedError = normalizeApiError(error);
+      const normalizedError =
+        normalizeApiError(
+          error
+        );
 
       const logMethod =
-        normalizedError.statusCode >= 500
-          ? logger.error.bind(logger)
-          : logger.warn.bind(logger);
+        normalizedError.statusCode >=
+        500
+          ? logger.error.bind(
+              logger
+            )
+          : logger.warn.bind(
+              logger
+            );
 
       logMethod(
-        { error },
+        {
+          error,
+        },
         normalizedError.message
       );
 
       response
-        .status(normalizedError.statusCode)
+        .status(
+          normalizedError.statusCode
+        )
         .json({
           error: {
-            message: normalizedError.message,
-            details: normalizedError.details,
+            message:
+              normalizedError.message,
+
+            details:
+              normalizedError.details,
           },
         });
     }
