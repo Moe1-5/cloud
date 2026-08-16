@@ -91,6 +91,12 @@
 - Why: The integrated Student 1 and Student 2 pages were missing the shared layout rules, leaving content flush to the viewport with inconsistent colors and spacing. Their local API calls failed with a credentials-provider error when no AWS configuration was available.
 - Status: Lint, typecheck, all 16 backend tests, and the production build pass. The local people workflow is available without AWS credentials; DynamoDB remains a separately planned integration concern.
 
+### 2026-08-16 - Refresh the live integrated application
+
+- What changed: Restarted the local backend and frontend from the updated merged main worktree after the shared design and people-workflow fixes.
+- Why: The earlier live processes were serving the pre-fix integration worktree, so they could not reflect the repaired styling or local development repositories.
+- Status: The frontend root plus the victims and volunteers API endpoints each return HTTP 200. The live app is available at http://localhost:5173 for manual browser testing.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".
