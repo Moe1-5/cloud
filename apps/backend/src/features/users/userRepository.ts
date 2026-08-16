@@ -1,5 +1,6 @@
 import type {
   CreateUserAccountInput,
+  CreateUserAccountWithPasswordInput,
   UpdateUserAccountInput,
   UserAccountRecord,
 } from "@ddac/shared";
@@ -13,11 +14,43 @@ import {
   listRecordsByEntity,
   putRecord,
 } from "../../shared/dynamoRepository.js";
+import { hashPassword } from "../auth/password.js";
+
+type StoredUserAccountRecord =
+  UserAccountRecord & {
+    passwordHash?: string;
+  };
+
+type UpdateUserAccountWithPasswordInput =
+  UpdateUserAccountInput & {
+    password?: string | undefined;
+  };
+
+export function toPublicUser(
+  user: StoredUserAccountRecord
+): UserAccountRecord {
+  const { passwordHash: _passwordHash, ...publicUser } =
+    user;
+
+  return publicUser;
+}
 
 export async function listUsers(): Promise<
   UserAccountRecord[]
 > {
-  return listRecordsByEntity<UserAccountRecord>(
+  const users =
+    await listRecordsByEntity<StoredUserAccountRecord>(
+      "userAccount",
+      "createdAt"
+    );
+
+  return users.map(toPublicUser);
+}
+
+export async function listStoredUsers(): Promise<
+  StoredUserAccountRecord[]
+> {
+  return listRecordsByEntity<StoredUserAccountRecord>(
     "userAccount",
     "createdAt"
   );
@@ -26,20 +59,57 @@ export async function listUsers(): Promise<
 export async function getUserById(
   id: string
 ): Promise<UserAccountRecord> {
-  return getRecordById<UserAccountRecord>(
+  const user =
+    await getRecordById<StoredUserAccountRecord>(
+      id,
+      "userAccount",
+      "User"
+    );
+
+  return toPublicUser(user);
+}
+
+export async function getStoredUserById(
+  id: string
+): Promise<StoredUserAccountRecord> {
+  return getRecordById<StoredUserAccountRecord>(
     id,
     "userAccount",
     "User"
   );
 }
 
+export async function getStoredUserByEmail(
+  email: string
+): Promise<StoredUserAccountRecord | null> {
+  const normalizedEmail =
+    email.trim().toLowerCase();
+  const users =
+    await listStoredUsers();
+
+  return (
+    users.find(
+      (user) =>
+        user.email.toLowerCase() ===
+        normalizedEmail
+    ) ?? null
+  );
+}
+
 export async function createUser(
-  input: CreateUserAccountInput
+  input:
+    | CreateUserAccountInput
+    | CreateUserAccountWithPasswordInput
 ): Promise<UserAccountRecord> {
   const timestamp =
     new Date().toISOString();
 
-  const user: UserAccountRecord = {
+  const password =
+    "password" in input
+      ? input.password
+      : undefined;
+
+  const user: StoredUserAccountRecord = {
     id: randomUUID(),
 
     entityType: "userAccount",
@@ -62,6 +132,13 @@ export async function createUser(
     createdAt: timestamp,
 
     updatedAt: timestamp,
+
+    ...(password
+      ? {
+          passwordHash:
+            await hashPassword(password),
+        }
+      : {}),
   };
 
   const savedUser =
@@ -81,15 +158,15 @@ export async function createUser(
       `Created user account: ${savedUser.fullName}`,
   });
 
-  return savedUser;
+  return toPublicUser(savedUser);
 }
 
 export async function updateUser(
   id: string,
-  input: UpdateUserAccountInput
+  input: UpdateUserAccountWithPasswordInput
 ): Promise<UserAccountRecord> {
   const currentUser =
-    await getUserById(id);
+    await getStoredUserById(id);
 
   const previousStatus =
     currentUser.status;
@@ -116,6 +193,13 @@ export async function updateUser(
       currentUser.organisation,
     updatedAt:
       new Date().toISOString(),
+
+    ...(input.password
+      ? {
+          passwordHash:
+            await hashPassword(input.password),
+        }
+      : {}),
   };
 
   const savedUser =
@@ -142,7 +226,7 @@ export async function updateUser(
       : `Updated user account: ${savedUser.fullName}`,
   });
 
-  return savedUser;
+  return toPublicUser(savedUser);
 }
 
 export async function deleteUser(

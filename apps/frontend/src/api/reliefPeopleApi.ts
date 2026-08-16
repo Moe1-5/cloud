@@ -1,8 +1,9 @@
 import type { AddAssistanceInput, ApiItemResponse, ApiListResponse, CreateVictimInput, CreateVolunteerInput, UpdateVictimInput, UpdateVolunteerInput, VictimRecord, VolunteerRecord } from "@ddac/shared";
+import { getAuthHeaders } from "./authSession.js";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${apiBaseUrl}${path}`, { ...init, headers: { "Content-Type": "application/json", ...init?.headers } });
+  const response = await fetch(`${apiBaseUrl}${path}`, { ...init, headers: { "Content-Type": "application/json", ...getAuthHeaders(), ...init?.headers } });
   if (!response.ok) { const body = await response.json().catch(() => undefined); throw new Error(typeof body?.error?.message === "string" ? body.error.message : `Request failed with status ${response.status}`); }
   return response.json() as Promise<T>;
 }

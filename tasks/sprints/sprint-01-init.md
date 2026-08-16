@@ -76,6 +76,11 @@
 - Why: The project only maintains one root env template, but backend dotenv loading and frontend proxy configuration previously assumed app-local or hardcoded settings.
 - Status: Root typecheck, backend tests, and production build pass; local DynamoDB could not be verified because port 8000 is currently a Uvicorn service returning 404 and Docker/AWS CLI are not installed on this machine.
 
+### 2026-08-16 - Add real authentication and repository cleanup audit
+- What changed: Added backend password hashing, signed auth tokens, bootstrap admin login, authenticated API middleware, frontend email/password login, stored session handling, authorization headers, user password management, auth tests, and index entries for the new auth files.
+- Why: The integrated frontend still used role-button development login and protected data routes did not require a real session.
+- Status: Root typecheck, backend tests, and production build pass; lint remains skipped by user direction. Cleanup audit found large ignored/generated folders under `tmp/`, `node_modules/`, and build `dist/` outputs, but no source folders were deleted during the auth change.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

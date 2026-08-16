@@ -9,6 +9,8 @@ import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 
 import { activityLogRouter } from "./features/activityLogs/activityLogRoutes.js";
+import { authenticateRequest } from "./features/auth/authMiddleware.js";
+import { authRouter } from "./features/auth/authRoutes.js";
 import { reliefActivityRouter } from "./features/activities/reliefActivityRoutes.js";
 import { disasterRouter } from "./features/disasters/disasterRoutes.js";
 import { distributionRouter } from "./features/distributions/distributionRoutes.js";
@@ -93,6 +95,16 @@ export function createApp() {
   // ==========================================
   // API Routes
   // ==========================================
+
+  app.use(
+    "/api/auth",
+    authRouter
+  );
+
+  app.use(
+    "/api",
+    authenticateRequest
+  );
 
   // Original starter route
   app.use(

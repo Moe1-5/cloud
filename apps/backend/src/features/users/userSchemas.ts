@@ -34,6 +34,11 @@ export const createUserSchema = z.object({
     .trim()
     .min(2)
     .max(150),
+
+  password: z
+    .string()
+    .min(8)
+    .max(128),
 });
 
 export const updateUserSchema =

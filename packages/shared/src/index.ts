@@ -323,6 +323,22 @@ export type UpdateUserAccountInput = {
     | undefined;
 };
 
+export type CreateUserAccountWithPasswordInput =
+  CreateUserAccountInput & {
+    password: string;
+  };
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface AuthSession {
+  token: string;
+  user: UserAccountRecord;
+  expiresAt: string;
+}
+
 
 // Permissions
 

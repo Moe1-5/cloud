@@ -2,6 +2,7 @@ import type {
   ActivityLogRecord,
   ApiListResponse,
 } from "@ddac/shared";
+import { getAuthHeaders } from "./authSession.js";
 
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? "";
@@ -15,6 +16,7 @@ async function requestJson<T>(
       headers: {
         "Content-Type":
           "application/json",
+        ...getAuthHeaders(),
       },
     }
   );

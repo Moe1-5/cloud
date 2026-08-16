@@ -68,8 +68,10 @@
 | `apps/backend/src/features/activities/`          | Derived operational activity feed and summary API.                                      |
 | `apps/backend/src/features/profiles/`            | Affected-user registration, uniqueness checks, and profile updates.                     |
 | `apps/backend/src/features/emergency-requests/`  | Request ownership, coordinator workflow, and immutable status history.                  |
+| `apps/backend/src/features/auth/`                | Email/password login, bootstrap administrator, token signing, and request authentication. |
 | `apps/backend/src/features/reports/`             | Student 3 operational report aggregation and route.                                     |
 | `apps/backend/src/shared/dynamoRepository.ts`    | Shared single-table DynamoDB repository helper with Vitest-only in-memory test storage. |
+| `apps/backend/tests/auth.test.ts`                | Bootstrap login, session lookup, and invalid credential coverage.                       |
 | `apps/backend/tests/resources.test.ts`           | Resource CRUD, validation, and stock-state behavior coverage.                           |
 | `apps/backend/tests/distributions.test.ts`       | Distribution reservation, transition, cancellation, and activity-summary coverage.      |
 | `apps/backend/tests/emergencyRequests.test.ts`   | Profile, ownership, public request, and coordinator workflow coverage.                  |
@@ -83,7 +85,7 @@
 | `apps/frontend/src/features/emergency-requests/` | Affected-user profile/request and coordinator case-management workspace.                |
 | `apps/frontend/src/features/reports/`            | Student 3 operational reporting workspace.                                              |
 | `apps/frontend/src/features/people/`             | Victim and volunteer coordination workspace.                                            |
-| `apps/frontend/src/api/`                         | Typed project, resource, distribution, profile, emergency, and shared JSON API clients. |
+| `apps/frontend/src/api/`                         | Typed auth, project, resource, distribution, profile, emergency, and shared JSON API clients. |
 
 ---
 

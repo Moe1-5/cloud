@@ -1,51 +1,82 @@
-import type { UserRole } from "@ddac/shared";
+import type { AuthSession } from "@ddac/shared";
 
-import { ShieldCheck, UserCog, Users } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
+import type { FormEvent } from "react";
+import { useState } from "react";
+import { login } from "../api/authApi.js";
 
 type LoginPageProps = {
-  onLogin: (role: UserRole) => void;
+  onLogin: (session: AuthSession) => void;
 };
 
 export function LoginPage({ onLogin }: LoginPageProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const session = await login({ email, password });
+      onLogin(session);
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Unable to sign in.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main className="login-page">
-      <section className="login-panel">
+      <form className="login-panel" onSubmit={handleSubmit}>
         <div className="login-panel__intro">
           <span className="login-panel__mark" aria-hidden="true">
             <ShieldCheck size={24} />
           </span>
           <div>
             <p className="eyebrow">Disaster Relief Coordination System</p>
-            <h1>Development Login</h1>
+            <h1>Sign in</h1>
           </div>
         </div>
 
         <p className="login-panel__copy">
-          Select a role to test the role-based system. This will be replaced by the team's final
-          authentication system.
+          Use a system account to access the disaster relief coordination workspace.
         </p>
 
-        <div className="login-role-list">
-          <button className="primary-button" type="button" onClick={() => onLogin("admin")}>
-            <ShieldCheck size={18} />
-            System Administrator
-          </button>
+        <label>
+          Email
+          <input
+            required
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="admin@example.com"
+          />
+        </label>
 
-          <button
-            className="primary-button"
-            type="button"
-            onClick={() => onLogin("reliefCoordinator")}
-          >
-            <UserCog size={18} />
-            Relief Coordinator
-          </button>
+        <label>
+          Password
+          <input
+            required
+            minLength={8}
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter password"
+          />
+        </label>
 
-          <button className="primary-button" type="button" onClick={() => onLogin("affectedUser")}>
-            <Users size={18} />
-            Affected User
-          </button>
-        </div>
-      </section>
+        {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
+
+        <button className="primary-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <Loader2 className="spin" size={18} /> : <ShieldCheck size={18} />}
+          {isSubmitting ? "Signing in..." : "Sign in"}
+        </button>
+      </form>
     </main>
   );
 }

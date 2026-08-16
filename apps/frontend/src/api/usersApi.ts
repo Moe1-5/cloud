@@ -1,10 +1,11 @@
 import type {
   ApiItemResponse,
   ApiListResponse,
-  CreateUserAccountInput,
+  CreateUserAccountWithPasswordInput,
   UpdateUserAccountInput,
   UserAccountRecord,
 } from "@ddac/shared";
+import { getAuthHeaders } from "./authSession.js";
 
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL ?? "";
@@ -19,6 +20,7 @@ async function requestJson<T>(
       ...init,
       headers: {
         "Content-Type": "application/json",
+        ...getAuthHeaders(),
         ...init?.headers,
       },
     }
@@ -62,7 +64,7 @@ export async function listUsers(): Promise<
 
 // Create user
 export async function createUser(
-  input: CreateUserAccountInput
+  input: CreateUserAccountWithPasswordInput
 ): Promise<UserAccountRecord> {
   const response =
     await requestJson<
@@ -78,7 +80,7 @@ export async function createUser(
 // Update user
 export async function updateUser(
   id: string,
-  input: UpdateUserAccountInput
+  input: UpdateUserAccountInput & { password?: string }
 ): Promise<UserAccountRecord> {
   const response =
     await requestJson<

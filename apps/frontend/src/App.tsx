@@ -1,34 +1,40 @@
-import type { UserRole } from "@ddac/shared";
+import type { AuthSession, UserAccountRecord } from "@ddac/shared";
 
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 
+import { clearStoredAuthSession, getStoredAuthSession } from "./api/authSession.js";
 import { AdminLayout } from "./layouts/AdminLayout.js";
 import { ReliefCoordinatorLayout } from "./layouts/ReliefCoordinatorLayout.js";
 import { EmergencyWorkspace } from "./features/emergency-requests/EmergencyWorkspace.js";
 import { LoginPage } from "./pages/LoginPage.js";
 
 export function App() {
-  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserAccountRecord | null>(
+    () => getStoredAuthSession()?.user ?? null
+  );
 
-  function handleLogin(role: UserRole) {
-    setCurrentRole(role);
+  function handleLogin(session: AuthSession) {
+    setCurrentUser(session.user);
   }
 
   function handleLogout() {
-    setCurrentRole(null);
+    clearStoredAuthSession();
+    setCurrentUser(null);
   }
 
-  if (!currentRole) {
+  if (!currentUser) {
     return <LoginPage onLogin={handleLogin} />;
   }
+
+  const currentRole = currentUser.role;
 
   return (
     <div className="app-shell">
       <header className="session-bar">
         <div className="session-bar__content">
           <span className="session-bar__identity">
-            Logged in as: <strong>{getRoleLabel(currentRole)}</strong>
+            Logged in as: <strong>{currentUser.fullName}</strong>
           </span>
 
           <button className="session-bar__logout" type="button" onClick={handleLogout}>
@@ -45,18 +51,6 @@ export function App() {
       {currentRole === "affectedUser" && <AffectedUserPortal />}
     </div>
   );
-}
-
-function getRoleLabel(role: UserRole) {
-  if (role === "admin") {
-    return "System Administrator";
-  }
-
-  if (role === "reliefCoordinator") {
-    return "Relief Coordinator";
-  }
-
-  return "Affected User";
 }
 
 function AffectedUserPortal() {

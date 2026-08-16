@@ -1,4 +1,10 @@
+import { getAuthHeaders } from "./authSession.js";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "";
+
+type JsonRequestInit = RequestInit & {
+  skipAuth?: boolean;
+};
 
 interface ErrorBody {
   error?: {
@@ -6,12 +12,14 @@ interface ErrorBody {
   };
 }
 
-export async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+export async function requestJson<T>(path: string, init?: JsonRequestInit): Promise<T> {
+  const { skipAuth: _skipAuth, ...requestInit } = init ?? {};
   const response = await fetch(`${apiBaseUrl}${path}`, {
-    ...init,
+    ...requestInit,
     headers: {
       "Content-Type": "application/json",
-      ...init?.headers
+      ...(!init?.skipAuth ? getAuthHeaders() : {}),
+      ...requestInit.headers
     }
   });
 

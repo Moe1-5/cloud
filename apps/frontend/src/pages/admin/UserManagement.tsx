@@ -1,4 +1,9 @@
-import type { CreateUserAccountInput, UserAccountRecord, UserRole, UserStatus } from "@ddac/shared";
+import type {
+  CreateUserAccountWithPasswordInput,
+  UserAccountRecord,
+  UserRole,
+  UserStatus
+} from "@ddac/shared";
 
 import { USER_ROLE_VALUES, USER_STATUS_VALUES } from "@ddac/shared";
 
@@ -10,13 +15,16 @@ import { useEffect, useMemo, useState } from "react";
 import { createUser, deleteUser, listUsers, updateUser } from "../../api/usersApi.js";
 import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
-const initialForm: CreateUserAccountInput = {
+type UserForm = CreateUserAccountWithPasswordInput;
+
+const initialForm: UserForm = {
   fullName: "",
   email: "",
   phoneNumber: "",
   role: "reliefCoordinator",
   status: "active",
-  organisation: ""
+  organisation: "",
+  password: ""
 };
 
 const roleLabels: Record<UserRole, string> = {
@@ -33,7 +41,7 @@ const statusLabels: Record<UserStatus, string> = {
 export function UserManagement() {
   const [users, setUsers] = useState<UserAccountRecord[]>([]);
 
-  const [form, setForm] = useState<CreateUserAccountInput>(initialForm);
+  const [form, setForm] = useState<UserForm>(initialForm);
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -76,7 +84,11 @@ export function UserManagement() {
 
     try {
       if (editingId) {
-        const updated = await updateUser(editingId, form);
+        const { password, ...userInput } = form;
+        const updated = await updateUser(editingId, {
+          ...userInput,
+          ...(password ? { password } : {})
+        });
 
         setUsers((current) => current.map((user) => (user.id === editingId ? updated : user)));
 
@@ -104,7 +116,8 @@ export function UserManagement() {
       phoneNumber: user.phoneNumber,
       role: user.role,
       status: user.status,
-      organisation: user.organisation
+      organisation: user.organisation,
+      password: ""
     });
 
     window.scrollTo({
@@ -256,6 +269,24 @@ export function UserManagement() {
                 })
               }
               placeholder="Malaysian Red Crescent"
+            />
+          </label>
+
+          <label>
+            {editingId ? "New password" : "Initial password"}
+            <input
+              required={!editingId}
+              minLength={8}
+              maxLength={128}
+              type="password"
+              value={form.password}
+              onChange={(event) =>
+                setForm({
+                  ...form,
+                  password: event.target.value
+                })
+              }
+              placeholder={editingId ? "Leave blank to keep current password" : "At least 8 characters"}
             />
           </label>
 
