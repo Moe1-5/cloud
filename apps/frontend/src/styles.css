@@ -1679,6 +1679,10 @@ textarea:focus {
   padding: 38px 0 42px;
 }
 
+.top-band__content--single {
+  grid-template-columns: minmax(0, 760px);
+}
+
 .top-band h1 {
   max-width: 760px;
   margin-bottom: 12px;
@@ -1693,6 +1697,59 @@ textarea:focus {
 
 .top-band .eyebrow {
   color: var(--color-mint-300);
+}
+
+.role-navigation-slot {
+  border-bottom: 1px solid #dbe5e8;
+  background: #ffffff;
+  box-shadow: 0 7px 20px rgba(19, 44, 57, 0.06);
+}
+
+.role-navigation {
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.role-navigation__content {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 15px 0;
+}
+
+.role-navigation__label {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--color-navy-800);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.role-navigation__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-navigation__links button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #d3dfe3;
+  border-radius: 7px;
+  background: #f6f9fa;
+  color: #42566a;
+  padding: 0 11px;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.role-navigation__links button:hover,
+.role-navigation__links button.active {
+  border-color: var(--color-teal-700);
+  background: var(--color-teal-700);
+  color: #ffffff;
 }
 
 .status-strip {
@@ -1967,6 +2024,12 @@ main.app-shell > .module-tabs ~ .workspace-grid {
     padding: 32px 0 36px;
   }
 
+  .role-navigation__content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .hero-callout {
     min-height: 112px;
   }
@@ -1999,7 +2062,8 @@ main.app-shell > .module-tabs ~ .workspace-grid {
   .site-header__content,
   .hero__content,
   .top-band__content,
-  .resource-workspace {
+  .resource-workspace,
+  .role-navigation {
     width: min(calc(100% - 20px), 1240px);
   }
 

@@ -15,6 +15,7 @@ import {
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { getStudent3OperationalReport } from "../../api/reportsApi.js";
+import { CoordinatorPageHero, RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const CATEGORY_LABELS: Record<ResourceCategory, string> = {
   food: "Food",
@@ -55,199 +56,206 @@ export function ReportsWorkspace() {
   }, []);
 
   return (
-    <section
-      className="resource-workspace reports-workspace"
-      id="reports"
-      aria-label="Student 3 operational report"
-    >
-      {errorMessage ? (
-        <div className="error-banner workspace-error" role="alert">
-          <AlertTriangle size={18} aria-hidden="true" />
-          {errorMessage}
-        </div>
-      ) : null}
+    <>
+      <CoordinatorPageHero
+        title="Operations report"
+        description="Review relief inventory, distribution activity, and emergency response readiness."
+      />
+      <RoleNavigation />
+      <section
+        className="resource-workspace reports-workspace"
+        id="reports"
+        aria-label="Student 3 operational report"
+      >
+        {errorMessage ? (
+          <div className="error-banner workspace-error" role="alert">
+            <AlertTriangle size={18} aria-hidden="true" />
+            {errorMessage}
+          </div>
+        ) : null}
 
-      {isLoading || !report ? (
-        <section className="panel report-loading">
-          <Loader2 className="spin" size={28} aria-hidden="true" />
-          <strong>Generating operational report</strong>
-        </section>
-      ) : (
-        <>
-          <div className="report-toolbar panel">
-            <div>
-              <p className="panel-kicker">Operational snapshot</p>
-              <h2>Student 3 contribution report</h2>
-              <span>
-                Generated{" "}
-                {new Date(report.generatedAt).toLocaleString("en-MY", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit"
-                })}
-              </span>
+        {isLoading || !report ? (
+          <section className="panel report-loading">
+            <Loader2 className="spin" size={28} aria-hidden="true" />
+            <strong>Generating operational report</strong>
+          </section>
+        ) : (
+          <>
+            <div className="report-toolbar panel">
+              <div>
+                <p className="panel-kicker">Operational snapshot</p>
+                <h2>Student 3 contribution report</h2>
+                <span>
+                  Generated{" "}
+                  {new Date(report.generatedAt).toLocaleString("en-MY", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  })}
+                </span>
+              </div>
+              <button
+                className="icon-button"
+                type="button"
+                onClick={() => void refreshReport()}
+                aria-label="Regenerate operational report"
+              >
+                <RefreshCw size={18} aria-hidden="true" />
+              </button>
             </div>
-            <button
-              className="icon-button"
-              type="button"
-              onClick={() => void refreshReport()}
-              aria-label="Regenerate operational report"
-            >
-              <RefreshCw size={18} aria-hidden="true" />
-            </button>
-          </div>
 
-          <div className="report-summary-grid">
-            <ReportMetric
-              icon={Boxes}
-              tone="teal"
-              label="Resource records"
-              value={report.inventory.totalResources}
-              note={`${report.inventory.stockAlerts} stock alerts`}
-            />
-            <ReportMetric
-              icon={Truck}
-              tone="navy"
-              label="Active distributions"
-              value={report.distributions.active}
-              note={`${report.distributions.completionRate}% completed or closed`}
-            />
-            <ReportMetric
-              icon={Siren}
-              tone="amber"
-              label="Open emergency cases"
-              value={report.emergencyRequests.open}
-              note={`${report.emergencyRequests.unassigned} unassigned`}
-            />
-            <ReportMetric
-              icon={UsersRound}
-              tone="teal"
-              label="People represented"
-              value={report.affectedUsers.representedHouseholdMembers}
-              note={`${report.affectedUsers.registeredProfiles} profiles`}
-            />
-          </div>
+            <div className="report-summary-grid">
+              <ReportMetric
+                icon={Boxes}
+                tone="teal"
+                label="Resource records"
+                value={report.inventory.totalResources}
+                note={`${report.inventory.stockAlerts} stock alerts`}
+              />
+              <ReportMetric
+                icon={Truck}
+                tone="navy"
+                label="Active distributions"
+                value={report.distributions.active}
+                note={`${report.distributions.completionRate}% completed or closed`}
+              />
+              <ReportMetric
+                icon={Siren}
+                tone="amber"
+                label="Open emergency cases"
+                value={report.emergencyRequests.open}
+                note={`${report.emergencyRequests.unassigned} unassigned`}
+              />
+              <ReportMetric
+                icon={UsersRound}
+                tone="teal"
+                label="People represented"
+                value={report.affectedUsers.representedHouseholdMembers}
+                note={`${report.affectedUsers.registeredProfiles} profiles`}
+              />
+            </div>
 
-          <div className="report-grid">
-            <section className="panel report-panel">
-              <div className="list-header">
-                <div>
-                  <p className="panel-kicker">Inventory composition</p>
-                  <h2>Resources by category</h2>
+            <div className="report-grid">
+              <section className="panel report-panel">
+                <div className="list-header">
+                  <div>
+                    <p className="panel-kicker">Inventory composition</p>
+                    <h2>Resources by category</h2>
+                  </div>
+                  <BarChart3 size={20} aria-hidden="true" />
                 </div>
-                <BarChart3 size={20} aria-hidden="true" />
-              </div>
-              <div className="report-bars">
-                {RESOURCE_CATEGORY_VALUES.map((category) => {
-                  const count = report.inventory.categoryCounts[category];
-                  const width = `${Math.round((count / maximumCategoryCount) * 100)}%`;
+                <div className="report-bars">
+                  {RESOURCE_CATEGORY_VALUES.map((category) => {
+                    const count = report.inventory.categoryCounts[category];
+                    const width = `${Math.round((count / maximumCategoryCount) * 100)}%`;
 
-                  return (
-                    <div className="report-bar" key={category}>
-                      <div>
-                        <span>{CATEGORY_LABELS[category]}</span>
-                        <strong>{count}</strong>
+                    return (
+                      <div className="report-bar" key={category}>
+                        <div>
+                          <span>{CATEGORY_LABELS[category]}</span>
+                          <strong>{count}</strong>
+                        </div>
+                        <span className="report-bar__track">
+                          <span style={{ width }} />
+                        </span>
                       </div>
-                      <span className="report-bar__track">
-                        <span style={{ width }} />
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="report-inline-stats">
-                <span>
-                  <Boxes size={16} aria-hidden="true" />
-                  <strong>{report.inventory.activeLocations}</strong> storage locations
-                </span>
-                <span>
-                  <AlertTriangle size={16} aria-hidden="true" />
-                  <strong>{report.inventory.stockAlerts}</strong> resources need attention
-                </span>
-              </div>
-            </section>
-
-            <section className="panel report-panel">
-              <div className="list-header">
-                <div>
-                  <p className="panel-kicker">Delivery performance</p>
-                  <h2>Distribution status</h2>
+                    );
+                  })}
                 </div>
-                <Truck size={20} aria-hidden="true" />
-              </div>
-              <div className="report-donut-row">
-                <div
-                  className="completion-ring"
-                  style={
-                    {
-                      "--completion": `${report.distributions.completionRate * 3.6}deg`
-                    } as CSSProperties
-                  }
-                >
+                <div className="report-inline-stats">
                   <span>
-                    <strong>{report.distributions.completionRate}%</strong>closed
+                    <Boxes size={16} aria-hidden="true" />
+                    <strong>{report.inventory.activeLocations}</strong> storage locations
+                  </span>
+                  <span>
+                    <AlertTriangle size={16} aria-hidden="true" />
+                    <strong>{report.inventory.stockAlerts}</strong> resources need attention
                   </span>
                 </div>
-                <div className="report-status-list">
-                  <ReportStatus
-                    icon={Clock3}
-                    label="Active"
-                    value={report.distributions.active}
-                    tone="active"
-                  />
-                  <ReportStatus
-                    icon={CheckCircle2}
-                    label="Delivered"
-                    value={report.distributions.delivered}
-                    tone="completed"
-                  />
-                  <ReportStatus
-                    icon={AlertTriangle}
-                    label="Cancelled"
-                    value={report.distributions.cancelled}
-                    tone="cancelled"
-                  />
-                </div>
-              </div>
-            </section>
+              </section>
 
-            <section className="panel report-panel report-panel--wide">
-              <div className="list-header">
-                <div>
-                  <p className="panel-kicker">Emergency response load</p>
-                  <h2>Case readiness</h2>
+              <section className="panel report-panel">
+                <div className="list-header">
+                  <div>
+                    <p className="panel-kicker">Delivery performance</p>
+                    <h2>Distribution status</h2>
+                  </div>
+                  <Truck size={20} aria-hidden="true" />
                 </div>
-                <Siren size={20} aria-hidden="true" />
-              </div>
-              <div className="case-readiness-grid">
-                <div>
-                  <span>Total requests</span>
-                  <strong>{report.emergencyRequests.total}</strong>
+                <div className="report-donut-row">
+                  <div
+                    className="completion-ring"
+                    style={
+                      {
+                        "--completion": `${report.distributions.completionRate * 3.6}deg`
+                      } as CSSProperties
+                    }
+                  >
+                    <span>
+                      <strong>{report.distributions.completionRate}%</strong>closed
+                    </span>
+                  </div>
+                  <div className="report-status-list">
+                    <ReportStatus
+                      icon={Clock3}
+                      label="Active"
+                      value={report.distributions.active}
+                      tone="active"
+                    />
+                    <ReportStatus
+                      icon={CheckCircle2}
+                      label="Delivered"
+                      value={report.distributions.delivered}
+                      tone="completed"
+                    />
+                    <ReportStatus
+                      icon={AlertTriangle}
+                      label="Cancelled"
+                      value={report.distributions.cancelled}
+                      tone="cancelled"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <span>Open cases</span>
-                  <strong>{report.emergencyRequests.open}</strong>
+              </section>
+
+              <section className="panel report-panel report-panel--wide">
+                <div className="list-header">
+                  <div>
+                    <p className="panel-kicker">Emergency response load</p>
+                    <h2>Case readiness</h2>
+                  </div>
+                  <Siren size={20} aria-hidden="true" />
                 </div>
-                <div className="danger">
-                  <span>Critical</span>
-                  <strong>{report.emergencyRequests.critical}</strong>
+                <div className="case-readiness-grid">
+                  <div>
+                    <span>Total requests</span>
+                    <strong>{report.emergencyRequests.total}</strong>
+                  </div>
+                  <div>
+                    <span>Open cases</span>
+                    <strong>{report.emergencyRequests.open}</strong>
+                  </div>
+                  <div className="danger">
+                    <span>Critical</span>
+                    <strong>{report.emergencyRequests.critical}</strong>
+                  </div>
+                  <div className="warning">
+                    <span>Unassigned</span>
+                    <strong>{report.emergencyRequests.unassigned}</strong>
+                  </div>
+                  <div className="success">
+                    <span>Resolved</span>
+                    <strong>{report.emergencyRequests.resolved}</strong>
+                  </div>
                 </div>
-                <div className="warning">
-                  <span>Unassigned</span>
-                  <strong>{report.emergencyRequests.unassigned}</strong>
-                </div>
-                <div className="success">
-                  <span>Resolved</span>
-                  <strong>{report.emergencyRequests.resolved}</strong>
-                </div>
-              </div>
-            </section>
-          </div>
-        </>
-      )}
-    </section>
+              </section>
+            </div>
+          </>
+        )}
+      </section>
+    </>
   );
 }
 

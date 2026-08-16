@@ -42,6 +42,7 @@ import {
   updateEmergencyRequest,
   updateEmergencyRequestByCoordinator
 } from "../../api/emergencyRequestsApi.js";
+import { CoordinatorPageHero, RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 type EmergencyPerspective = "affected_user" | "coordinator";
 type RequestFilter = "all" | EmergencyRequestStatus;
@@ -352,93 +353,100 @@ export function EmergencyWorkspace() {
   }
 
   return (
-    <section
-      className="resource-workspace emergency-workspace"
-      id="emergency-requests"
-      aria-label="Emergency assistance requests"
-    >
-      <div className="workspace-perspective" aria-label="Emergency request perspective">
-        <button
-          className={perspective === "affected_user" ? "selected" : ""}
-          type="button"
-          onClick={() => setPerspective("affected_user")}
-        >
-          <UserRound size={17} aria-hidden="true" /> Affected user
-        </button>
-        <button
-          className={perspective === "coordinator" ? "selected" : ""}
-          type="button"
-          onClick={() => setPerspective("coordinator")}
-        >
-          <ShieldCheck size={17} aria-hidden="true" /> Relief coordinator
-        </button>
-      </div>
-
-      {errorMessage ? (
-        <div className="error-banner workspace-error" role="alert">
-          <AlertTriangle size={18} aria-hidden="true" />
-          {errorMessage}
+    <>
+      <CoordinatorPageHero
+        title="Emergency assistance cases"
+        description="Review requests, coordinate urgent support, and monitor response progress."
+      />
+      <RoleNavigation />
+      <section
+        className="resource-workspace emergency-workspace"
+        id="emergency-requests"
+        aria-label="Emergency assistance requests"
+      >
+        <div className="workspace-perspective" aria-label="Emergency request perspective">
+          <button
+            className={perspective === "affected_user" ? "selected" : ""}
+            type="button"
+            onClick={() => setPerspective("affected_user")}
+          >
+            <UserRound size={17} aria-hidden="true" /> Affected user
+          </button>
+          <button
+            className={perspective === "coordinator" ? "selected" : ""}
+            type="button"
+            onClick={() => setPerspective("coordinator")}
+          >
+            <ShieldCheck size={17} aria-hidden="true" /> Relief coordinator
+          </button>
         </div>
-      ) : null}
 
-      {perspective === "affected_user" ? (
-        <AffectedUserView
-          profiles={profiles}
-          activeProfile={activeProfile}
-          activeProfileId={activeProfileId}
-          requests={activeProfileRequests}
-          profileForm={profileForm}
-          requestForm={requestForm}
-          editingRequestId={editingRequestId}
-          isRegisteringProfile={isRegisteringProfile}
-          isLoading={isLoading}
-          isSavingProfile={isSavingProfile}
-          isSavingRequest={isSavingRequest}
-          updatingRequestId={updatingRequestId}
-          summary={affectedSummary}
-          onProfileSelection={handleProfileSelection}
-          onProfileFormChange={setProfileForm}
-          onProfileSubmit={handleProfileSubmit}
-          onRegisterProfile={() => {
-            setIsRegisteringProfile(true);
-            setProfileForm(EMPTY_PROFILE);
-          }}
-          onCancelProfileRegistration={() => {
-            setIsRegisteringProfile(false);
-            if (activeProfile) setProfileForm(toProfileForm(activeProfile));
-          }}
-          onRequestFormChange={setRequestForm}
-          onRequestSubmit={handleRequestSubmit}
-          onEditRequest={handleEditRequest}
-          onCancelRequest={handleCancelRequest}
-          onCancelRequestEdit={() => {
-            setEditingRequestId(null);
-            setRequestForm(getEmptyRequest(activeProfile?.address));
-          }}
-          onRefresh={() => void refreshEmergencyWorkspace(activeProfileId)}
-        />
-      ) : (
-        <CoordinatorView
-          requests={coordinatorRequests}
-          summary={coordinatorSummary}
-          isLoading={isLoading}
-          updatingRequestId={updatingRequestId}
-          requestFilter={requestFilter}
-          searchQuery={searchQuery}
-          assignmentByRequest={assignmentByRequest}
-          onRequestFilter={setRequestFilter}
-          onSearchQuery={setSearchQuery}
-          onAssignmentChange={(requestId, value) =>
-            setAssignmentByRequest((currentAssignments) => ({
-              ...currentAssignments,
-              [requestId]: value
-            }))
-          }
-          onUpdate={handleCoordinatorUpdate}
-          onRefresh={() => void refreshEmergencyWorkspace(activeProfileId)}
-        />
-      )}
-    </section>
+        {errorMessage ? (
+          <div className="error-banner workspace-error" role="alert">
+            <AlertTriangle size={18} aria-hidden="true" />
+            {errorMessage}
+          </div>
+        ) : null}
+
+        {perspective === "affected_user" ? (
+          <AffectedUserView
+            profiles={profiles}
+            activeProfile={activeProfile}
+            activeProfileId={activeProfileId}
+            requests={activeProfileRequests}
+            profileForm={profileForm}
+            requestForm={requestForm}
+            editingRequestId={editingRequestId}
+            isRegisteringProfile={isRegisteringProfile}
+            isLoading={isLoading}
+            isSavingProfile={isSavingProfile}
+            isSavingRequest={isSavingRequest}
+            updatingRequestId={updatingRequestId}
+            summary={affectedSummary}
+            onProfileSelection={handleProfileSelection}
+            onProfileFormChange={setProfileForm}
+            onProfileSubmit={handleProfileSubmit}
+            onRegisterProfile={() => {
+              setIsRegisteringProfile(true);
+              setProfileForm(EMPTY_PROFILE);
+            }}
+            onCancelProfileRegistration={() => {
+              setIsRegisteringProfile(false);
+              if (activeProfile) setProfileForm(toProfileForm(activeProfile));
+            }}
+            onRequestFormChange={setRequestForm}
+            onRequestSubmit={handleRequestSubmit}
+            onEditRequest={handleEditRequest}
+            onCancelRequest={handleCancelRequest}
+            onCancelRequestEdit={() => {
+              setEditingRequestId(null);
+              setRequestForm(getEmptyRequest(activeProfile?.address));
+            }}
+            onRefresh={() => void refreshEmergencyWorkspace(activeProfileId)}
+          />
+        ) : (
+          <CoordinatorView
+            requests={coordinatorRequests}
+            summary={coordinatorSummary}
+            isLoading={isLoading}
+            updatingRequestId={updatingRequestId}
+            requestFilter={requestFilter}
+            searchQuery={searchQuery}
+            assignmentByRequest={assignmentByRequest}
+            onRequestFilter={setRequestFilter}
+            onSearchQuery={setSearchQuery}
+            onAssignmentChange={(requestId, value) =>
+              setAssignmentByRequest((currentAssignments) => ({
+                ...currentAssignments,
+                [requestId]: value
+              }))
+            }
+            onUpdate={handleCoordinatorUpdate}
+            onRefresh={() => void refreshEmergencyWorkspace(activeProfileId)}
+          />
+        )}
+      </section>
+    </>
   );
 }
 

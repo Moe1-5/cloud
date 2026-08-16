@@ -1,37 +1,24 @@
 import type {
   CreateReliefOrganisationInput,
   OrganisationStatus,
-  ReliefOrganisationRecord,
+  ReliefOrganisationRecord
 } from "@ddac/shared";
 
-import {
-  ORGANISATION_STATUS_VALUES,
-} from "@ddac/shared";
+import { ORGANISATION_STATUS_VALUES } from "@ddac/shared";
 
-import {
-  Building2,
-  Loader2,
-  Pencil,
-  Plus,
-  RefreshCw,
-  Trash2,
-  X,
-} from "lucide-react";
+import { Building2, Loader2, Pencil, Plus, RefreshCw, Trash2, X } from "lucide-react";
 
 import type { FormEvent } from "react";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   createOrganisation,
   deleteOrganisation,
   listOrganisations,
-  updateOrganisation,
+  updateOrganisation
 } from "../../api/organisationsApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const initialForm: CreateReliefOrganisationInput = {
   name: "",
@@ -39,44 +26,29 @@ const initialForm: CreateReliefOrganisationInput = {
   address: "",
   contactNumber: "",
   email: "",
-  status: "active",
+  status: "active"
 };
 
-const statusLabels: Record<
-  OrganisationStatus,
-  string
-> = {
+const statusLabels: Record<OrganisationStatus, string> = {
   active: "Active",
-  inactive: "Inactive",
+  inactive: "Inactive"
 };
 
 export function OrganisationManagement() {
-  const [organisations, setOrganisations] =
-    useState<ReliefOrganisationRecord[]>([]);
+  const [organisations, setOrganisations] = useState<ReliefOrganisationRecord[]>([]);
 
-  const [form, setForm] =
-    useState<CreateReliefOrganisationInput>(
-      initialForm
-    );
+  const [form, setForm] = useState<CreateReliefOrganisationInput>(initialForm);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [isLoading, setIsLoading] =
-    useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isSaving, setIsSaving] =
-    useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [errorMessage, setErrorMessage] =
-    useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const activeCount = useMemo(
-    () =>
-      organisations.filter(
-        (organisation) =>
-          organisation.status === "active"
-      ).length,
+    () => organisations.filter((organisation) => organisation.status === "active").length,
     [organisations]
   );
 
@@ -85,16 +57,11 @@ export function OrganisationManagement() {
     setErrorMessage(null);
 
     try {
-      const data =
-        await listOrganisations();
+      const data = await listOrganisations();
 
       setOrganisations(data);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to load organisations."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to load organisations.");
     } finally {
       setIsLoading(false);
     }
@@ -104,9 +71,7 @@ export function OrganisationManagement() {
     void refreshOrganisations();
   }, []);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setIsSaving(true);
@@ -114,62 +79,42 @@ export function OrganisationManagement() {
 
     try {
       if (editingId) {
-        const updated =
-          await updateOrganisation(
-            editingId,
-            form
-          );
+        const updated = await updateOrganisation(editingId, form);
 
         setOrganisations((current) =>
-          current.map((organisation) =>
-            organisation.id === editingId
-              ? updated
-              : organisation
-          )
+          current.map((organisation) => (organisation.id === editingId ? updated : organisation))
         );
 
         setEditingId(null);
       } else {
-        const created =
-          await createOrganisation(form);
+        const created = await createOrganisation(form);
 
-        setOrganisations((current) => [
-          created,
-          ...current,
-        ]);
+        setOrganisations((current) => [created, ...current]);
       }
 
       setForm(initialForm);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to save organisation."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to save organisation.");
     } finally {
       setIsSaving(false);
     }
   }
 
-  function handleEdit(
-    organisation: ReliefOrganisationRecord
-  ) {
+  function handleEdit(organisation: ReliefOrganisationRecord) {
     setEditingId(organisation.id);
 
     setForm({
       name: organisation.name,
-      organisationType:
-        organisation.organisationType,
+      organisationType: organisation.organisationType,
       address: organisation.address,
-      contactNumber:
-        organisation.contactNumber,
+      contactNumber: organisation.contactNumber,
       email: organisation.email,
-      status: organisation.status,
+      status: organisation.status
     });
 
     window.scrollTo({
       top: 200,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   }
 
@@ -185,34 +130,20 @@ export function OrganisationManagement() {
     setErrorMessage(null);
 
     try {
-      const updated =
-        await updateOrganisation(
-          organisation.id,
-          {
-            status,
-          }
-        );
+      const updated = await updateOrganisation(organisation.id, {
+        status
+      });
 
       setOrganisations((current) =>
-        current.map((item) =>
-          item.id === organisation.id
-            ? updated
-            : item
-        )
+        current.map((item) => (item.id === organisation.id ? updated : item))
       );
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to update organisation."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to update organisation.");
     }
   }
 
   async function handleDelete(id: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this organisation?"
-    );
+    const confirmed = window.confirm("Are you sure you want to delete this organisation?");
 
     if (!confirmed) {
       return;
@@ -223,22 +154,13 @@ export function OrganisationManagement() {
     try {
       await deleteOrganisation(id);
 
-      setOrganisations((current) =>
-        current.filter(
-          (organisation) =>
-            organisation.id !== id
-        )
-      );
+      setOrganisations((current) => current.filter((organisation) => organisation.id !== id));
 
       if (editingId === id) {
         cancelEdit();
       }
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to delete organisation."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to delete organisation.");
     }
   }
 
@@ -247,60 +169,40 @@ export function OrganisationManagement() {
       <section className="top-band">
         <div className="top-band__content">
           <div>
-            <p className="eyebrow">
-              Administration
-            </p>
+            <p className="eyebrow">Administration</p>
 
-            <h1>
-              Relief Organisation Management
-            </h1>
+            <h1>Relief Organisation Management</h1>
 
             <p className="intro">
-              Manage relief organisations that
-              participate in disaster response
-              and emergency support activities.
+              Manage relief organisations that participate in disaster response and emergency
+              support activities.
             </p>
           </div>
 
           <div className="status-strip">
             <div>
-              <span>
-                {organisations.length}
-              </span>
+              <span>{organisations.length}</span>
 
-              <small>
-                Organisations
-              </small>
+              <small>Organisations</small>
             </div>
 
             <div>
               <span>{activeCount}</span>
 
-              <small>
-                Active organisations
-              </small>
+              <small>Active organisations</small>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="workspace-grid">
-        <form
-          className="project-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="section-title">
-            {editingId ? (
-              <Pencil size={18} />
-            ) : (
-              <Plus size={18} />
-            )}
+      <RoleNavigation />
 
-            <h2>
-              {editingId
-                ? "Edit Organisation"
-                : "Add Organisation"}
-            </h2>
+      <section className="workspace-grid">
+        <form className="project-form" onSubmit={handleSubmit}>
+          <div className="section-title">
+            {editingId ? <Pencil size={18} /> : <Plus size={18} />}
+
+            <h2>{editingId ? "Edit Organisation" : "Add Organisation"}</h2>
           </div>
 
           <label>
@@ -313,8 +215,7 @@ export function OrganisationManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  name:
-                    event.target.value,
+                  name: event.target.value
                 })
               }
               placeholder="Malaysian Red Crescent"
@@ -327,14 +228,11 @@ export function OrganisationManagement() {
               required
               minLength={2}
               maxLength={100}
-              value={
-                form.organisationType
-              }
+              value={form.organisationType}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  organisationType:
-                    event.target.value,
+                  organisationType: event.target.value
                 })
               }
               placeholder="NGO"
@@ -351,8 +249,7 @@ export function OrganisationManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  address:
-                    event.target.value,
+                  address: event.target.value
                 })
               }
               placeholder="Organisation address"
@@ -365,14 +262,11 @@ export function OrganisationManagement() {
               required
               minLength={7}
               maxLength={30}
-              value={
-                form.contactNumber
-              }
+              value={form.contactNumber}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  contactNumber:
-                    event.target.value,
+                  contactNumber: event.target.value
                 })
               }
               placeholder="03-12345678"
@@ -388,8 +282,7 @@ export function OrganisationManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  email:
-                    event.target.value,
+                  email: event.target.value
                 })
               }
               placeholder="contact@example.org"
@@ -403,50 +296,28 @@ export function OrganisationManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  status:
-                    event.target
-                      .value as OrganisationStatus,
+                  status: event.target.value as OrganisationStatus
                 })
               }
             >
-              {ORGANISATION_STATUS_VALUES.map(
-                (status) => (
-                  <option
-                    key={status}
-                    value={status}
-                  >
-                    {
-                      statusLabels[
-                        status
-                      ]
-                    }
-                  </option>
-                )
-              )}
+              {ORGANISATION_STATUS_VALUES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabels[status]}
+                </option>
+              ))}
             </select>
           </label>
 
-          <button
-            className="primary-button"
-            type="submit"
-            disabled={isSaving}
-          >
+          <button className="primary-button" type="submit" disabled={isSaving}>
             {isSaving ? (
-              <Loader2
-                className="spin"
-                size={18}
-              />
+              <Loader2 className="spin" size={18} />
             ) : editingId ? (
               <Pencil size={18} />
             ) : (
               <Plus size={18} />
             )}
 
-            {isSaving
-              ? "Saving..."
-              : editingId
-                ? "Update organisation"
-                : "Add organisation"}
+            {isSaving ? "Saving..." : editingId ? "Update organisation" : "Add organisation"}
           </button>
 
           {editingId ? (
@@ -454,7 +325,7 @@ export function OrganisationManagement() {
               className="icon-button"
               type="button"
               style={{
-                width: "100%",
+                width: "100%"
               }}
               onClick={cancelEdit}
             >
@@ -469,173 +340,92 @@ export function OrganisationManagement() {
             <div className="section-title">
               <Building2 size={18} />
 
-              <h2>
-                Relief Organisations
-              </h2>
+              <h2>Relief Organisations</h2>
             </div>
 
             <button
               className="icon-button"
               type="button"
-              onClick={() =>
-                void refreshOrganisations()
-              }
+              onClick={() => void refreshOrganisations()}
             >
               <RefreshCw size={18} />
             </button>
           </div>
 
-          {errorMessage ? (
-            <div className="error-banner">
-              {errorMessage}
-            </div>
-          ) : null}
+          {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {isLoading ? (
             <div className="loading-state">
-              <Loader2
-                className="spin"
-                size={24}
-              />
-
+              <Loader2 className="spin" size={24} />
               Loading organisations
             </div>
           ) : organisations.length === 0 ? (
             <div className="empty-state">
               <Building2 size={32} />
 
-              <h3>
-                No relief organisations
-              </h3>
+              <h3>No relief organisations</h3>
 
-              <p>
-                Add the first relief
-                organisation using the form.
-              </p>
+              <p>Add the first relief organisation using the form.</p>
             </div>
           ) : (
             <div className="records">
-              {organisations.map(
-                (organisation) => (
-                  <article
-                    key={
-                      organisation.id
-                    }
-                    className="record-card"
-                  >
-                    <div className="record-card__main">
-                      <div>
-                        <h3>
-                          {
-                            organisation.name
-                          }
-                        </h3>
+              {organisations.map((organisation) => (
+                <article key={organisation.id} className="record-card">
+                  <div className="record-card__main">
+                    <div>
+                      <h3>{organisation.name}</h3>
 
-                        <p>
-                          {
-                            organisation.address
-                          }
-                        </p>
-                      </div>
+                      <p>{organisation.address}</p>
+                    </div>
 
-                      <div
-                        style={{
-                          display:
-                            "flex",
-                          gap: "8px",
-                        }}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px"
+                      }}
+                    >
+                      <button
+                        className="icon-button"
+                        type="button"
+                        onClick={() => handleEdit(organisation)}
                       >
-                        <button
-                          className="icon-button"
-                          type="button"
-                          onClick={() =>
-                            handleEdit(
-                              organisation
-                            )
-                          }
-                        >
-                          <Pencil
-                            size={18}
-                          />
-                        </button>
+                        <Pencil size={18} />
+                      </button>
 
-                        <button
-                          className="icon-button danger"
-                          type="button"
-                          onClick={() =>
-                            void handleDelete(
-                              organisation.id
-                            )
-                          }
-                        >
-                          <Trash2
-                            size={18}
-                          />
-                        </button>
-                      </div>
+                      <button
+                        className="icon-button danger"
+                        type="button"
+                        onClick={() => void handleDelete(organisation.id)}
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
+                  </div>
 
-                    <div className="record-meta">
-                      <span>
-                        {
-                          organisation.organisationType
-                        }
-                      </span>
+                  <div className="record-meta">
+                    <span>{organisation.organisationType}</span>
 
-                      <span>
-                        {
-                          organisation.contactNumber
-                        }
-                      </span>
+                    <span>{organisation.contactNumber}</span>
 
-                      <span>
-                        {
-                          organisation.email
-                        }
-                      </span>
+                    <span>{organisation.email}</span>
 
-                      <span>
-                        {
-                          statusLabels[
-                            organisation.status
-                          ]
-                        }
-                      </span>
-                    </div>
+                    <span>{statusLabels[organisation.status]}</span>
+                  </div>
 
-                    <div className="segmented-control">
-                      {ORGANISATION_STATUS_VALUES.map(
-                        (status) => (
-                          <button
-                            key={
-                              status
-                            }
-                            type="button"
-                            className={
-                              organisation.status ===
-                              status
-                                ? "selected"
-                                : ""
-                            }
-                            onClick={() =>
-                              void handleStatusChange(
-                                organisation,
-                                status
-                              )
-                            }
-                          >
-                            {
-                              statusLabels[
-                                status
-                              ]
-                            }
-                          </button>
-                        )
-                      )}
-                    </div>
-                  </article>
-                )
-              )}
+                  <div className="segmented-control">
+                    {ORGANISATION_STATUS_VALUES.map((status) => (
+                      <button
+                        key={status}
+                        type="button"
+                        className={organisation.status === status ? "selected" : ""}
+                        onClick={() => void handleStatusChange(organisation, status)}
+                      >
+                        {statusLabels[status]}
+                      </button>
+                    ))}
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>

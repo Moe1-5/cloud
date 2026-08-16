@@ -76,6 +76,7 @@
 | `apps/backend/tests/people.test.ts`              | Victim and volunteer local-workflow coverage without AWS credentials.                   |
 | `apps/frontend/`                                 | Role-aware Vite React frontend for all team coordination workflows.                     |
 | `apps/frontend/public/favicon.svg`               | ReliefOps teal, mint, and white browser identity mark.                                  |
+| `apps/frontend/src/layouts/RoleNavigation.tsx`   | Shared context-based role navigation inserted beneath each page hero.                   |
 | `apps/frontend/src/features/resources/`          | Responsive resource inventory workspace.                                                |
 | `apps/frontend/src/features/distributions/`      | Distribution scheduling, status tracking, filtering, and activity monitoring workspace. |
 | `apps/frontend/src/features/emergency-requests/` | Affected-user profile/request and coordinator case-management workspace.                |

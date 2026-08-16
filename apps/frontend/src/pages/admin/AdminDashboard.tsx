@@ -7,6 +7,7 @@ import { listDisasters } from "../../api/disastersApi.js";
 import { listOrganisations } from "../../api/organisationsApi.js";
 import { listShelters } from "../../api/sheltersApi.js";
 import { listUsers } from "../../api/usersApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 type DashboardData = {
   users: number;
@@ -96,6 +97,8 @@ export function AdminDashboard() {
           </div>
         </div>
       </section>
+
+      <RoleNavigation />
 
       <section className="admin-content">
         {error ? <div className="error-banner">{error}</div> : null}

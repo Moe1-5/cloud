@@ -3,6 +3,7 @@ import type { Permission, UserRole } from "@ddac/shared";
 import { ROLE_PERMISSIONS, USER_ROLE_VALUES } from "@ddac/shared";
 
 import { KeyRound, ShieldCheck, UserCog, Users } from "lucide-react";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const roleLabels: Record<UserRole, string> = {
   admin: "System Administrator",
@@ -83,6 +84,8 @@ export function RoleManagement() {
           </div>
         </div>
       </section>
+
+      <RoleNavigation />
 
       <section className="admin-content admin-content--stack">
         <div

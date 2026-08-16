@@ -1,8 +1,4 @@
-import type {
-  CreateShelterInput,
-  ShelterRecord,
-  ShelterStatus,
-} from "@ddac/shared";
+import type { CreateShelterInput, ShelterRecord, ShelterStatus } from "@ddac/shared";
 
 import { SHELTER_STATUS_VALUES } from "@ddac/shared";
 
@@ -16,7 +12,7 @@ import {
   RefreshCw,
   Trash2,
   Users,
-  X,
+  X
 } from "lucide-react";
 
 import type { FormEvent } from "react";
@@ -26,8 +22,9 @@ import {
   createShelter,
   deleteShelter,
   listShelters,
-  updateShelter,
+  updateShelter
 } from "../../api/sheltersApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const initialForm: CreateShelterInput = {
   name: "",
@@ -36,44 +33,36 @@ const initialForm: CreateShelterInput = {
   currentOccupancy: 0,
   contactNumber: "",
   status: "open",
-  notes: "",
+  notes: ""
 };
 
 const statusLabels: Record<ShelterStatus, string> = {
   open: "Open",
   full: "Full",
-  closed: "Closed",
+  closed: "Closed"
 };
 
 export function ShelterManagement() {
   const [shelters, setShelters] = useState<ShelterRecord[]>([]);
-  const [form, setForm] =
-    useState<CreateShelterInput>(initialForm);
+  const [form, setForm] = useState<CreateShelterInput>(initialForm);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [detailsId, setDetailsId] =
-    useState<string | null>(null);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [errorMessage, setErrorMessage] =
-    useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const openShelters = useMemo(
-    () =>
-      shelters.filter(
-        (shelter) => shelter.status === "open"
-      ).length,
+    () => shelters.filter((shelter) => shelter.status === "open").length,
     [shelters]
   );
 
   const totalAvailableSpaces = useMemo(() => {
     return shelters.reduce((total, shelter) => {
-      const available =
-        shelter.capacity - shelter.currentOccupancy;
+      const available = shelter.capacity - shelter.currentOccupancy;
 
       return total + Math.max(available, 0);
     }, 0);
@@ -87,11 +76,7 @@ export function ShelterManagement() {
       const data = await listShelters();
       setShelters(data);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to load shelters."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to load shelters.");
     } finally {
       setIsLoading(false);
     }
@@ -101,15 +86,11 @@ export function ShelterManagement() {
     void refreshShelters();
   }, []);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (form.currentOccupancy > form.capacity) {
-      setErrorMessage(
-        "Current occupancy cannot be greater than shelter capacity."
-      );
+      setErrorMessage("Current occupancy cannot be greater than shelter capacity.");
       return;
     }
 
@@ -118,36 +99,22 @@ export function ShelterManagement() {
 
     try {
       if (editingId) {
-        const updatedShelter = await updateShelter(
-          editingId,
-          form
-        );
+        const updatedShelter = await updateShelter(editingId, form);
 
         setShelters((current) =>
-          current.map((shelter) =>
-            shelter.id === editingId
-              ? updatedShelter
-              : shelter
-          )
+          current.map((shelter) => (shelter.id === editingId ? updatedShelter : shelter))
         );
 
         setEditingId(null);
       } else {
         const newShelter = await createShelter(form);
 
-        setShelters((current) => [
-          newShelter,
-          ...current,
-        ]);
+        setShelters((current) => [newShelter, ...current]);
       }
 
       setForm(initialForm);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to save shelter."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to save shelter.");
     } finally {
       setIsSaving(false);
     }
@@ -163,12 +130,12 @@ export function ShelterManagement() {
       currentOccupancy: shelter.currentOccupancy,
       contactNumber: shelter.contactNumber,
       status: shelter.status,
-      notes: shelter.notes,
+      notes: shelter.notes
     });
 
     window.scrollTo({
       top: 200,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   }
 
@@ -185,38 +152,22 @@ export function ShelterManagement() {
     }
   }
 
-  async function handleStatusChange(
-    shelter: ShelterRecord,
-    status: ShelterStatus
-  ) {
+  async function handleStatusChange(shelter: ShelterRecord, status: ShelterStatus) {
     setErrorMessage(null);
 
     try {
-      const updated = await updateShelter(
-        shelter.id,
-        {
-          status,
-        }
-      );
+      const updated = await updateShelter(shelter.id, {
+        status
+      });
 
-      setShelters((current) =>
-        current.map((item) =>
-          item.id === shelter.id ? updated : item
-        )
-      );
+      setShelters((current) => current.map((item) => (item.id === shelter.id ? updated : item)));
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to update shelter."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to update shelter.");
     }
   }
 
   async function handleDelete(id: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this shelter?"
-    );
+    const confirmed = window.confirm("Are you sure you want to delete this shelter?");
 
     if (!confirmed) {
       return;
@@ -227,11 +178,7 @@ export function ShelterManagement() {
     try {
       await deleteShelter(id);
 
-      setShelters((current) =>
-        current.filter(
-          (shelter) => shelter.id !== id
-        )
-      );
+      setShelters((current) => current.filter((shelter) => shelter.id !== id));
 
       if (editingId === id) {
         cancelEdit();
@@ -241,11 +188,7 @@ export function ShelterManagement() {
         setDetailsId(null);
       }
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to delete shelter."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to delete shelter.");
     }
   }
 
@@ -254,23 +197,17 @@ export function ShelterManagement() {
       <section className="top-band">
         <div className="top-band__content">
           <div>
-            <p className="eyebrow">
-              Disaster Relief Coordination System
-            </p>
+            <p className="eyebrow">Disaster Relief Coordination System</p>
 
             <h1>Evacuation Centre Management</h1>
 
             <p className="intro">
-              Manage evacuation centres and shelters,
-              including capacity, occupancy, availability
+              Manage evacuation centres and shelters, including capacity, occupancy, availability
               and contact information.
             </p>
           </div>
 
-          <div
-            className="status-strip"
-            aria-label="Shelter summary"
-          >
+          <div className="status-strip" aria-label="Shelter summary">
             <div>
               <span>{openShelters}</span>
               <small>Open shelters</small>
@@ -284,23 +221,14 @@ export function ShelterManagement() {
         </div>
       </section>
 
-      <section className="workspace-grid">
-        <form
-          className="project-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="section-title">
-            {editingId ? (
-              <Pencil size={18} />
-            ) : (
-              <Plus size={18} />
-            )}
+      <RoleNavigation />
 
-            <h2>
-              {editingId
-                ? "Edit Shelter"
-                : "Add Shelter"}
-            </h2>
+      <section className="workspace-grid">
+        <form className="project-form" onSubmit={handleSubmit}>
+          <div className="section-title">
+            {editingId ? <Pencil size={18} /> : <Plus size={18} />}
+
+            <h2>{editingId ? "Edit Shelter" : "Add Shelter"}</h2>
           </div>
 
           <label>
@@ -313,7 +241,7 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  name: event.target.value,
+                  name: event.target.value
                 })
               }
               placeholder="Shah Alam Community Hall"
@@ -330,7 +258,7 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  location: event.target.value,
+                  location: event.target.value
                 })
               }
               placeholder="Seksyen 7, Shah Alam"
@@ -347,9 +275,7 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  capacity: Number(
-                    event.target.value
-                  ),
+                  capacity: Number(event.target.value)
                 })
               }
             />
@@ -365,9 +291,7 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  currentOccupancy: Number(
-                    event.target.value
-                  ),
+                  currentOccupancy: Number(event.target.value)
                 })
               }
             />
@@ -383,8 +307,7 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  contactNumber:
-                    event.target.value,
+                  contactNumber: event.target.value
                 })
               }
               placeholder="03-12345678"
@@ -398,21 +321,15 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  status:
-                    event.target.value as ShelterStatus,
+                  status: event.target.value as ShelterStatus
                 })
               }
             >
-              {SHELTER_STATUS_VALUES.map(
-                (status) => (
-                  <option
-                    key={status}
-                    value={status}
-                  >
-                    {statusLabels[status]}
-                  </option>
-                )
-              )}
+              {SHELTER_STATUS_VALUES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabels[status]}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -424,34 +341,23 @@ export function ShelterManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  notes: event.target.value,
+                  notes: event.target.value
                 })
               }
               placeholder="Facilities, accessibility information or other notes."
             />
           </label>
 
-          <button
-            className="primary-button"
-            type="submit"
-            disabled={isSaving}
-          >
+          <button className="primary-button" type="submit" disabled={isSaving}>
             {isSaving ? (
-              <Loader2
-                className="spin"
-                size={18}
-              />
+              <Loader2 className="spin" size={18} />
             ) : editingId ? (
               <Pencil size={18} />
             ) : (
               <Plus size={18} />
             )}
 
-            {isSaving
-              ? "Saving..."
-              : editingId
-                ? "Update shelter"
-                : "Add shelter"}
+            {isSaving ? "Saving..." : editingId ? "Update shelter" : "Add shelter"}
           </button>
 
           {editingId ? (
@@ -467,10 +373,7 @@ export function ShelterManagement() {
           ) : null}
         </form>
 
-        <section
-          className="project-list"
-          aria-live="polite"
-        >
+        <section className="project-list" aria-live="polite">
           <div className="list-header">
             <div className="section-title">
               <Home size={18} />
@@ -481,28 +384,18 @@ export function ShelterManagement() {
             <button
               className="icon-button"
               type="button"
-              onClick={() =>
-                void refreshShelters()
-              }
+              onClick={() => void refreshShelters()}
               aria-label="Refresh shelters"
             >
               <RefreshCw size={18} />
             </button>
           </div>
 
-          {errorMessage ? (
-            <div className="error-banner">
-              {errorMessage}
-            </div>
-          ) : null}
+          {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {isLoading ? (
             <div className="loading-state">
-              <Loader2
-                className="spin"
-                size={24}
-              />
-
+              <Loader2 className="spin" size={24} />
               Loading shelters
             </div>
           ) : shelters.length === 0 ? (
@@ -511,52 +404,34 @@ export function ShelterManagement() {
 
               <h3>No shelters available</h3>
 
-              <p>
-                Add the first evacuation centre using
-                the form.
-              </p>
+              <p>Add the first evacuation centre using the form.</p>
             </div>
           ) : (
             <div className="records">
               {shelters.map((shelter) => {
-                const availableSpaces =
-                  Math.max(
-                    shelter.capacity -
-                      shelter.currentOccupancy,
-                    0
-                  );
+                const availableSpaces = Math.max(shelter.capacity - shelter.currentOccupancy, 0);
 
                 return (
-                  <article
-                    className="record-card"
-                    key={shelter.id}
-                  >
+                  <article className="record-card" key={shelter.id}>
                     <div className="record-card__main">
                       <div>
                         <h3>{shelter.name}</h3>
 
                         <p>
-                          <MapPin
-                            size={14}
-                          />{" "}
-                          {shelter.location}
+                          <MapPin size={14} /> {shelter.location}
                         </p>
                       </div>
 
                       <div
                         style={{
                           display: "flex",
-                          gap: "8px",
+                          gap: "8px"
                         }}
                       >
                         <button
                           className="icon-button"
                           type="button"
-                          onClick={() =>
-                            toggleDetails(
-                              shelter.id
-                            )
-                          }
+                          onClick={() => toggleDetails(shelter.id)}
                           aria-label={`View ${shelter.name}`}
                         >
                           <Eye size={18} />
@@ -565,9 +440,7 @@ export function ShelterManagement() {
                         <button
                           className="icon-button"
                           type="button"
-                          onClick={() =>
-                            handleEdit(shelter)
-                          }
+                          onClick={() => handleEdit(shelter)}
                           aria-label={`Edit ${shelter.name}`}
                         >
                           <Pencil size={18} />
@@ -576,11 +449,7 @@ export function ShelterManagement() {
                         <button
                           className="icon-button danger"
                           type="button"
-                          onClick={() =>
-                            void handleDelete(
-                              shelter.id
-                            )
-                          }
+                          onClick={() => void handleDelete(shelter.id)}
                           aria-label={`Delete ${shelter.name}`}
                         >
                           <Trash2 size={18} />
@@ -590,113 +459,60 @@ export function ShelterManagement() {
 
                     <div className="record-meta">
                       <span>
-                        <Users size={13} />{" "}
-                        {shelter.currentOccupancy}
-                        /{shelter.capacity}
+                        <Users size={13} /> {shelter.currentOccupancy}/{shelter.capacity}
                       </span>
 
-                      <span>
-                        Available:{" "}
-                        {availableSpaces}
-                      </span>
+                      <span>Available: {availableSpaces}</span>
 
-                      <span>
-                        {
-                          statusLabels[
-                            shelter.status
-                          ]
-                        }
-                      </span>
+                      <span>{statusLabels[shelter.status]}</span>
                     </div>
 
                     {detailsId === shelter.id ? (
                       <div
                         style={{
-                          borderTop:
-                            "1px solid #dbe4e7",
+                          borderTop: "1px solid #dbe4e7",
                           paddingTop: "14px",
-                          marginTop: "14px",
+                          marginTop: "14px"
                         }}
                       >
                         <p>
-                          <strong>
-                            Contact:
-                          </strong>{" "}
-                          {shelter.contactNumber}
+                          <strong>Contact:</strong> {shelter.contactNumber}
                         </p>
 
                         <p>
-                          <strong>
-                            Capacity:
-                          </strong>{" "}
-                          {shelter.capacity}
+                          <strong>Capacity:</strong> {shelter.capacity}
                         </p>
 
                         <p>
-                          <strong>
-                            Current occupancy:
-                          </strong>{" "}
-                          {
-                            shelter.currentOccupancy
-                          }
+                          <strong>Current occupancy:</strong> {shelter.currentOccupancy}
                         </p>
 
                         <p>
-                          <strong>
-                            Available:
-                          </strong>{" "}
-                          {availableSpaces}
+                          <strong>Available:</strong> {availableSpaces}
                         </p>
 
                         <p>
-                          <strong>
-                            Notes:
-                          </strong>{" "}
-                          {shelter.notes ||
-                            "No additional notes."}
+                          <strong>Notes:</strong> {shelter.notes || "No additional notes."}
                         </p>
 
                         <p>
-                          <strong>
-                            Last updated:
-                          </strong>{" "}
-                          {new Date(
-                            shelter.updatedAt
-                          ).toLocaleString()}
+                          <strong>Last updated:</strong>{" "}
+                          {new Date(shelter.updatedAt).toLocaleString()}
                         </p>
                       </div>
                     ) : null}
 
-                    <div
-                      className="segmented-control"
-                      aria-label={`Status for ${shelter.name}`}
-                    >
-                      {SHELTER_STATUS_VALUES.map(
-                        (status) => (
-                          <button
-                            key={status}
-                            type="button"
-                            className={
-                              shelter.status ===
-                              status
-                                ? "selected"
-                                : ""
-                            }
-                            onClick={() =>
-                              void handleStatusChange(
-                                shelter,
-                                status
-                              )
-                            }
-                          >
-                            {
-                              statusLabels[
-                                status
-                              ]
-                            }
-                          </button>
-                        )
-                      )}
+                    <div className="segmented-control" aria-label={`Status for ${shelter.name}`}>
+                      {SHELTER_STATUS_VALUES.map((status) => (
+                        <button
+                          key={status}
+                          type="button"
+                          className={shelter.status === status ? "selected" : ""}
+                          onClick={() => void handleStatusChange(shelter, status)}
+                        >
+                          {statusLabels[status]}
+                        </button>
+                      ))}
                     </div>
                   </article>
                 );

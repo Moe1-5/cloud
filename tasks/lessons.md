@@ -39,6 +39,12 @@
 **Rule:** Keep page heroes compact and let the primary content begin below them with an explicit positive gap unless an overlapping layout has been visually checked at the target viewport.
 **Why:** A page can have valid spacing rules in isolation but still look broken when a large hero obscures the most important dashboard information.
 
+### 2026-08-16 - Keep role navigation below the page hero
+
+**Problem:** The role heading and navigation were rendered by the shared layout before the selected page, placing them above every page hero.
+**Rule:** When pages use a hero as their visual entry point, render the role-specific navigation immediately after the selected page so the hero remains the first page section.
+**Why:** The navigation should support the active workspace without competing with the page title or breaking the intended top-to-bottom hierarchy.
+
 ---
 
 ## Internalized

@@ -5,6 +5,7 @@ import { Activity, Loader2, RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { listActivityLogs } from "../../api/activityLogsApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const actionLabels: Record<ActivityAction, string> = {
   create: "Create",
@@ -77,6 +78,8 @@ export function ActivityLogs() {
           </div>
         </div>
       </section>
+
+      <RoleNavigation />
 
       <section className="admin-content">
         <section className="project-list">

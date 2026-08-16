@@ -7,6 +7,7 @@ import { listOrganisations } from "../../api/organisationsApi.js";
 import { listReliefServices } from "../../api/reliefServicesApi.js";
 import { listShelters } from "../../api/sheltersApi.js";
 import { listUsers } from "../../api/usersApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 type ReportData = {
   totalUsers: number;
@@ -110,6 +111,8 @@ export function AdminReports() {
           </div>
         </section>
 
+        <RoleNavigation />
+
         <div className="loading-state">
           <Loader2 className="spin" size={28} />
           Loading system report
@@ -148,6 +151,8 @@ export function AdminReports() {
           </div>
         </div>
       </section>
+
+      <RoleNavigation />
 
       <section className="admin-content">
         {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}

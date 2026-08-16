@@ -103,6 +103,12 @@
 - Why: Visual review showed that the hero obscured the first row of dashboard content, making the page look clipped and difficult to scan.
 - Status: The live Vite server accepted the updated styles and admin components through hot reload. Lint and typecheck pass; refreshed browser review is the remaining visual confirmation.
 
+### 2026-08-16 - Put role navigation below page heroes
+
+- What changed: Reworked the administrator and relief-coordinator layouts so their role headings and navigation are rendered directly after each page hero instead of before it. Added consistent hero sections to the resource, distribution, operations-report, and coordinator emergency workspaces; the affected-user emergency workspace remains unchanged.
+- Why: Visual review confirmed that the role navigation still appeared above the hero, breaking the intended hero-first hierarchy on every coordinator page.
+- Status: The live frontend accepted all layout changes through hot reload. Lint and typecheck pass; browser review can now confirm the hero, role navigation, and workspace appear in that order.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".

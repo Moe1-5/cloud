@@ -2,13 +2,10 @@ import type {
   CreateReliefServiceInput,
   ReliefServiceRecord,
   ReliefServiceStatus,
-  ReliefServiceType,
+  ReliefServiceType
 } from "@ddac/shared";
 
-import {
-  RELIEF_SERVICE_STATUS_VALUES,
-  RELIEF_SERVICE_TYPE_VALUES,
-} from "@ddac/shared";
+import { RELIEF_SERVICE_STATUS_VALUES, RELIEF_SERVICE_TYPE_VALUES } from "@ddac/shared";
 
 import {
   Clock,
@@ -20,22 +17,19 @@ import {
   RefreshCw,
   Soup,
   Trash2,
-  X,
+  X
 } from "lucide-react";
 
 import type { FormEvent } from "react";
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   createReliefService,
   deleteReliefService,
   listReliefServices,
-  updateReliefService,
+  updateReliefService
 } from "../../api/reliefServicesApi.js";
+import { RoleNavigation } from "../../layouts/RoleNavigation.js";
 
 const initialForm: CreateReliefServiceInput = {
   name: "",
@@ -44,62 +38,40 @@ const initialForm: CreateReliefServiceInput = {
   description: "",
   contactNumber: "",
   operatingHours: "",
-  status: "available",
+  status: "available"
 };
 
-const typeLabels: Record<
-  ReliefServiceType,
-  string
-> = {
+const typeLabels: Record<ReliefServiceType, string> = {
   food: "Food Distribution",
-  medical: "Medical Service",
+  medical: "Medical Service"
 };
 
-const statusLabels: Record<
-  ReliefServiceStatus,
-  string
-> = {
+const statusLabels: Record<ReliefServiceStatus, string> = {
   available: "Available",
   limited: "Limited",
-  closed: "Closed",
+  closed: "Closed"
 };
 
 export function ReliefServicesManagement() {
-  const [services, setServices] =
-    useState<ReliefServiceRecord[]>([]);
+  const [services, setServices] = useState<ReliefServiceRecord[]>([]);
 
-  const [form, setForm] =
-    useState<CreateReliefServiceInput>(
-      initialForm
-    );
+  const [form, setForm] = useState<CreateReliefServiceInput>(initialForm);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [isLoading, setIsLoading] =
-    useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isSaving, setIsSaving] =
-    useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [errorMessage, setErrorMessage] =
-    useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const foodCount = useMemo(
-    () =>
-      services.filter(
-        (service) =>
-          service.serviceType === "food"
-      ).length,
+    () => services.filter((service) => service.serviceType === "food").length,
     [services]
   );
 
   const medicalCount = useMemo(
-    () =>
-      services.filter(
-        (service) =>
-          service.serviceType === "medical"
-      ).length,
+    () => services.filter((service) => service.serviceType === "medical").length,
     [services]
   );
 
@@ -108,16 +80,11 @@ export function ReliefServicesManagement() {
     setErrorMessage(null);
 
     try {
-      const data =
-        await listReliefServices();
+      const data = await listReliefServices();
 
       setServices(data);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to load relief services."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to load relief services.");
     } finally {
       setIsLoading(false);
     }
@@ -127,9 +94,7 @@ export function ReliefServicesManagement() {
     void refreshServices();
   }, []);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setIsSaving(true);
@@ -137,65 +102,43 @@ export function ReliefServicesManagement() {
 
     try {
       if (editingId) {
-        const updated =
-          await updateReliefService(
-            editingId,
-            form
-          );
+        const updated = await updateReliefService(editingId, form);
 
         setServices((current) =>
-          current.map((service) =>
-            service.id === editingId
-              ? updated
-              : service
-          )
+          current.map((service) => (service.id === editingId ? updated : service))
         );
 
         setEditingId(null);
       } else {
-        const created =
-          await createReliefService(form);
+        const created = await createReliefService(form);
 
-        setServices((current) => [
-          created,
-          ...current,
-        ]);
+        setServices((current) => [created, ...current]);
       }
 
       setForm(initialForm);
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to save relief service."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to save relief service.");
     } finally {
       setIsSaving(false);
     }
   }
 
-  function handleEdit(
-    service: ReliefServiceRecord
-  ) {
+  function handleEdit(service: ReliefServiceRecord) {
     setEditingId(service.id);
 
     setForm({
       name: service.name,
-      serviceType:
-        service.serviceType,
+      serviceType: service.serviceType,
       location: service.location,
-      description:
-        service.description,
-      contactNumber:
-        service.contactNumber,
-      operatingHours:
-        service.operatingHours,
-      status: service.status,
+      description: service.description,
+      contactNumber: service.contactNumber,
+      operatingHours: service.operatingHours,
+      status: service.status
     });
 
     window.scrollTo({
       top: 200,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   }
 
@@ -204,41 +147,22 @@ export function ReliefServicesManagement() {
     setForm(initialForm);
   }
 
-  async function handleStatusChange(
-    service: ReliefServiceRecord,
-    status: ReliefServiceStatus
-  ) {
+  async function handleStatusChange(service: ReliefServiceRecord, status: ReliefServiceStatus) {
     setErrorMessage(null);
 
     try {
-      const updated =
-        await updateReliefService(
-          service.id,
-          {
-            status,
-          }
-        );
+      const updated = await updateReliefService(service.id, {
+        status
+      });
 
-      setServices((current) =>
-        current.map((item) =>
-          item.id === service.id
-            ? updated
-            : item
-        )
-      );
+      setServices((current) => current.map((item) => (item.id === service.id ? updated : item)));
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to update service."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to update service.");
     }
   }
 
   async function handleDelete(id: string) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this relief service?"
-    );
+    const confirmed = window.confirm("Are you sure you want to delete this relief service?");
 
     if (!confirmed) {
       return;
@@ -249,22 +173,13 @@ export function ReliefServicesManagement() {
     try {
       await deleteReliefService(id);
 
-      setServices((current) =>
-        current.filter(
-          (service) =>
-            service.id !== id
-        )
-      );
+      setServices((current) => current.filter((service) => service.id !== id));
 
       if (editingId === id) {
         cancelEdit();
       }
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to delete relief service."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to delete relief service.");
     }
   }
 
@@ -273,19 +188,12 @@ export function ReliefServicesManagement() {
       <section className="top-band">
         <div className="top-band__content">
           <div>
-            <p className="eyebrow">
-              Disaster Relief Coordination
-              System
-            </p>
+            <p className="eyebrow">Disaster Relief Coordination System</p>
 
-            <h1>
-              Relief Services Management
-            </h1>
+            <h1>Relief Services Management</h1>
 
             <p className="intro">
-              Manage food distribution
-              points and medical services
-              available to affected
+              Manage food distribution points and medical services available to affected
               communities.
             </p>
           </div>
@@ -293,38 +201,25 @@ export function ReliefServicesManagement() {
           <div className="status-strip">
             <div>
               <span>{foodCount}</span>
-              <small>
-                Food services
-              </small>
+              <small>Food services</small>
             </div>
 
             <div>
               <span>{medicalCount}</span>
-              <small>
-                Medical services
-              </small>
+              <small>Medical services</small>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="workspace-grid">
-        <form
-          className="project-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="section-title">
-            {editingId ? (
-              <Pencil size={18} />
-            ) : (
-              <Plus size={18} />
-            )}
+      <RoleNavigation />
 
-            <h2>
-              {editingId
-                ? "Edit Relief Service"
-                : "Add Relief Service"}
-            </h2>
+      <section className="workspace-grid">
+        <form className="project-form" onSubmit={handleSubmit}>
+          <div className="section-title">
+            {editingId ? <Pencil size={18} /> : <Plus size={18} />}
+
+            <h2>{editingId ? "Edit Relief Service" : "Add Relief Service"}</h2>
           </div>
 
           <label>
@@ -337,8 +232,7 @@ export function ReliefServicesManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  name:
-                    event.target.value,
+                  name: event.target.value
                 })
               }
               placeholder="Shah Alam Food Distribution Point"
@@ -348,32 +242,19 @@ export function ReliefServicesManagement() {
           <label>
             Service type
             <select
-              value={
-                form.serviceType
-              }
+              value={form.serviceType}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  serviceType:
-                    event.target
-                      .value as ReliefServiceType,
+                  serviceType: event.target.value as ReliefServiceType
                 })
               }
             >
-              {RELIEF_SERVICE_TYPE_VALUES.map(
-                (type) => (
-                  <option
-                    key={type}
-                    value={type}
-                  >
-                    {
-                      typeLabels[
-                        type
-                      ]
-                    }
-                  </option>
-                )
-              )}
+              {RELIEF_SERVICE_TYPE_VALUES.map((type) => (
+                <option key={type} value={type}>
+                  {typeLabels[type]}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -385,8 +266,7 @@ export function ReliefServicesManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  location:
-                    event.target.value,
+                  location: event.target.value
                 })
               }
               placeholder="Seksyen 7, Shah Alam"
@@ -399,14 +279,11 @@ export function ReliefServicesManagement() {
               required
               minLength={5}
               maxLength={1200}
-              value={
-                form.description
-              }
+              value={form.description}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  description:
-                    event.target.value,
+                  description: event.target.value
                 })
               }
               placeholder="Describe the food or medical assistance provided."
@@ -417,14 +294,11 @@ export function ReliefServicesManagement() {
             Contact number
             <input
               required
-              value={
-                form.contactNumber
-              }
+              value={form.contactNumber}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  contactNumber:
-                    event.target.value,
+                  contactNumber: event.target.value
                 })
               }
               placeholder="03-12345678"
@@ -435,14 +309,11 @@ export function ReliefServicesManagement() {
             Operating hours
             <input
               required
-              value={
-                form.operatingHours
-              }
+              value={form.operatingHours}
               onChange={(event) =>
                 setForm({
                   ...form,
-                  operatingHours:
-                    event.target.value,
+                  operatingHours: event.target.value
                 })
               }
               placeholder="8:00 AM - 8:00 PM"
@@ -456,50 +327,28 @@ export function ReliefServicesManagement() {
               onChange={(event) =>
                 setForm({
                   ...form,
-                  status:
-                    event.target
-                      .value as ReliefServiceStatus,
+                  status: event.target.value as ReliefServiceStatus
                 })
               }
             >
-              {RELIEF_SERVICE_STATUS_VALUES.map(
-                (status) => (
-                  <option
-                    key={status}
-                    value={status}
-                  >
-                    {
-                      statusLabels[
-                        status
-                      ]
-                    }
-                  </option>
-                )
-              )}
+              {RELIEF_SERVICE_STATUS_VALUES.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabels[status]}
+                </option>
+              ))}
             </select>
           </label>
 
-          <button
-            className="primary-button"
-            type="submit"
-            disabled={isSaving}
-          >
+          <button className="primary-button" type="submit" disabled={isSaving}>
             {isSaving ? (
-              <Loader2
-                className="spin"
-                size={18}
-              />
+              <Loader2 className="spin" size={18} />
             ) : editingId ? (
               <Pencil size={18} />
             ) : (
               <Plus size={18} />
             )}
 
-            {isSaving
-              ? "Saving..."
-              : editingId
-                ? "Update service"
-                : "Add service"}
+            {isSaving ? "Saving..." : editingId ? "Update service" : "Add service"}
           </button>
 
           {editingId ? (
@@ -507,7 +356,7 @@ export function ReliefServicesManagement() {
               type="button"
               className="icon-button"
               style={{
-                width: "100%",
+                width: "100%"
               }}
               onClick={cancelEdit}
             >
@@ -520,193 +369,101 @@ export function ReliefServicesManagement() {
         <section className="project-list">
           <div className="list-header">
             <div className="section-title">
-              <HeartPulse
-                size={18}
-              />
+              <HeartPulse size={18} />
 
-              <h2>
-                Relief Services
-              </h2>
+              <h2>Relief Services</h2>
             </div>
 
-            <button
-              className="icon-button"
-              type="button"
-              onClick={() =>
-                void refreshServices()
-              }
-            >
+            <button className="icon-button" type="button" onClick={() => void refreshServices()}>
               <RefreshCw size={18} />
             </button>
           </div>
 
-          {errorMessage ? (
-            <div className="error-banner">
-              {errorMessage}
-            </div>
-          ) : null}
+          {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
           {isLoading ? (
             <div className="loading-state">
-              <Loader2
-                className="spin"
-                size={24}
-              />
+              <Loader2 className="spin" size={24} />
               Loading relief services
             </div>
           ) : services.length === 0 ? (
             <div className="empty-state">
-              <HeartPulse
-                size={32}
-              />
+              <HeartPulse size={32} />
 
-              <h3>
-                No relief services
-              </h3>
+              <h3>No relief services</h3>
 
-              <p>
-                Add the first food or
-                medical service.
-              </p>
+              <p>Add the first food or medical service.</p>
             </div>
           ) : (
             <div className="records">
-              {services.map(
-                (service) => (
-                  <article
-                    key={service.id}
-                    className="record-card"
-                  >
-                    <div className="record-card__main">
-                      <div>
-                        <h3>
-                          {
-                            service.name
-                          }
-                        </h3>
+              {services.map((service) => (
+                <article key={service.id} className="record-card">
+                  <div className="record-card__main">
+                    <div>
+                      <h3>{service.name}</h3>
 
-                        <p>
-                          {
-                            service.description
-                          }
-                        </p>
-                      </div>
+                      <p>{service.description}</p>
+                    </div>
 
-                      <div
-                        style={{
-                          display:
-                            "flex",
-                          gap: "8px",
-                        }}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px"
+                      }}
+                    >
+                      <button
+                        className="icon-button"
+                        type="button"
+                        onClick={() => handleEdit(service)}
                       >
-                        <button
-                          className="icon-button"
-                          type="button"
-                          onClick={() =>
-                            handleEdit(
-                              service
-                            )
-                          }
-                        >
-                          <Pencil
-                            size={18}
-                          />
-                        </button>
+                        <Pencil size={18} />
+                      </button>
 
-                        <button
-                          className="icon-button danger"
-                          type="button"
-                          onClick={() =>
-                            void handleDelete(
-                              service.id
-                            )
-                          }
-                        >
-                          <Trash2
-                            size={18}
-                          />
-                        </button>
-                      </div>
+                      <button
+                        className="icon-button danger"
+                        type="button"
+                        onClick={() => void handleDelete(service.id)}
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
+                  </div>
 
-                    <div className="record-meta">
-                      <span>
-                        {service.serviceType ===
-                        "food" ? (
-                          <Soup
-                            size={13}
-                          />
-                        ) : (
-                          <HeartPulse
-                            size={13}
-                          />
-                        )}{" "}
-                        {
-                          typeLabels[
-                            service
-                              .serviceType
-                          ]
-                        }
-                      </span>
+                  <div className="record-meta">
+                    <span>
+                      {service.serviceType === "food" ? (
+                        <Soup size={13} />
+                      ) : (
+                        <HeartPulse size={13} />
+                      )}{" "}
+                      {typeLabels[service.serviceType]}
+                    </span>
 
-                      <span>
-                        <MapPin
-                          size={13}
-                        />{" "}
-                        {
-                          service.location
-                        }
-                      </span>
+                    <span>
+                      <MapPin size={13} /> {service.location}
+                    </span>
 
-                      <span>
-                        <Clock
-                          size={13}
-                        />{" "}
-                        {
-                          service.operatingHours
-                        }
-                      </span>
+                    <span>
+                      <Clock size={13} /> {service.operatingHours}
+                    </span>
 
-                      <span>
-                        {
-                          service.contactNumber
-                        }
-                      </span>
-                    </div>
+                    <span>{service.contactNumber}</span>
+                  </div>
 
-                    <div className="segmented-control">
-                      {RELIEF_SERVICE_STATUS_VALUES.map(
-                        (status) => (
-                          <button
-                            key={
-                              status
-                            }
-                            type="button"
-                            className={
-                              service.status ===
-                              status
-                                ? "selected"
-                                : ""
-                            }
-                            onClick={() =>
-                              void handleStatusChange(
-                                service,
-                                status
-                              )
-                            }
-                          >
-                            {
-                              statusLabels[
-                                status
-                              ]
-                            }
-                          </button>
-                        )
-                      )}
-                    </div>
-                  </article>
-                )
-              )}
+                  <div className="segmented-control">
+                    {RELIEF_SERVICE_STATUS_VALUES.map((status) => (
+                      <button
+                        key={status}
+                        type="button"
+                        className={service.status === status ? "selected" : ""}
+                        onClick={() => void handleStatusChange(service, status)}
+                      >
+                        {statusLabels[status]}
+                      </button>
+                    ))}
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>
