@@ -71,6 +71,11 @@
 - Why: The integrated system still used hardcoded sample records and memory-only arrays across most backend modules, so user-created data would disappear after restart and AWS configuration would not persist full-system data.
 - Status: Backend typecheck, backend tests, and backend build pass; production runtime now requires DynamoDB table and AWS credentials or a configured local DynamoDB endpoint outside Vitest.
 
+### 2026-08-16 - Align runtime configuration to a single root env file
+- What changed: Updated backend env loading to read the repository-root `.env`, updated Vite to load root env values and derive its proxy target from `VITE_API_BASE_URL`, `APP_URL`, or `APP_PORT`, and clarified `.env.example` as the single root env template.
+- Why: The project only maintains one root env template, but backend dotenv loading and frontend proxy configuration previously assumed app-local or hardcoded settings.
+- Status: Root typecheck, backend tests, and production build pass; local DynamoDB could not be verified because port 8000 is currently a Uvicorn service returning 404 and Docker/AWS CLI are not installed on this machine.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
