@@ -97,6 +97,12 @@
 - Why: The earlier live processes were serving the pre-fix integration worktree, so they could not reflect the repaired styling or local development repositories.
 - Status: The frontend root plus the victims and volunteers API endpoints each return HTTP 200. The live app is available at http://localhost:5173 for manual browser testing.
 
+### 2026-08-16 - Correct hero and dashboard layout overlap
+
+- What changed: Removed the negative margins that pulled administrative dashboards and form workspaces underneath their hero sections. Shortened the shared hero, gave each content area a positive gap, and rebuilt the admin dashboard metrics as consistent dashboard cards.
+- Why: Visual review showed that the hero obscured the first row of dashboard content, making the page look clipped and difficult to scan.
+- Status: The live Vite server accepted the updated styles and admin components through hot reload. Lint and typecheck pass; refreshed browser review is the remaining visual confirmation.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".

@@ -1,17 +1,6 @@
-import {
-  Activity,
-  AlertTriangle,
-  Building2,
-  HeartPulse,
-  Home,
-  Loader2,
-  Users,
-} from "lucide-react";
+import { Activity, AlertTriangle, Building2, HeartPulse, Home, Loader2, Users } from "lucide-react";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { listDisasters } from "../../api/disastersApi.js";
 import { listOrganisations } from "../../api/organisationsApi.js";
@@ -50,94 +39,55 @@ const emptyReport: ReportData = {
   availableReliefServices: 0,
 
   totalOrganisations: 0,
-  activeOrganisations: 0,
+  activeOrganisations: 0
 };
 
 export function AdminReports() {
-  const [report, setReport] =
-    useState<ReportData>(
-      emptyReport
-    );
+  const [report, setReport] = useState<ReportData>(emptyReport);
 
-  const [isLoading, setIsLoading] =
-    useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [errorMessage, setErrorMessage] =
-    useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function loadReport() {
     setIsLoading(true);
     setErrorMessage(null);
 
     try {
-      const [
-        users,
-        disasters,
-        shelters,
-        reliefServices,
-        organisations,
-      ] = await Promise.all([
+      const [users, disasters, shelters, reliefServices, organisations] = await Promise.all([
         listUsers(),
         listDisasters(),
         listShelters(),
         listReliefServices(),
-        listOrganisations(),
+        listOrganisations()
       ]);
 
       setReport({
-        totalUsers:
-          users.length,
+        totalUsers: users.length,
 
-        activeUsers:
-          users.filter(
-            (user) =>
-              user.status === "active"
-          ).length,
+        activeUsers: users.filter((user) => user.status === "active").length,
 
-        totalDisasters:
-          disasters.length,
+        totalDisasters: disasters.length,
 
-        activeDisasters:
-          disasters.filter(
-            (disaster) =>
-              disaster.status === "active"
-          ).length,
+        activeDisasters: disasters.filter((disaster) => disaster.status === "active").length,
 
-        totalShelters:
-          shelters.length,
+        totalShelters: shelters.length,
 
-        openShelters:
-          shelters.filter(
-            (shelter) =>
-              shelter.status === "open"
-          ).length,
+        openShelters: shelters.filter((shelter) => shelter.status === "open").length,
 
-        totalReliefServices:
-          reliefServices.length,
+        totalReliefServices: reliefServices.length,
 
-        availableReliefServices:
-          reliefServices.filter(
-            (service) =>
-              service.status ===
-              "available"
-          ).length,
+        availableReliefServices: reliefServices.filter((service) => service.status === "available")
+          .length,
 
-        totalOrganisations:
-          organisations.length,
+        totalOrganisations: organisations.length,
 
-        activeOrganisations:
-          organisations.filter(
-            (organisation) =>
-              organisation.status ===
-              "active"
-          ).length,
+        activeOrganisations: organisations.filter(
+          (organisation) => organisation.status === "active"
+        ).length
       });
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to load report data."
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to load report data.");
     } finally {
       setIsLoading(false);
     }
@@ -153,23 +103,15 @@ export function AdminReports() {
         <section className="top-band">
           <div className="top-band__content">
             <div>
-              <p className="eyebrow">
-                Administration
-              </p>
+              <p className="eyebrow">Administration</p>
 
-              <h1>
-                System Reports
-              </h1>
+              <h1>System Reports</h1>
             </div>
           </div>
         </section>
 
         <div className="loading-state">
-          <Loader2
-            className="spin"
-            size={28}
-          />
-
+          <Loader2 className="spin" size={28} />
           Loading system report
         </div>
       </main>
@@ -181,69 +123,40 @@ export function AdminReports() {
       <section className="top-band">
         <div className="top-band__content">
           <div>
-            <p className="eyebrow">
-              Administration
-            </p>
+            <p className="eyebrow">Administration</p>
 
-            <h1>
-              System Reports
-            </h1>
+            <h1>System Reports</h1>
 
             <p className="intro">
-              View a summary of system
-              users, disaster records,
-              shelters, relief services
-              and participating relief
-              organisations.
+              View a summary of system users, disaster records, shelters, relief services and
+              participating relief organisations.
             </p>
           </div>
 
           <div className="status-strip">
             <div>
-              <span>
-                {report.totalUsers}
-              </span>
+              <span>{report.totalUsers}</span>
 
-              <small>
-                Total users
-              </small>
+              <small>Total users</small>
             </div>
 
             <div>
-              <span>
-                {
-                  report.activeDisasters
-                }
-              </span>
+              <span>{report.activeDisasters}</span>
 
-              <small>
-                Active disasters
-              </small>
+              <small>Active disasters</small>
             </div>
           </div>
         </div>
       </section>
 
-      <section
-        style={{
-          width:
-            "min(1180px, calc(100% - 32px))",
-          margin:
-            "-36px auto 64px",
-        }}
-      >
-        {errorMessage ? (
-          <div className="error-banner">
-            {errorMessage}
-          </div>
-        ) : null}
+      <section className="admin-content">
+        {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(230px, 1fr))",
-            gap: "18px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+            gap: "18px"
           }}
         >
           <ReportCard
@@ -255,49 +168,29 @@ export function AdminReports() {
 
           <ReportCard
             title="Disasters"
-            icon={
-              <AlertTriangle
-                size={24}
-              />
-            }
-            total={
-              report.totalDisasters
-            }
+            icon={<AlertTriangle size={24} />}
+            total={report.totalDisasters}
             detail={`${report.activeDisasters} active`}
           />
 
           <ReportCard
             title="Shelters"
             icon={<Home size={24} />}
-            total={
-              report.totalShelters
-            }
+            total={report.totalShelters}
             detail={`${report.openShelters} open`}
           />
 
           <ReportCard
             title="Relief Services"
-            icon={
-              <HeartPulse
-                size={24}
-              />
-            }
-            total={
-              report.totalReliefServices
-            }
+            icon={<HeartPulse size={24} />}
+            total={report.totalReliefServices}
             detail={`${report.availableReliefServices} available`}
           />
 
           <ReportCard
             title="Relief Organisations"
-            icon={
-              <Building2
-                size={24}
-              />
-            }
-            total={
-              report.totalOrganisations
-            }
+            icon={<Building2 size={24} />}
+            total={report.totalOrganisations}
             detail={`${report.activeOrganisations} active`}
           />
         </div>
@@ -306,82 +199,50 @@ export function AdminReports() {
           className="project-list"
           style={{
             marginTop: "18px",
-            minHeight: "auto",
+            minHeight: "auto"
           }}
         >
           <div className="section-title">
             <Activity size={18} />
 
-            <h2>
-              Report Summary
-            </h2>
+            <h2>Report Summary</h2>
           </div>
 
           <div
             style={{
               marginTop: "18px",
-              lineHeight: "1.8",
+              lineHeight: "1.8"
             }}
           >
             <p>
-              <strong>
-                Active user accounts:
-              </strong>{" "}
-              {report.activeUsers} of{" "}
-              {report.totalUsers}
+              <strong>Active user accounts:</strong> {report.activeUsers} of {report.totalUsers}
             </p>
 
             <p>
-              <strong>
-                Active disasters:
-              </strong>{" "}
-              {report.activeDisasters} of{" "}
-              {report.totalDisasters}
+              <strong>Active disasters:</strong> {report.activeDisasters} of {report.totalDisasters}
             </p>
 
             <p>
-              <strong>
-                Open shelters:
-              </strong>{" "}
-              {report.openShelters} of{" "}
-              {report.totalShelters}
+              <strong>Open shelters:</strong> {report.openShelters} of {report.totalShelters}
             </p>
 
             <p>
-              <strong>
-                Available relief services:
-              </strong>{" "}
-              {
-                report.availableReliefServices
-              }{" "}
-              of{" "}
-              {
-                report.totalReliefServices
-              }
+              <strong>Available relief services:</strong> {report.availableReliefServices} of{" "}
+              {report.totalReliefServices}
             </p>
 
             <p>
-              <strong>
-                Active relief organisations:
-              </strong>{" "}
-              {
-                report.activeOrganisations
-              }{" "}
-              of{" "}
-              {
-                report.totalOrganisations
-              }
+              <strong>Active relief organisations:</strong> {report.activeOrganisations} of{" "}
+              {report.totalOrganisations}
             </p>
           </div>
 
           <button
             className="primary-button"
             type="button"
-            onClick={() =>
-              void loadReport()
-            }
+            onClick={() => void loadReport()}
             style={{
-              marginTop: "16px",
+              marginTop: "16px"
             }}
           >
             Refresh Report
@@ -399,19 +260,13 @@ type ReportCardProps = {
   detail: string;
 };
 
-function ReportCard({
-  title,
-  icon,
-  total,
-  detail,
-}: ReportCardProps) {
+function ReportCard({ title, icon, total, detail }: ReportCardProps) {
   return (
     <article
       className="record-card"
       style={{
         background: "white",
-        boxShadow:
-          "0 12px 35px rgba(25, 39, 52, 0.08)",
+        boxShadow: "0 12px 35px rgba(25, 39, 52, 0.08)"
       }}
     >
       <div
@@ -419,21 +274,19 @@ function ReportCard({
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          marginBottom: "14px",
+          marginBottom: "14px"
         }}
       >
         {icon}
 
-        <strong>
-          {title}
-        </strong>
+        <strong>{title}</strong>
       </div>
 
       <div
         style={{
           fontSize: "2.2rem",
           fontWeight: "800",
-          marginBottom: "6px",
+          marginBottom: "6px"
         }}
       >
         {total}
@@ -442,7 +295,7 @@ function ReportCard({
       <div
         style={{
           color: "#64748b",
-          fontWeight: "700",
+          fontWeight: "700"
         }}
       >
         {detail}

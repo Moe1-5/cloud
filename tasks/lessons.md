@@ -33,6 +33,12 @@
 **Rule:** After integrating a feature branch, validate each role's first-load experience against the local development runtime and make repository choices explicit: use a local repository for local workflows or configure the required external service.
 **Why:** A type-safe merged build can still render an unstructured interface or fail at runtime when assumptions about styling and infrastructure are incomplete.
 
+### 2026-08-16 - Do not overlap dashboard content with decorative heroes
+
+**Problem:** A shared hero treatment combined with negative content margins caused the dashboard metrics to render underneath the hero instead of in a clear reading order.
+**Rule:** Keep page heroes compact and let the primary content begin below them with an explicit positive gap unless an overlapping layout has been visually checked at the target viewport.
+**Why:** A page can have valid spacing rules in isolation but still look broken when a large hero obscures the most important dashboard information.
+
 ---
 
 ## Internalized

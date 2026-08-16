@@ -1670,20 +1670,20 @@ textarea:focus {
   position: relative;
   z-index: 1;
   width: min(1240px, calc(100% - 32px));
-  min-height: 270px;
+  min-height: 224px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
-  gap: 44px;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 330px);
+  gap: 32px;
   align-items: center;
-  padding: 50px 0 88px;
+  padding: 38px 0 42px;
 }
 
 .top-band h1 {
   max-width: 760px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   color: #ffffff;
-  font-size: clamp(2.4rem, 4.7vw, 4.25rem);
+  font-size: clamp(2.25rem, 4.2vw, 3.7rem);
 }
 
 .top-band .intro {
@@ -1732,11 +1732,68 @@ main.app-shell > .summary-grid {
   position: relative;
   z-index: 2;
   width: min(1240px, calc(100% - 32px));
-  margin: -42px auto 72px;
+  margin: 32px auto 72px;
+}
+
+.admin-content {
+  width: min(1180px, calc(100% - 32px));
+  margin: 32px auto 72px;
+}
+
+.admin-content--stack {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card {
+  min-height: 148px;
+  display: grid;
+  align-content: space-between;
+  border: 1px solid #d8e3e6;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(20, 42, 54, 0.07);
+  padding: 21px;
+}
+
+.dashboard-card__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-navy-800);
+}
+
+.dashboard-card__heading svg {
+  color: var(--color-teal-700);
+}
+
+.dashboard-card__value {
+  color: var(--color-navy-900);
+  font-size: 2.2rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.dashboard-overview {
+  min-height: 0;
+  margin-top: 16px;
+}
+
+.dashboard-overview__copy {
+  max-width: 760px;
+  margin-top: 12px;
+  color: var(--color-muted);
+  line-height: 1.7;
 }
 
 main.app-shell > .module-tabs ~ .workspace-grid {
-  margin-top: 0;
+  margin-top: 24px;
 }
 
 .project-form,
@@ -1906,7 +1963,8 @@ main.app-shell > .module-tabs ~ .workspace-grid {
 
   .top-band__content {
     gap: 22px;
-    padding: 42px 0 72px;
+    min-height: 0;
+    padding: 32px 0 36px;
   }
 
   .hero-callout {
@@ -1977,7 +2035,8 @@ main.app-shell > .module-tabs ~ .workspace-grid {
 
   main.app-shell > .workspace-grid,
   main.app-shell > .project-list,
-  main.app-shell > .summary-grid {
+  main.app-shell > .summary-grid,
+  .admin-content {
     width: min(calc(100% - 20px), 1240px);
     margin-bottom: 44px;
   }
