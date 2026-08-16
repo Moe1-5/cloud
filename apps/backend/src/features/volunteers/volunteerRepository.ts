@@ -10,17 +10,15 @@ import {
 type StoredVolunteerRecord = VolunteerRecord & { entityType: "volunteer" };
 
 function toVolunteer(volunteer: StoredVolunteerRecord): VolunteerRecord {
-  const { entityType: _entityType, ...record } = volunteer;
+  const { entityType, ...record } = volunteer;
+  void entityType;
+
   return { ...record };
 }
 
 export async function listVolunteers(): Promise<VolunteerRecord[]> {
   const volunteers = await listRecordsByEntity<StoredVolunteerRecord>("volunteer", "createdAt");
   return volunteers.map(toVolunteer);
-}
-
-async function getVolunteer(id: string): Promise<VolunteerRecord> {
-  return toVolunteer(await getRecordById<StoredVolunteerRecord>(id, "volunteer", "Volunteer"));
 }
 
 export async function createVolunteer(input: CreateVolunteerInput): Promise<VolunteerRecord> {

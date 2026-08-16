@@ -29,8 +29,9 @@ type UpdateUserAccountWithPasswordInput =
 export function toPublicUser(
   user: StoredUserAccountRecord
 ): UserAccountRecord {
-  const { passwordHash: _passwordHash, ...publicUser } =
+  const { passwordHash, ...publicUser } =
     user;
+  void passwordHash;
 
   return publicUser;
 }

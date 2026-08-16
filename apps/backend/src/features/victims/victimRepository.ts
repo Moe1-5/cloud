@@ -5,7 +5,6 @@ import type {
   VictimRecord
 } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
-import { NotFoundError } from "../../shared/errors.js";
 import {
   clearRecordsForTests,
   getRecordById,
@@ -16,7 +15,9 @@ import {
 type StoredVictimRecord = VictimRecord & { entityType: "victim" };
 
 function toVictim(victim: StoredVictimRecord): VictimRecord {
-  const { entityType: _entityType, ...record } = victim;
+  const { entityType, ...record } = victim;
+  void entityType;
+
   return {
     ...record,
     assistanceHistory: record.assistanceHistory.map((entry) => ({ ...entry }))

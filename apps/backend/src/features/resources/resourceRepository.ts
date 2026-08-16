@@ -5,7 +5,7 @@ import type {
   UpdateResourceInput
 } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
-import { AppError, NotFoundError } from "../../shared/errors.js";
+import { AppError } from "../../shared/errors.js";
 import {
   clearRecordsForTests,
   deleteRecordById,

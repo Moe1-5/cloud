@@ -21,6 +21,12 @@
 
 <!-- Add new lessons here -->
 
+### 2026-08-16 - Restore lint as soon as the user asks for it
+
+**Problem:** Linting had previously been skipped by user direction, leaving unused imports and unused destructuring variables in the integrated code.
+**Rule:** When the user later asks to fix linting, run the full repository lint gate immediately and resolve every reported issue before handing back.
+**Why:** A skipped validation gate can hide small integration cleanup issues that block CI or a clean merge later.
+
 ### 2026-08-13 - Keep temporary browser artifacts outside lint scope
 
 **Problem:** A local Chrome profile under the ignored `tmp/` directory caused ESLint to analyze generated browser-extension files instead of only repository source and tooling files.

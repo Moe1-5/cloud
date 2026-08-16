@@ -10,7 +10,9 @@ import {
 type StoredProjectRecord = ProjectRecord & { entityType: "project" };
 
 function toProject(record: StoredProjectRecord): ProjectRecord {
-  const { entityType: _entityType, ...project } = record;
+  const { entityType, ...project } = record;
+  void entityType;
+
   return project;
 }
 

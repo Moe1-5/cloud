@@ -1,7 +1,7 @@
 import type { CreateDistributionInput, DistributionRecord, DistributionStatus } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
 import { adjustResourceQuantity, getResourceById } from "../resources/resourceRepository.js";
-import { AppError, NotFoundError } from "../../shared/errors.js";
+import { AppError } from "../../shared/errors.js";
 import {
   clearRecordsForTests,
   getRecordById,

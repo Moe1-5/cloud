@@ -6,7 +6,7 @@ import type {
   UpdateEmergencyRequestInput
 } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
-import { AppError, NotFoundError } from "../../shared/errors.js";
+import { AppError } from "../../shared/errors.js";
 import { getAffectedUserProfileById } from "../profiles/affectedUserProfileRepository.js";
 import {
   clearRecordsForTests,
