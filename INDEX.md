@@ -57,30 +57,31 @@
 
 ## `apps/` - application source
 
-| File / Folder                                    | What's inside                                                                            |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `apps/backend/`                                  | Express TypeScript API for disaster, people, resource, and emergency coordination.       |
-| `apps/backend/src/features/disasters/`           | Disaster, shelter, and relief-service administration APIs.                               |
-| `apps/backend/src/features/victims/`             | Victim records, assistance history, and search API.                                      |
-| `apps/backend/src/features/volunteers/`          | Volunteer availability and task-assignment API.                                          |
-| `apps/backend/src/features/resources/`           | Student 3 relief-resource validation, routes, and local immutable repository.            |
-| `apps/backend/src/features/distributions/`       | Student 3 distribution validation, guarded status workflow, and inventory reservation.   |
-| `apps/backend/src/features/activities/`          | Derived operational activity feed and summary API.                                       |
-| `apps/backend/src/features/profiles/`            | Affected-user registration, uniqueness checks, and profile updates.                      |
-| `apps/backend/src/features/emergency-requests/`  | Request ownership, coordinator workflow, and immutable status history.                   |
-| `apps/backend/src/features/reports/`             | Student 3 operational report aggregation and route.                                      |
-| `apps/backend/tests/resources.test.ts`           | Resource CRUD, validation, and stock-state behavior coverage.                            |
-| `apps/backend/tests/distributions.test.ts`       | Distribution reservation, transition, cancellation, and activity-summary coverage.       |
-| `apps/backend/tests/emergencyRequests.test.ts`   | Profile, ownership, public request, and coordinator workflow coverage.                   |
-| `apps/backend/tests/reports.test.ts`             | Student 3 operational-report aggregation coverage.                                       |
-| `apps/frontend/`                                 | Role-aware Vite React frontend for all team coordination workflows.                      |
-| `apps/frontend/public/favicon.svg`               | ReliefOps teal, mint, and white browser identity mark.                                   |
-| `apps/frontend/src/features/resources/`          | Responsive resource inventory workspace.                                                 |
-| `apps/frontend/src/features/distributions/`      | Distribution scheduling, status tracking, filtering, and activity monitoring workspace.  |
-| `apps/frontend/src/features/emergency-requests/` | Affected-user profile/request and coordinator case-management workspace.                 |
-| `apps/frontend/src/features/reports/`            | Student 3 operational reporting workspace.                                               |
-| `apps/frontend/src/features/people/`             | Victim and volunteer coordination workspace.                                             |
-| `apps/frontend/src/api/`                         | Typed project, resource, distribution, profile, emergency, and shared JSON API clients.  |
+| File / Folder                                    | What's inside                                                                           |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `apps/backend/`                                  | Express TypeScript API for disaster, people, resource, and emergency coordination.      |
+| `apps/backend/src/features/disasters/`           | Disaster, shelter, and relief-service administration APIs.                              |
+| `apps/backend/src/features/victims/`             | Victim records, assistance history, and search API.                                     |
+| `apps/backend/src/features/volunteers/`          | Volunteer availability and task-assignment API.                                         |
+| `apps/backend/src/features/resources/`           | Student 3 relief-resource validation, routes, and local immutable repository.           |
+| `apps/backend/src/features/distributions/`       | Student 3 distribution validation, guarded status workflow, and inventory reservation.  |
+| `apps/backend/src/features/activities/`          | Derived operational activity feed and summary API.                                      |
+| `apps/backend/src/features/profiles/`            | Affected-user registration, uniqueness checks, and profile updates.                     |
+| `apps/backend/src/features/emergency-requests/`  | Request ownership, coordinator workflow, and immutable status history.                  |
+| `apps/backend/src/features/reports/`             | Student 3 operational report aggregation and route.                                     |
+| `apps/backend/tests/resources.test.ts`           | Resource CRUD, validation, and stock-state behavior coverage.                           |
+| `apps/backend/tests/distributions.test.ts`       | Distribution reservation, transition, cancellation, and activity-summary coverage.      |
+| `apps/backend/tests/emergencyRequests.test.ts`   | Profile, ownership, public request, and coordinator workflow coverage.                  |
+| `apps/backend/tests/reports.test.ts`             | Student 3 operational-report aggregation coverage.                                      |
+| `apps/backend/tests/people.test.ts`              | Victim and volunteer local-workflow coverage without AWS credentials.                   |
+| `apps/frontend/`                                 | Role-aware Vite React frontend for all team coordination workflows.                     |
+| `apps/frontend/public/favicon.svg`               | ReliefOps teal, mint, and white browser identity mark.                                  |
+| `apps/frontend/src/features/resources/`          | Responsive resource inventory workspace.                                                |
+| `apps/frontend/src/features/distributions/`      | Distribution scheduling, status tracking, filtering, and activity monitoring workspace. |
+| `apps/frontend/src/features/emergency-requests/` | Affected-user profile/request and coordinator case-management workspace.                |
+| `apps/frontend/src/features/reports/`            | Student 3 operational reporting workspace.                                              |
+| `apps/frontend/src/features/people/`             | Victim and volunteer coordination workspace.                                            |
+| `apps/frontend/src/api/`                         | Typed project, resource, distribution, profile, emergency, and shared JSON API clients. |
 
 ---
 
@@ -119,14 +120,14 @@
 | `active.md`                                    | Routing table for active sprint files.                                      |
 | `lessons.md`                                   | Active and internalized assistant lessons.                                  |
 | `sprints/sprint-01-init.md`                    | Initial scaffold sprint and session log.                                    |
-| `sprints/sprint-02-disaster-info.md`           | Student 1 disaster, shelter, and relief-service sprint.                    |
-| `sprints/sprint-03-admin.md`                   | Student 1 administration and reporting sprint.                             |
+| `sprints/sprint-02-disaster-info.md`           | Student 1 disaster, shelter, and relief-service sprint.                     |
+| `sprints/sprint-03-admin.md`                   | Student 1 administration and reporting sprint.                              |
 | `sprints/sprint-03-student3-foundation.md`     | Student 3 resource inventory and frontend-foundation sprint.                |
 | `sprints/sprint-04-distribution-activities.md` | Student 3 distribution and relief-activity sprint.                          |
 | `sprints/sprint-05-emergency-requests.md`      | Student 3 public emergency-request and coordinator-case sprint.             |
 | `sprints/sprint-06-integration-quality.md`     | Student 3 shared integration, reporting, quality, and documentation sprint. |
-| `archive/sprint-03-victim-management.md`       | Closed Student 2 victim-management sprint.                                 |
-| `archive/sprint-04-volunteer-management.md`    | Closed Student 2 volunteer-management sprint.                              |
+| `archive/sprint-03-victim-management.md`       | Closed Student 2 victim-management sprint.                                  |
+| `archive/sprint-04-volunteer-management.md`    | Closed Student 2 volunteer-management sprint.                               |
 | `archive/`                                     | Closed sprint audit trail when sprints are explicitly closed.               |
 
 ---

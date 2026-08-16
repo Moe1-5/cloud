@@ -27,6 +27,12 @@
 **Rule:** Keep generated test-artifact exclusions aligned between `.gitignore` and the ESLint global ignore list before running repository-wide lint.
 **Why:** Browser profiles contain third-party generated JavaScript that is not owned by the project and can obscure the actual lint result.
 
+### 2026-08-16 - Validate integrated screens against the local runtime
+
+**Problem:** Branch integration combined pages that depended on a shared styling vocabulary without including all of its layout rules, and one feature still required unavailable AWS credentials during local live testing.
+**Rule:** After integrating a feature branch, validate each role's first-load experience against the local development runtime and make repository choices explicit: use a local repository for local workflows or configure the required external service.
+**Why:** A type-safe merged build can still render an unstructured interface or fail at runtime when assumptions about styling and infrastructure are incomplete.
+
 ---
 
 ## Internalized

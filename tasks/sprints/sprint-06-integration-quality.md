@@ -85,6 +85,12 @@
 - Why: The combined application needs a live local smoke check before manual browser verification.
 - Status: The backend health endpoint and frontend root each returned HTTP 200. The local app remains available at http://localhost:5173 for manual role and workflow checks; no browser interaction checklist has been run in this session.
 
+### 2026-08-16 - Unify integrated page design and local people workflows
+
+- What changed: Added the shared hero, centered workspace, card, form, status-strip, record, and responsive mobile styles used by the administration, relief-coordinator, and people-management pages. Replaced the victim and volunteer development repositories' unconfigured DynamoDB calls with immutable local records and added people API regression coverage.
+- Why: The integrated Student 1 and Student 2 pages were missing the shared layout rules, leaving content flush to the viewport with inconsistent colors and spacing. Their local API calls failed with a credentials-provider error when no AWS configuration was available.
+- Status: Lint, typecheck, all 16 backend tests, and the production build pass. The local people workflow is available without AWS credentials; DynamoDB remains a separately planned integration concern.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".

@@ -62,7 +62,7 @@ infra/
 - **Error handling:** Backend normalizes errors before JSON responses; frontend shows request failures.
 - **Validation:** Zod validates API request params and bodies.
 - **Auth:** JWT configuration is reserved in env; implementation is intentionally future work.
-- **Local feature storage:** Student 3 repositories use immutable in-memory records during feature development; final DynamoDB persistence is a Sprint 6 integration task.
+- **Local feature storage:** Development repositories use immutable in-memory records for live local workflows; DynamoDB persistence remains a Sprint 6 integration task.
 - **Distribution ledger:** Recording a distribution reserves inventory immediately; cancelling an active distribution restores it, and terminal statuses cannot transition again.
 - **Emergency cases:** Affected users may edit or cancel only submitted or under-review requests. Coordinators advance cases through review, assignment, response, and resolution while appending an immutable status timeline.
 - **Role boundary:** Profile and request ownership are validated now; authentication credentials and trusted role identity remain a shared Sprint 6 integration concern.
