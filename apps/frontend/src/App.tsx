@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { AdminLayout } from "./layouts/AdminLayout.js";
 import { ReliefCoordinatorLayout } from "./layouts/ReliefCoordinatorLayout.js";
+import { EmergencyWorkspace } from "./features/emergency-requests/EmergencyWorkspace.js";
 import { LoginPage } from "./pages/LoginPage.js";
 
 export function App() {
@@ -100,7 +101,7 @@ export function App() {
 
       {currentRole ===
         "affectedUser" && (
-        <AffectedUserPlaceholder />
+        <AffectedUserPortal />
       )}
     </div>
   );
@@ -122,30 +123,8 @@ function getRoleLabel(
   return "Affected User";
 }
 
-function AffectedUserPlaceholder() {
+function AffectedUserPortal() {
   return (
-    <main>
-      <section className="top-band">
-        <div className="top-band__content">
-          <div>
-            <p className="eyebrow">
-              Community Portal
-            </p>
-
-            <h1>
-              Affected User Dashboard
-            </h1>
-
-            <p className="intro">
-              The affected-user
-              functionality will be
-              integrated with the work
-              developed by the responsible
-              team member.
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
+    <EmergencyWorkspace />
   );
 }

@@ -2,12 +2,20 @@ import { useState } from "react";
 
 import {
   AlertTriangle,
+  BarChart3,
+  Boxes,
   HeartPulse,
   Home,
+  Siren,
+  Truck,
   Users,
 } from "lucide-react";
 
+import { DistributionWorkspace } from "../features/distributions/DistributionWorkspace.js";
+import { EmergencyWorkspace } from "../features/emergency-requests/EmergencyWorkspace.js";
 import { VictimVolunteerWorkspace } from "../features/people/VictimVolunteerWorkspace.js";
+import { ReportsWorkspace } from "../features/reports/ReportsWorkspace.js";
+import { ResourceWorkspace } from "../features/resources/ResourceWorkspace.js";
 import { DisasterManagement } from "../pages/relief/DisasterManagement.js";
 import { ReliefServicesManagement } from "../pages/relief/ReliefServicesManagement.js";
 import { ShelterManagement } from "../pages/relief/ShelterManagement.js";
@@ -16,7 +24,11 @@ type ReliefPage =
   | "disasters"
   | "shelters"
   | "reliefServices"
-  | "people";
+  | "people"
+  | "resources"
+  | "distributions"
+  | "emergency"
+  | "reports";
 
 export function ReliefCoordinatorLayout() {
   const [currentPage, setCurrentPage] =
@@ -116,6 +128,26 @@ export function ReliefCoordinatorLayout() {
               <Users size={16} />
               People
             </button>
+
+            <button type="button" style={buttonStyle("resources")} onClick={() => setCurrentPage("resources")}>
+              <Boxes size={16} />
+              Resources
+            </button>
+
+            <button type="button" style={buttonStyle("distributions")} onClick={() => setCurrentPage("distributions")}>
+              <Truck size={16} />
+              Distributions
+            </button>
+
+            <button type="button" style={buttonStyle("emergency")} onClick={() => setCurrentPage("emergency")}>
+              <Siren size={16} />
+              Emergency cases
+            </button>
+
+            <button type="button" style={buttonStyle("reports")} onClick={() => setCurrentPage("reports")}>
+              <BarChart3 size={16} />
+              Operations report
+            </button>
           </nav>
         </div>
       </header>
@@ -135,6 +167,11 @@ export function ReliefCoordinatorLayout() {
       {currentPage === "people" && (
         <VictimVolunteerWorkspace />
       )}
+
+      {currentPage === "resources" && <ResourceWorkspace />}
+      {currentPage === "distributions" && <DistributionWorkspace />}
+      {currentPage === "emergency" && <EmergencyWorkspace />}
+      {currentPage === "reports" && <ReportsWorkspace />}
     </div>
   );
 }

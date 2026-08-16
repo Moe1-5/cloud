@@ -9,8 +9,12 @@ import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 
 import { activityLogRouter } from "./features/activityLogs/activityLogRoutes.js";
+import { reliefActivityRouter } from "./features/activities/reliefActivityRoutes.js";
 import { disasterRouter } from "./features/disasters/disasterRoutes.js";
+import { distributionRouter } from "./features/distributions/distributionRoutes.js";
+import { emergencyRequestRouter } from "./features/emergency-requests/emergencyRequestRoutes.js";
 import { organisationRouter } from "./features/organisations/organisationRoutes.js";
+import { affectedUserProfileRouter } from "./features/profiles/affectedUserProfileRoutes.js";
 
 import {
   projectRouter,
@@ -18,6 +22,8 @@ import {
 } from "./features/projects/projectRoutes.js";
 
 import { reliefServiceRouter } from "./features/reliefServices/reliefServiceRoutes.js";
+import { student3ReportRouter } from "./features/reports/student3ReportRoutes.js";
+import { resourceRouter } from "./features/resources/resourceRoutes.js";
 import { shelterRouter } from "./features/shelters/shelterRoutes.js";
 import { userRouter } from "./features/users/userRoutes.js";
 import { victimRouter } from "./features/victims/victimRoutes.js";
@@ -133,6 +139,14 @@ export function createApp() {
   // Victim and volunteer coordination
   app.use("/api/victims", victimRouter);
   app.use("/api/volunteers", volunteerRouter);
+
+  // Resource operations and emergency case management
+  app.use("/api/resources", resourceRouter);
+  app.use("/api/distributions", distributionRouter);
+  app.use("/api/relief-activities", reliefActivityRouter);
+  app.use("/api/affected-user-profiles", affectedUserProfileRouter);
+  app.use("/api/emergency-requests", emergencyRequestRouter);
+  app.use("/api/reports/student3-operational", student3ReportRouter);
 
   // ==========================================
   // Static Frontend

@@ -14,12 +14,14 @@
 **Blocking:** Combined branch verification and shared authentication/DynamoDB decisions.
 
 ## Tech Stack
+
 React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
 
 ## Last Decision
 2026-08-16 Use an isolated integration branch before merging validated team work into main
 
 ## Status Flags
+
 - [x] Tests configured
 - [x] CI/CD active
 - [ ] Auth implemented
