@@ -79,6 +79,12 @@
 - Why: The initial combined build used the parent checkout's Student 3-only shared-package build and incorrectly reported a missing organisation-status export that is present in the integrated source.
 - Status: The complete combined branch now passes lint, typecheck, all 15 backend tests, and the production build with no Git conflicts. It is ready for a local merge into main; remote CI should still confirm the configured Node 20 environment after a push.
 
+### 2026-08-16 - Start integrated application for live testing
+
+- What changed: Started the validated integrated backend on port 3000 and the Vite frontend on port 5173 from the merged team worktree.
+- Why: The combined application needs a live local smoke check before manual browser verification.
+- Status: The backend health endpoint and frontend root each returned HTTP 200. The local app remains available at http://localhost:5173 for manual role and workflow checks; no browser interaction checklist has been run in this session.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".
