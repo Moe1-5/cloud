@@ -4,8 +4,10 @@ import {
   AlertTriangle,
   HeartPulse,
   Home,
+  Users,
 } from "lucide-react";
 
+import { VictimVolunteerWorkspace } from "../features/people/VictimVolunteerWorkspace.js";
 import { DisasterManagement } from "../pages/relief/DisasterManagement.js";
 import { ReliefServicesManagement } from "../pages/relief/ReliefServicesManagement.js";
 import { ShelterManagement } from "../pages/relief/ShelterManagement.js";
@@ -13,7 +15,8 @@ import { ShelterManagement } from "../pages/relief/ShelterManagement.js";
 type ReliefPage =
   | "disasters"
   | "shelters"
-  | "reliefServices";
+  | "reliefServices"
+  | "people";
 
 export function ReliefCoordinatorLayout() {
   const [currentPage, setCurrentPage] =
@@ -104,6 +107,15 @@ export function ReliefCoordinatorLayout() {
               <HeartPulse size={16} />
               Relief Services
             </button>
+
+            <button
+              type="button"
+              style={buttonStyle("people")}
+              onClick={() => setCurrentPage("people")}
+            >
+              <Users size={16} />
+              People
+            </button>
           </nav>
         </div>
       </header>
@@ -118,6 +130,10 @@ export function ReliefCoordinatorLayout() {
 
       {currentPage === "reliefServices" && (
         <ReliefServicesManagement />
+      )}
+
+      {currentPage === "people" && (
+        <VictimVolunteerWorkspace />
       )}
     </div>
   );

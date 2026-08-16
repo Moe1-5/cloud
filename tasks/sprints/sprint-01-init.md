@@ -46,6 +46,21 @@
 - Why: The repository should be clean and predictable before pushing to GitHub.
 - Status: Git whitespace checks pass; the next step is pushing the prepared commit to the intended GitHub remote.
 
+### 2026-08-14 - Start Student 2 assignment modules
+- What changed: Created victim and volunteer sprints and connected their frontend, backend, shared contracts, and DynamoDB workflows to the scaffold.
+- Why: Sprint 1 remains the lowest-numbered active sprint, while the workload matrix defines Student 2's role as victim and volunteer management.
+- Status: Both Student 2 modules are implemented; local verification and deployed AWS integration remain open.
+
+### 2026-08-14 - Prepare Student 2 sprints for completion
+- What changed: Corrected victim and volunteer update persistence so optional API fields cannot overwrite required record fields with undefined values.
+- Why: The first quality-gate pass identified strict TypeScript failures in both update repositories.
+- Status: The known compile defect is corrected; the full verification gate is pending before sprint closure.
+
+### 2026-08-14 - Resolve Student 2 strict update typing
+- What changed: Replaced dynamically filtered update spreads with explicit field fallbacks in both Student 2 repositories.
+- Why: TypeScript could not prove that the filtered mapped objects excluded undefined values from required record fields.
+- Status: Required record fields are now preserved explicitly; fresh verification is pending.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

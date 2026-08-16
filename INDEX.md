@@ -59,8 +59,8 @@
 
 | File / Folder | What's inside |
 |---|---|
-| `apps/backend/` | Express TypeScript API, health route, project CRUD routes, DynamoDB repository, and backend test. |
-| `apps/frontend/` | Vite React TypeScript frontend for managing project records through the backend API. |
+| `apps/backend/` | Express TypeScript API with project, victim, and volunteer DynamoDB workflows. |
+| `apps/frontend/` | Vite React TypeScript dashboard for Student 2 victim and volunteer management. |
 
 ---
 
@@ -98,6 +98,8 @@
 | `active.md` | Routing table for active sprint files. |
 | `lessons.md` | Active and internalized assistant lessons. |
 | `sprints/sprint-01-init.md` | Initial scaffold sprint and session log. |
+| `archive/sprint-03-victim-management.md` | Closed Student 2 victim registration, search, needs, and assistance-history sprint. |
+| `archive/sprint-04-volunteer-management.md` | Closed Student 2 volunteer information, availability, and task-assignment sprint. |
 | `archive/` | Closed sprint audit trail when sprints are explicitly closed. |
 
 ---

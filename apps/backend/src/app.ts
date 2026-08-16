@@ -20,6 +20,8 @@ import {
 import { reliefServiceRouter } from "./features/reliefServices/reliefServiceRoutes.js";
 import { shelterRouter } from "./features/shelters/shelterRoutes.js";
 import { userRouter } from "./features/users/userRoutes.js";
+import { victimRouter } from "./features/victims/victimRoutes.js";
+import { volunteerRouter } from "./features/volunteers/volunteerRoutes.js";
 
 const __filename = fileURLToPath(
   import.meta.url
@@ -127,6 +129,10 @@ export function createApp() {
     "/api/activity-logs",
     activityLogRouter
   );
+
+  // Victim and volunteer coordination
+  app.use("/api/victims", victimRouter);
+  app.use("/api/volunteers", volunteerRouter);
 
   // ==========================================
   // Static Frontend

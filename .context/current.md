@@ -9,15 +9,15 @@
 **Stage:** [ ] Scaffolding  [x] MVP  [ ] Feature-complete  [ ] Production
 
 ## Active Sprint
-**Sprint:** Sprint 2
-**Goal:** Build Disaster Information, Shelter, and Relief Service management.
-**Blocking:** None
+**Sprint:** Team integration
+**Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
+**Blocking:** Combined branch verification and shared authentication/DynamoDB decisions.
 
 ## Tech Stack
 React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
 
 ## Last Decision
-2026-08-11 Full-stack TypeScript monorepo for AWS deployment
+2026-08-16 Use an isolated integration branch before merging validated team work into main
 
 ## Status Flags
 - [x] Tests configured
