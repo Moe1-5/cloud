@@ -55,6 +55,18 @@
 - Why: The Student 3 branch must stay visually compatible with current teammate work without importing or merging teammate commits before the user chooses to integrate them.
 - Status: Remote main remains at `757c9d3` and Student 1's `origin/test/looth` remains at `797d420`; no Student 2 feature branch is published. Student 1's navy hero, teal controls, mint accent, white panels, gray background, and compact radii remain consistent with Student 3. No teammate commit was merged, cherry-picked, or copied.
 
+### 2026-08-16 - Run pre-merge validation gates
+
+- What changed: Ran the CI-equivalent lint, typecheck, automated-test, and production-build gates on the Student 3 branch using `npm.cmd`; no application source or branch history was changed.
+- Why: The branch must validate before a combined integration branch can be created for the published teammate work.
+- Status: Lint, typecheck, and all 15 backend tests passed. The frontend production build failed because Vite reported an access-denied directory read while resolving `apps/frontend/vite.config.ts`; under the single-pass testing protocol, integration preparation and merge assessment stopped at this finding. Local validation used Node 22 because the installed Node 20 availability could not be confirmed; CI remains configured for Node 20.
+
+### 2026-08-16 - Confirm production build outside the sandbox
+
+- What changed: Re-ran the isolated production build with the workspace filesystem available outside the sandbox.
+- Why: The initial Vite failure explicitly reported an access-denied directory read, which required distinguishing a sandbox limitation from a project build defect.
+- Status: The production build passed. Combined with the prior lint, typecheck, and 15 passing backend tests, all local CI-equivalent gates pass under Node 22. The branch still requires CI confirmation under its configured Node 20 runtime after it is pushed.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".

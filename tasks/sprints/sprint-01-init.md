@@ -46,6 +46,11 @@
 - Why: The repository should be clean and predictable before pushing to GitHub.
 - Status: Git whitespace checks pass; the next step is pushing the prepared commit to the intended GitHub remote.
 
+### 2026-08-16 - Attempt branch merge-readiness validation
+- What changed: Ran the first CI-equivalent validation gate on `feature/student-3-resource-emergency`; no application source or branch history was changed.
+- Why: The branch needs a clean validation result before it is merged with teammate work.
+- Status: Validation stopped before ESLint started because PowerShell blocked `npm.ps1` under the current execution policy. Typecheck, automated tests, production build, and merge-conflict assessment were not run in accordance with the repository's single-pass testing protocol.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
