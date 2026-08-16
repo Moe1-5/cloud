@@ -1,6 +1,4 @@
-import type {
-  UserRole,
-} from "@ddac/shared";
+import type { UserRole } from "@ddac/shared";
 
 import { LogOut } from "lucide-react";
 import { useState } from "react";
@@ -11,12 +9,9 @@ import { EmergencyWorkspace } from "./features/emergency-requests/EmergencyWorks
 import { LoginPage } from "./pages/LoginPage.js";
 
 export function App() {
-  const [currentRole, setCurrentRole] =
-    useState<UserRole | null>(null);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
 
-  function handleLogin(
-    role: UserRole
-  ) {
+  function handleLogin(role: UserRole) {
     setCurrentRole(role);
   }
 
@@ -25,98 +20,39 @@ export function App() {
   }
 
   if (!currentRole) {
-    return (
-      <LoginPage
-        onLogin={handleLogin}
-      />
-    );
+    return <LoginPage onLogin={handleLogin} />;
   }
 
   return (
     <div className="app-shell">
-      <div
-        style={{
-          background: "#020617",
-          color: "white",
-          padding: "8px 20px",
-        }}
-      >
-        <div
-          style={{
-            width:
-              "min(1180px, calc(100% - 20px))",
-
-            margin: "0 auto",
-
-            display: "flex",
-
-            justifyContent:
-              "space-between",
-
-            alignItems: "center",
-
-            gap: "10px",
-
-            flexWrap: "wrap",
-          }}
-        >
-          <span>
-            Logged in as:{" "}
-            <strong>
-              {getRoleLabel(
-                currentRole
-              )}
-            </strong>
+      <header className="session-bar">
+        <div className="session-bar__content">
+          <span className="session-bar__identity">
+            Logged in as: <strong>{getRoleLabel(currentRole)}</strong>
           </span>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={{
-              border: "none",
-              borderRadius: "6px",
-              padding: "7px 12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              background: "#334155",
-              color: "white",
-              cursor: "pointer",
-            }}
-          >
+          <button className="session-bar__logout" type="button" onClick={handleLogout}>
             <LogOut size={16} />
             Logout
           </button>
         </div>
-      </div>
+      </header>
 
-      {currentRole === "admin" && (
-        <AdminLayout />
-      )}
+      {currentRole === "admin" && <AdminLayout />}
 
-      {currentRole ===
-        "reliefCoordinator" && (
-        <ReliefCoordinatorLayout />
-      )}
+      {currentRole === "reliefCoordinator" && <ReliefCoordinatorLayout />}
 
-      {currentRole ===
-        "affectedUser" && (
-        <AffectedUserPortal />
-      )}
+      {currentRole === "affectedUser" && <AffectedUserPortal />}
     </div>
   );
 }
 
-function getRoleLabel(
-  role: UserRole
-) {
+function getRoleLabel(role: UserRole) {
   if (role === "admin") {
     return "System Administrator";
   }
 
-  if (
-    role === "reliefCoordinator"
-  ) {
+  if (role === "reliefCoordinator") {
     return "Relief Coordinator";
   }
 
@@ -124,7 +60,5 @@ function getRoleLabel(
 }
 
 function AffectedUserPortal() {
-  return (
-    <EmergencyWorkspace />
-  );
+  return <EmergencyWorkspace />;
 }

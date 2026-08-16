@@ -45,6 +45,12 @@
 **Rule:** When pages use a hero as their visual entry point, render the role-specific navigation immediately after the selected page so the hero remains the first page section.
 **Why:** The navigation should support the active workspace without competing with the page title or breaking the intended top-to-bottom hierarchy.
 
+### 2026-08-16 - Remove legacy offsets when changing shared page structure
+
+**Problem:** Moving role navigation below page heroes left older workspace-specific negative margins in place, causing report and operational content to overlap the new navigation band.
+**Rule:** When changing a shared page hierarchy, audit every descendant workspace for negative margins, transforms, absolute positioning, and inline offsets before declaring the layout complete.
+**Why:** A correct component order can still render incorrectly when legacy positioning rules pull later sections back over newly inserted content.
+
 ---
 
 ## Internalized

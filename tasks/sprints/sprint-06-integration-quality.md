@@ -115,6 +115,12 @@
 - Why: The portal shared the emergency workspace but did not have the role-appropriate visual entry section used by the other application areas.
 - Status: The affected-user hero renders only outside the coordinator navigation context, so coordinator emergency cases retain their coordinator-specific hero. Lint and typecheck pass.
 
+### 2026-08-16 - Remove system-wide layout collisions
+
+- What changed: Removed the remaining negative offsets from operational workspaces, people tabs, and page errors so every role page follows hero, role navigation, optional module tabs, then content. Reflowed report metrics, standardized the session bar, added responsive focus states, and replaced the inline development-login layout with the shared visual system.
+- Why: The operations report still overlapped the role navigation after the navigation hierarchy changed, and the same legacy offsets affected other shared workspaces.
+- Status: The live frontend hot-reloaded the changes and returns HTTP 200. Typecheck and the production build pass. Lint also passed before the user asked to skip further linting; no additional lint runs are planned for this design pass.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".
