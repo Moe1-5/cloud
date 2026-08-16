@@ -42,7 +42,11 @@ import {
   updateEmergencyRequest,
   updateEmergencyRequestByCoordinator
 } from "../../api/emergencyRequestsApi.js";
-import { CoordinatorPageHero, RoleNavigation } from "../../layouts/RoleNavigation.js";
+import {
+  AffectedUserPageHero,
+  CoordinatorPageHero,
+  RoleNavigation
+} from "../../layouts/RoleNavigation.js";
 
 type EmergencyPerspective = "affected_user" | "coordinator";
 type RequestFilter = "all" | EmergencyRequestStatus;
@@ -354,6 +358,10 @@ export function EmergencyWorkspace() {
 
   return (
     <>
+      <AffectedUserPageHero
+        title="Your relief assistance"
+        description="Manage your community profile, request urgent support, and follow the progress of your assistance cases."
+      />
       <CoordinatorPageHero
         title="Emergency assistance cases"
         description="Review requests, coordinate urgent support, and monitor response progress."

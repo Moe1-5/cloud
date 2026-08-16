@@ -109,6 +109,12 @@
 - Why: Visual review confirmed that the role navigation still appeared above the hero, breaking the intended hero-first hierarchy on every coordinator page.
 - Status: The live frontend accepted all layout changes through hot reload. Lint and typecheck pass; browser review can now confirm the hero, role navigation, and workspace appear in that order.
 
+### 2026-08-16 - Add an affected-user portal hero
+
+- What changed: Added a dedicated Community Assistance hero to the affected-user emergency portal, ahead of the affected-user and coordinator perspective controls.
+- Why: The portal shared the emergency workspace but did not have the role-appropriate visual entry section used by the other application areas.
+- Status: The affected-user hero renders only outside the coordinator navigation context, so coordinator emergency cases retain their coordinator-specific hero. Lint and typecheck pass.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".

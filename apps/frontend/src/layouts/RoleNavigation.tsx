@@ -45,3 +45,29 @@ export function CoordinatorPageHero({
     </section>
   );
 }
+
+export function AffectedUserPageHero({
+  title,
+  description
+}: {
+  title: string;
+  description: string;
+}) {
+  const navigation = useContext(RoleNavigationContext);
+
+  if (navigation) {
+    return null;
+  }
+
+  return (
+    <section className="top-band">
+      <div className="top-band__content top-band__content--single">
+        <div>
+          <p className="eyebrow">Community assistance</p>
+          <h1>{title}</h1>
+          <p className="intro">{description}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
