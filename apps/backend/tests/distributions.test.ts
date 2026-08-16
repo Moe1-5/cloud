@@ -10,10 +10,37 @@ describe("distribution and relief activity APIs", () => {
     resetDistributionsForTests();
   });
 
+  async function createWaterResource(app: ReturnType<typeof createApp>) {
+    const response = await request(app).post("/api/resources").send({
+      name: "Bottled drinking water",
+      category: "water",
+      quantity: 840,
+      unit: "cartons",
+      location: "Central Relief Warehouse",
+      reorderLevel: 250
+    });
+
+    return response.body.data as { id: string };
+  }
+
+  async function createMedicalResource(app: ReturnType<typeof createApp>) {
+    const response = await request(app).post("/api/resources").send({
+      name: "Emergency medical kits",
+      category: "medical",
+      quantity: 36,
+      unit: "kits",
+      location: "Kuala Lumpur Operations Hub",
+      reorderLevel: 50
+    });
+
+    return response.body.data as { id: string };
+  }
+
   it("records a planned distribution and reserves inventory", async () => {
     const app = createApp();
+    const resource = await createWaterResource(app);
     const input = {
-      resourceId: "28443d2e-9b48-428a-aa17-52b7d9d7d72e",
+      resourceId: resource.id,
       quantity: 140,
       destination: "Klang Community Hall",
       recipient: "Hall relief desk",
@@ -32,13 +59,25 @@ describe("distribution and relief activity APIs", () => {
       status: "planned"
     });
 
-    const resource = await request(app).get(`/api/resources/${input.resourceId}`);
-    expect(resource.body.data.quantity).toBe(700);
+    const resourceResponse = await request(app).get(`/api/resources/${input.resourceId}`);
+    expect(resourceResponse.body.data.quantity).toBe(700);
   });
 
   it("advances a distribution and rejects an invalid transition", async () => {
     const app = createApp();
-    const distributionId = "a581cd5d-08ce-4b59-b23d-f6a5026c5b56";
+    const resource = await createWaterResource(app);
+    const created = await request(app).post("/api/distributions").send({
+      resourceId: resource.id,
+      quantity: 120,
+      destination: "Setia Alam Evacuation Centre",
+      recipient: "Centre logistics team",
+      scheduledAt: "2026-08-13T04:30:00.000Z"
+    });
+    const distributionId = created.body.data.id as string;
+
+    await request(app)
+      .patch(`/api/distributions/${distributionId}/status`)
+      .send({ status: "in_transit" });
 
     const delivered = await request(app)
       .patch(`/api/distributions/${distributionId}/status`)
@@ -54,8 +93,9 @@ describe("distribution and relief activity APIs", () => {
 
   it("restores reserved inventory when a planned distribution is cancelled", async () => {
     const app = createApp();
+    const resource = await createMedicalResource(app);
     const input = {
-      resourceId: "9a4abf2d-ab9f-4929-b798-b610c76b66fd",
+      resourceId: resource.id,
       quantity: 10,
       destination: "Ampang Medical Post",
       recipient: "Medical response lead",
@@ -70,15 +110,40 @@ describe("distribution and relief activity APIs", () => {
       .send({ status: "cancelled" });
     expect(cancelled.status).toBe(200);
 
-    const resource = await request(app).get(`/api/resources/${input.resourceId}`);
-    expect(resource.body.data.quantity).toBe(36);
+    const resourceResponse = await request(app).get(`/api/resources/${input.resourceId}`);
+    expect(resourceResponse.body.data.quantity).toBe(36);
   });
 
   it("prevents over-allocation and reports operational activity", async () => {
     const app = createApp();
+    const water = await createWaterResource(app);
+    const medical = await createMedicalResource(app);
+    const activeDistribution = await request(app).post("/api/distributions").send({
+      resourceId: water.id,
+      quantity: 120,
+      destination: "Setia Alam Evacuation Centre",
+      recipient: "Centre logistics team",
+      scheduledAt: "2026-08-13T04:30:00.000Z"
+    });
+    await request(app)
+      .patch(`/api/distributions/${activeDistribution.body.data.id}/status`)
+      .send({ status: "in_transit" });
+    const deliveredDistribution = await request(app).post("/api/distributions").send({
+      resourceId: medical.id,
+      quantity: 12,
+      destination: "Sentul Community Clinic",
+      recipient: "Clinic response unit",
+      scheduledAt: "2026-08-12T07:00:00.000Z"
+    });
+    await request(app)
+      .patch(`/api/distributions/${deliveredDistribution.body.data.id}/status`)
+      .send({ status: "in_transit" });
+    await request(app)
+      .patch(`/api/distributions/${deliveredDistribution.body.data.id}/status`)
+      .send({ status: "delivered" });
 
     const unavailable = await request(app).post("/api/distributions").send({
-      resourceId: "9a4abf2d-ab9f-4929-b798-b610c76b66fd",
+      resourceId: medical.id,
       quantity: 100,
       destination: "Cheras Relief Point",
       recipient: "Relief point coordinator",

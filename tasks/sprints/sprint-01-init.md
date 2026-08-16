@@ -66,6 +66,11 @@
 - Why: The branch needs a clean validation result before it is merged with teammate work.
 - Status: Validation stopped before ESLint started because PowerShell blocked `npm.ps1` under the current execution policy. Typecheck, automated tests, production build, and merge-conflict assessment were not run in accordance with the repository's single-pass testing protocol.
 
+### 2026-08-16 - Move integrated backend repositories to dynamic storage
+- What changed: Created `feature/dynamic-dynamodb-backend` from latest `main`, added a shared DynamoDB repository helper, converted backend feature repositories from hardcoded arrays to table-backed records, adjusted tests to create records through APIs, and silenced the backend TypeScript `baseUrl` deprecation warning with the project-supported setting.
+- Why: The integrated system still used hardcoded sample records and memory-only arrays across most backend modules, so user-created data would disappear after restart and AWS configuration would not persist full-system data.
+- Status: Backend typecheck, backend tests, and backend build pass; production runtime now requires DynamoDB table and AWS credentials or a configured local DynamoDB endpoint outside Vitest.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

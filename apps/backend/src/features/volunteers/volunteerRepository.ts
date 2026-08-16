@@ -1,29 +1,33 @@
 import type { CreateVolunteerInput, UpdateVolunteerInput, VolunteerRecord } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
-import { NotFoundError } from "../../shared/errors.js";
+import {
+  clearRecordsForTests,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord
+} from "../../shared/dynamoRepository.js";
 
-let volunteers: VolunteerRecord[] = [];
+type StoredVolunteerRecord = VolunteerRecord & { entityType: "volunteer" };
 
-function cloneVolunteer(volunteer: VolunteerRecord): VolunteerRecord {
-  return { ...volunteer };
+function toVolunteer(volunteer: StoredVolunteerRecord): VolunteerRecord {
+  const { entityType: _entityType, ...record } = volunteer;
+  return { ...record };
 }
 
 export async function listVolunteers(): Promise<VolunteerRecord[]> {
-  return [...volunteers]
-    .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
-    .map(cloneVolunteer);
+  const volunteers = await listRecordsByEntity<StoredVolunteerRecord>("volunteer", "createdAt");
+  return volunteers.map(toVolunteer);
 }
 
 async function getVolunteer(id: string): Promise<VolunteerRecord> {
-  const volunteer = volunteers.find((item) => item.id === id);
-  if (!volunteer) throw new NotFoundError("Volunteer");
-  return cloneVolunteer(volunteer);
+  return toVolunteer(await getRecordById<StoredVolunteerRecord>(id, "volunteer", "Volunteer"));
 }
 
 export async function createVolunteer(input: CreateVolunteerInput): Promise<VolunteerRecord> {
   const timestamp = new Date().toISOString();
-  const volunteer: VolunteerRecord = {
+  const volunteer: StoredVolunteerRecord = {
     id: `volunteer#${randomUUID()}`,
+    entityType: "volunteer",
     ...input,
     availability: input.availability ?? "available",
     assignedTask: "",
@@ -31,15 +35,14 @@ export async function createVolunteer(input: CreateVolunteerInput): Promise<Volu
     createdAt: timestamp,
     updatedAt: timestamp
   };
-  volunteers = [volunteer, ...volunteers];
-  return cloneVolunteer(volunteer);
+  return toVolunteer(await putRecord(volunteer));
 }
 export async function updateVolunteer(
   id: string,
   input: UpdateVolunteerInput
 ): Promise<VolunteerRecord> {
-  const current = await getVolunteer(id);
-  const updated: VolunteerRecord = {
+  const current = await getRecordById<StoredVolunteerRecord>(id, "volunteer", "Volunteer");
+  const updated: StoredVolunteerRecord = {
     ...current,
     fullName: input.fullName ?? current.fullName,
     phoneNumber: input.phoneNumber ?? current.phoneNumber,
@@ -49,10 +52,9 @@ export async function updateVolunteer(
     taskLocation: input.taskLocation ?? current.taskLocation,
     updatedAt: new Date().toISOString()
   };
-  volunteers = volunteers.map((item) => (item.id === id ? updated : item));
-  return cloneVolunteer(updated);
+  return toVolunteer(await putRecord(updated));
 }
 
 export function resetVolunteersForTests(): void {
-  volunteers = [];
+  clearRecordsForTests("volunteer");
 }

@@ -6,37 +6,13 @@ import type {
 } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
 import { AppError, NotFoundError } from "../../shared/errors.js";
-
-const INITIAL_RESOURCES: ResourceRecord[] = [
-  {
-    id: "28443d2e-9b48-428a-aa17-52b7d9d7d72e",
-    entityType: "resource",
-    name: "Bottled drinking water",
-    category: "water",
-    quantity: 840,
-    unit: "cartons",
-    location: "Central Relief Warehouse",
-    reorderLevel: 250,
-    stockStatus: "available",
-    createdAt: "2026-08-13T00:00:00.000Z",
-    updatedAt: "2026-08-13T00:00:00.000Z"
-  },
-  {
-    id: "9a4abf2d-ab9f-4929-b798-b610c76b66fd",
-    entityType: "resource",
-    name: "Emergency medical kits",
-    category: "medical",
-    quantity: 36,
-    unit: "kits",
-    location: "Kuala Lumpur Operations Hub",
-    reorderLevel: 50,
-    stockStatus: "low_stock",
-    createdAt: "2026-08-13T00:00:00.000Z",
-    updatedAt: "2026-08-13T00:00:00.000Z"
-  }
-];
-
-let resources = INITIAL_RESOURCES.map((resource) => ({ ...resource }));
+import {
+  clearRecordsForTests,
+  deleteRecordById,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord
+} from "../../shared/dynamoRepository.js";
 
 function deriveStockStatus(quantity: number, reorderLevel: number): ResourceStockStatus {
   if (quantity === 0) {
@@ -47,19 +23,11 @@ function deriveStockStatus(quantity: number, reorderLevel: number): ResourceStoc
 }
 
 export async function listResources(): Promise<ResourceRecord[]> {
-  return [...resources]
-    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
-    .map((resource) => ({ ...resource }));
+  return listRecordsByEntity<ResourceRecord>("resource", "updatedAt");
 }
 
 export async function getResourceById(id: string): Promise<ResourceRecord> {
-  const resource = resources.find((item) => item.id === id);
-
-  if (!resource) {
-    throw new NotFoundError("Resource");
-  }
-
-  return { ...resource };
+  return getRecordById<ResourceRecord>(id, "resource", "Resource");
 }
 
 export async function createResource(input: CreateResourceInput): Promise<ResourceRecord> {
@@ -73,8 +41,7 @@ export async function createResource(input: CreateResourceInput): Promise<Resour
     updatedAt: timestamp
   };
 
-  resources = [resource, ...resources];
-  return { ...resource };
+  return putRecord(resource);
 }
 
 export async function updateResource(
@@ -97,14 +64,11 @@ export async function updateResource(
     updatedAt: new Date().toISOString()
   };
 
-  resources = resources.map((resource) => (resource.id === id ? updatedResource : resource));
-
-  return { ...updatedResource };
+  return putRecord(updatedResource);
 }
 
 export async function deleteResource(id: string): Promise<void> {
-  await getResourceById(id);
-  resources = resources.filter((resource) => resource.id !== id);
+  await deleteRecordById(id, "resource", "Resource");
 }
 
 export async function adjustResourceQuantity(
@@ -125,5 +89,5 @@ export async function adjustResourceQuantity(
 }
 
 export function resetResourcesForTests(): void {
-  resources = INITIAL_RESOURCES.map((resource) => ({ ...resource }));
+  clearRecordsForTests("resource");
 }

@@ -7,35 +7,30 @@ import type {
 import { randomUUID } from "node:crypto";
 
 import { createActivityLog } from "../activityLogs/activityLogRepository.js";
-import { NotFoundError } from "../../shared/errors.js";
-
-const shelters: ShelterRecord[] = [];
+import {
+  deleteRecordById,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord,
+} from "../../shared/dynamoRepository.js";
 
 export async function listShelters(): Promise<
   ShelterRecord[]
 > {
-  return [...shelters].sort(
-    (left, right) =>
-      right.createdAt.localeCompare(
-        left.createdAt
-      )
+  return listRecordsByEntity<ShelterRecord>(
+    "shelter",
+    "createdAt"
   );
 }
 
 export async function getShelterById(
   id: string
 ): Promise<ShelterRecord> {
-  const shelter = shelters.find(
-    (item) => item.id === id
+  return getRecordById<ShelterRecord>(
+    id,
+    "shelter",
+    "Shelter"
   );
-
-  if (!shelter) {
-    throw new NotFoundError(
-      "Shelter"
-    );
-  }
-
-  return shelter;
 }
 
 export async function createShelter(
@@ -71,43 +66,65 @@ export async function createShelter(
     updatedAt: timestamp,
   };
 
-  shelters.push(shelter);
+  const savedShelter =
+    await putRecord(shelter);
 
   await createActivityLog({
     action: "create",
 
     targetEntity: "shelter",
 
-    targetId: shelter.id,
+    targetId: savedShelter.id,
 
     userName:
       "System Administrator",
 
     description:
-      `Created shelter: ${shelter.name}`,
+      `Created shelter: ${savedShelter.name}`,
   });
 
-  return shelter;
+  return savedShelter;
 }
 
 export async function updateShelter(
   id: string,
   input: UpdateShelterInput
 ): Promise<ShelterRecord> {
-  const shelter =
+  const currentShelter =
     await getShelterById(id);
 
   const previousStatus =
-    shelter.status;
+    currentShelter.status;
 
-  Object.assign(
-    shelter,
-    input,
-    {
-      updatedAt:
-        new Date().toISOString(),
-    }
-  );
+  const shelter: ShelterRecord = {
+    ...currentShelter,
+    name:
+      input.name ??
+      currentShelter.name,
+    location:
+      input.location ??
+      currentShelter.location,
+    capacity:
+      input.capacity ??
+      currentShelter.capacity,
+    currentOccupancy:
+      input.currentOccupancy ??
+      currentShelter.currentOccupancy,
+    contactNumber:
+      input.contactNumber ??
+      currentShelter.contactNumber,
+    status:
+      input.status ??
+      currentShelter.status,
+    notes:
+      input.notes ??
+      currentShelter.notes,
+    updatedAt:
+      new Date().toISOString(),
+  };
+
+  const savedShelter =
+    await putRecord(shelter);
 
   const statusChanged =
     input.status !== undefined &&
@@ -120,55 +137,42 @@ export async function updateShelter(
 
     targetEntity: "shelter",
 
-    targetId: shelter.id,
+    targetId: savedShelter.id,
 
     userName:
       "System Administrator",
 
     description: statusChanged
-      ? `Changed shelter status for ${shelter.name} from ${previousStatus} to ${shelter.status}`
-      : `Updated shelter: ${shelter.name}`,
+      ? `Changed shelter status for ${savedShelter.name} from ${previousStatus} to ${savedShelter.status}`
+      : `Updated shelter: ${savedShelter.name}`,
   });
 
-  return shelter;
+  return savedShelter;
 }
 
 export async function deleteShelter(
   id: string
 ): Promise<void> {
-  const index =
-    shelters.findIndex(
-      (item) =>
-        item.id === id
-    );
-
-  if (index === -1) {
-    throw new NotFoundError(
-      "Shelter"
-    );
-  }
-
   const shelter =
-    shelters[index];
+    await getShelterById(id);
 
-  shelters.splice(
-    index,
-    1
+  await deleteRecordById(
+    id,
+    "shelter",
+    "Shelter"
   );
 
-  if (shelter) {
-    await createActivityLog({
-      action: "delete",
+  await createActivityLog({
+    action: "delete",
 
-      targetEntity: "shelter",
+    targetEntity: "shelter",
 
-      targetId: shelter.id,
+    targetId: shelter.id,
 
-      userName:
-        "System Administrator",
+    userName:
+      "System Administrator",
 
-      description:
-        `Deleted shelter: ${shelter.name}`,
-    });
-  }
+    description:
+      `Deleted shelter: ${shelter.name}`,
+  });
 }

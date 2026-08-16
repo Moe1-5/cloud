@@ -9,6 +9,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@ddac/shared": ["../../packages/shared/src/index.ts"]
     }

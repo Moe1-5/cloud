@@ -7,36 +7,30 @@ import type {
 import { randomUUID } from "node:crypto";
 
 import { createActivityLog } from "../activityLogs/activityLogRepository.js";
-import { NotFoundError } from "../../shared/errors.js";
-
-const organisations: ReliefOrganisationRecord[] = [];
+import {
+  deleteRecordById,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord,
+} from "../../shared/dynamoRepository.js";
 
 export async function listOrganisations(): Promise<
   ReliefOrganisationRecord[]
 > {
-  return [...organisations].sort(
-    (left, right) =>
-      right.createdAt.localeCompare(
-        left.createdAt
-      )
+  return listRecordsByEntity<ReliefOrganisationRecord>(
+    "reliefOrganisation",
+    "createdAt"
   );
 }
 
 export async function getOrganisationById(
   id: string
 ): Promise<ReliefOrganisationRecord> {
-  const organisation =
-    organisations.find(
-      (item) => item.id === id
-    );
-
-  if (!organisation) {
-    throw new NotFoundError(
-      "Relief organisation"
-    );
-  }
-
-  return organisation;
+  return getRecordById<ReliefOrganisationRecord>(
+    id,
+    "reliefOrganisation",
+    "Relief organisation"
+  );
 }
 
 export async function createOrganisation(
@@ -77,9 +71,8 @@ export async function createOrganisation(
         timestamp,
     };
 
-  organisations.push(
-    organisation
-  );
+  const savedOrganisation =
+    await putRecord(organisation);
 
   await createActivityLog({
     action: "create",
@@ -88,38 +81,57 @@ export async function createOrganisation(
       "organisation",
 
     targetId:
-      organisation.id,
+      savedOrganisation.id,
 
     userName:
       "System Administrator",
 
     description:
-      `Created relief organisation: ${organisation.name}`,
+      `Created relief organisation: ${savedOrganisation.name}`,
   });
 
-  return organisation;
+  return savedOrganisation;
 }
 
 export async function updateOrganisation(
   id: string,
   input: UpdateReliefOrganisationInput
 ): Promise<ReliefOrganisationRecord> {
-  const organisation =
+  const currentOrganisation =
     await getOrganisationById(
       id
     );
 
   const previousStatus =
-    organisation.status;
+    currentOrganisation.status;
 
-  Object.assign(
-    organisation,
-    input,
+  const organisation: ReliefOrganisationRecord =
     {
+      ...currentOrganisation,
+      name:
+        input.name ??
+        currentOrganisation.name,
+      organisationType:
+        input.organisationType ??
+        currentOrganisation.organisationType,
+      address:
+        input.address ??
+        currentOrganisation.address,
+      contactNumber:
+        input.contactNumber ??
+        currentOrganisation.contactNumber,
+      email:
+        input.email ??
+        currentOrganisation.email,
+      status:
+        input.status ??
+        currentOrganisation.status,
       updatedAt:
         new Date().toISOString(),
-    }
-  );
+    };
+
+  const savedOrganisation =
+    await putRecord(organisation);
 
   const statusChanged =
     input.status !== undefined &&
@@ -134,58 +146,45 @@ export async function updateOrganisation(
       "organisation",
 
     targetId:
-      organisation.id,
+      savedOrganisation.id,
 
     userName:
       "System Administrator",
 
     description:
       statusChanged
-        ? `Changed organisation status for ${organisation.name} from ${previousStatus} to ${organisation.status}`
-        : `Updated relief organisation: ${organisation.name}`,
+        ? `Changed organisation status for ${savedOrganisation.name} from ${previousStatus} to ${savedOrganisation.status}`
+        : `Updated relief organisation: ${savedOrganisation.name}`,
   });
 
-  return organisation;
+  return savedOrganisation;
 }
 
 export async function deleteOrganisation(
   id: string
 ): Promise<void> {
-  const index =
-    organisations.findIndex(
-      (item) =>
-        item.id === id
-    );
-
-  if (index === -1) {
-    throw new NotFoundError(
-      "Relief organisation"
-    );
-  }
-
   const organisation =
-    organisations[index];
+    await getOrganisationById(id);
 
-  organisations.splice(
-    index,
-    1
+  await deleteRecordById(
+    id,
+    "reliefOrganisation",
+    "Relief organisation"
   );
 
-  if (organisation) {
-    await createActivityLog({
-      action: "delete",
+  await createActivityLog({
+    action: "delete",
 
-      targetEntity:
-        "organisation",
+    targetEntity:
+      "organisation",
 
-      targetId:
-        organisation.id,
+    targetId:
+      organisation.id,
 
-      userName:
-        "System Administrator",
+    userName:
+      "System Administrator",
 
-      description:
-        `Deleted relief organisation: ${organisation.name}`,
-    });
-  }
+    description:
+      `Deleted relief organisation: ${organisation.name}`,
+  });
 }

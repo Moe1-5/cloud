@@ -7,35 +7,30 @@ import type {
 import { randomUUID } from "node:crypto";
 
 import { createActivityLog } from "../activityLogs/activityLogRepository.js";
-import { NotFoundError } from "../../shared/errors.js";
-
-const disasters: DisasterRecord[] = [];
+import {
+  deleteRecordById,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord,
+} from "../../shared/dynamoRepository.js";
 
 export async function listDisasters(): Promise<
   DisasterRecord[]
 > {
-  return [...disasters].sort(
-    (left, right) =>
-      right.createdAt.localeCompare(
-        left.createdAt
-      )
+  return listRecordsByEntity<DisasterRecord>(
+    "disaster",
+    "createdAt"
   );
 }
 
 export async function getDisasterById(
   id: string
 ): Promise<DisasterRecord> {
-  const disaster = disasters.find(
-    (item) => item.id === id
+  return getRecordById<DisasterRecord>(
+    id,
+    "disaster",
+    "Disaster"
   );
-
-  if (!disaster) {
-    throw new NotFoundError(
-      "Disaster"
-    );
-  }
-
-  return disaster;
 }
 
 export async function createDisaster(
@@ -76,9 +71,8 @@ export async function createDisaster(
       timestamp,
   };
 
-  disasters.push(
-    disaster
-  );
+  const savedDisaster =
+    await putRecord(disaster);
 
   await createActivityLog({
     action: "create",
@@ -87,38 +81,90 @@ export async function createDisaster(
       "disaster",
 
     targetId:
-      disaster.id,
+      savedDisaster.id,
 
     userName:
       "System Administrator",
 
     description:
-      `Created disaster record: ${disaster.title}`,
+      `Created disaster record: ${savedDisaster.title}`,
   });
 
-  return disaster;
+  return savedDisaster;
 }
 
 export async function updateDisaster(
   id: string,
   input: UpdateDisasterInput
 ): Promise<DisasterRecord> {
-  const disaster =
+  const currentDisaster =
     await getDisasterById(
       id
     );
 
-  Object.assign(
-    disaster,
-    input,
-    {
-      updatedAt:
-        new Date().toISOString(),
-    }
-  );
+  const disaster: DisasterRecord = {
+    ...currentDisaster,
+    title:
+      input.title ??
+      currentDisaster.title,
+    disasterType:
+      input.disasterType ??
+      currentDisaster.disasterType,
+    location:
+      input.location ??
+      currentDisaster.location,
+    description:
+      input.description ??
+      currentDisaster.description,
+    severity:
+      input.severity ??
+      currentDisaster.severity,
+    status:
+      input.status ??
+      currentDisaster.status,
+    startDate:
+      input.startDate ??
+      currentDisaster.startDate,
+    updatedAt:
+      new Date().toISOString(),
+  };
+
+  const savedDisaster =
+    await putRecord(disaster);
 
   await createActivityLog({
     action: "update",
+
+    targetEntity:
+      "disaster",
+
+    targetId:
+      savedDisaster.id,
+
+    userName:
+      "System Administrator",
+
+    description:
+      `Updated disaster record: ${savedDisaster.title}`,
+  });
+
+  return savedDisaster;
+}
+
+export async function deleteDisaster(
+  id: string
+): Promise<void> {
+  const disaster =
+    await getDisasterById(id);
+
+  await deleteRecordById(
+    id,
+    "disaster",
+    "Disaster"
+  );
+
+  await createActivityLog({
+    action: "delete",
 
     targetEntity:
       "disaster",
@@ -130,51 +176,6 @@ export async function updateDisaster(
       "System Administrator",
 
     description:
-      `Updated disaster record: ${disaster.title}`,
+      `Deleted disaster record: ${disaster.title}`,
   });
-
-  return disaster;
-}
-
-export async function deleteDisaster(
-  id: string
-): Promise<void> {
-  const index =
-    disasters.findIndex(
-      (item) =>
-        item.id === id
-    );
-
-  if (index === -1) {
-    throw new NotFoundError(
-      "Disaster"
-    );
-  }
-
-  const disaster =
-    disasters[index];
-
-  disasters.splice(
-    index,
-    1
-  );
-
-  if (disaster) {
-    await createActivityLog({
-      action:
-        "delete",
-
-      targetEntity:
-        "disaster",
-
-      targetId:
-        disaster.id,
-
-      userName:
-        "System Administrator",
-
-      description:
-        `Deleted disaster record: ${disaster.title}`,
-    });
-  }
 }

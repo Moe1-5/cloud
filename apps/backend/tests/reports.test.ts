@@ -15,7 +15,79 @@ describe("Student 3 operational report API", () => {
   });
 
   it("aggregates Student 3 inventory, distribution, profile, and emergency metrics", async () => {
-    const response = await request(createApp()).get("/api/reports/student3-operational");
+    const app = createApp();
+    const water = await request(app).post("/api/resources").send({
+      name: "Bottled drinking water",
+      category: "water",
+      quantity: 840,
+      unit: "cartons",
+      location: "Central Relief Warehouse",
+      reorderLevel: 250
+    });
+    const medical = await request(app).post("/api/resources").send({
+      name: "Emergency medical kits",
+      category: "medical",
+      quantity: 36,
+      unit: "kits",
+      location: "Kuala Lumpur Operations Hub",
+      reorderLevel: 50
+    });
+    const activeDistribution = await request(app).post("/api/distributions").send({
+      resourceId: water.body.data.id,
+      quantity: 120,
+      destination: "Setia Alam Evacuation Centre",
+      recipient: "Centre logistics team",
+      scheduledAt: "2026-08-13T04:30:00.000Z"
+    });
+    await request(app)
+      .patch(`/api/distributions/${activeDistribution.body.data.id}/status`)
+      .send({ status: "in_transit" });
+    const deliveredDistribution = await request(app).post("/api/distributions").send({
+      resourceId: medical.body.data.id,
+      quantity: 12,
+      destination: "Sentul Community Clinic",
+      recipient: "Clinic response unit",
+      scheduledAt: "2026-08-12T07:00:00.000Z"
+    });
+    await request(app)
+      .patch(`/api/distributions/${deliveredDistribution.body.data.id}/status`)
+      .send({ status: "in_transit" });
+    await request(app)
+      .patch(`/api/distributions/${deliveredDistribution.body.data.id}/status`)
+      .send({ status: "delivered" });
+    const profile = await request(app).post("/api/affected-user-profiles").send({
+      fullName: "Aisha Rahman",
+      email: "aisha.rahman@example.com",
+      phone: "+60 12-555 0142",
+      address: "Taman Melawati, Kuala Lumpur",
+      householdSize: 4,
+      emergencyContact: "Imran Rahman - +60 12-555 0188"
+    });
+    const reviewRequest = await request(app).post("/api/emergency-requests").send({
+      requesterId: profile.body.data.id,
+      assistanceType: "medical",
+      description: "Elderly family member requires medication and a medical assessment.",
+      location: "Taman Melawati, Kuala Lumpur",
+      peopleAffected: 2
+    });
+    await request(app)
+      .patch(`/api/emergency-requests/${reviewRequest.body.data.id}/coordinator`)
+      .send({ status: "under_review" });
+    const assignedRequest = await request(app).post("/api/emergency-requests").send({
+      requesterId: profile.body.data.id,
+      assistanceType: "food_water",
+      description: "Household needs drinking water and shelf-stable food after road closure.",
+      location: "Taman Melawati, Kuala Lumpur",
+      peopleAffected: 4
+    });
+    await request(app)
+      .patch(`/api/emergency-requests/${assignedRequest.body.data.id}/coordinator`)
+      .send({ status: "under_review" });
+    await request(app)
+      .patch(`/api/emergency-requests/${assignedRequest.body.data.id}/coordinator`)
+      .send({ status: "assigned", assignedTo: "Nur Izzati - Relief Team 4" });
+
+    const response = await request(app).get("/api/reports/student3-operational");
 
     expect(response.status).toBe(200);
     expect(response.body.data.inventory).toMatchObject({

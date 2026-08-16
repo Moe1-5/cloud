@@ -7,33 +7,30 @@ import type {
 import { randomUUID } from "node:crypto";
 
 import { createActivityLog } from "../activityLogs/activityLogRepository.js";
-import { NotFoundError } from "../../shared/errors.js";
-
-const users: UserAccountRecord[] = [];
+import {
+  deleteRecordById,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord,
+} from "../../shared/dynamoRepository.js";
 
 export async function listUsers(): Promise<
   UserAccountRecord[]
 > {
-  return [...users].sort(
-    (left, right) =>
-      right.createdAt.localeCompare(
-        left.createdAt
-      )
+  return listRecordsByEntity<UserAccountRecord>(
+    "userAccount",
+    "createdAt"
   );
 }
 
 export async function getUserById(
   id: string
 ): Promise<UserAccountRecord> {
-  const user = users.find(
-    (item) => item.id === id
+  return getRecordById<UserAccountRecord>(
+    id,
+    "userAccount",
+    "User"
   );
-
-  if (!user) {
-    throw new NotFoundError("User");
-  }
-
-  return user;
 }
 
 export async function createUser(
@@ -67,43 +64,62 @@ export async function createUser(
     updatedAt: timestamp,
   };
 
-  users.push(user);
+  const savedUser =
+    await putRecord(user);
 
   await createActivityLog({
     action: "create",
 
     targetEntity: "user",
 
-    targetId: user.id,
+    targetId: savedUser.id,
 
     userName:
       "System Administrator",
 
     description:
-      `Created user account: ${user.fullName}`,
+      `Created user account: ${savedUser.fullName}`,
   });
 
-  return user;
+  return savedUser;
 }
 
 export async function updateUser(
   id: string,
   input: UpdateUserAccountInput
 ): Promise<UserAccountRecord> {
-  const user =
+  const currentUser =
     await getUserById(id);
 
   const previousStatus =
-    user.status;
+    currentUser.status;
 
-  Object.assign(
-    user,
-    input,
-    {
-      updatedAt:
-        new Date().toISOString(),
-    }
-  );
+  const user: UserAccountRecord = {
+    ...currentUser,
+    fullName:
+      input.fullName ??
+      currentUser.fullName,
+    email:
+      input.email ??
+      currentUser.email,
+    phoneNumber:
+      input.phoneNumber ??
+      currentUser.phoneNumber,
+    role:
+      input.role ??
+      currentUser.role,
+    status:
+      input.status ??
+      currentUser.status,
+    organisation:
+      input.organisation ??
+      currentUser.organisation,
+    updatedAt:
+      new Date().toISOString(),
+  };
+
+  const savedUser =
+    await putRecord(user);
 
   const statusChanged =
     input.status !== undefined &&
@@ -116,55 +132,42 @@ export async function updateUser(
 
     targetEntity: "user",
 
-    targetId: user.id,
+    targetId: savedUser.id,
 
     userName:
       "System Administrator",
 
     description: statusChanged
-      ? `Changed user account status for ${user.fullName} from ${previousStatus} to ${user.status}`
-      : `Updated user account: ${user.fullName}`,
+      ? `Changed user account status for ${savedUser.fullName} from ${previousStatus} to ${savedUser.status}`
+      : `Updated user account: ${savedUser.fullName}`,
   });
 
-  return user;
+  return savedUser;
 }
 
 export async function deleteUser(
   id: string
 ): Promise<void> {
-  const index =
-    users.findIndex(
-      (item) =>
-        item.id === id
-    );
-
-  if (index === -1) {
-    throw new NotFoundError(
-      "User"
-    );
-  }
-
   const user =
-    users[index];
+    await getUserById(id);
 
-  users.splice(
-    index,
-    1
+  await deleteRecordById(
+    id,
+    "userAccount",
+    "User"
   );
 
-  if (user) {
-    await createActivityLog({
-      action: "delete",
+  await createActivityLog({
+    action: "delete",
 
-      targetEntity: "user",
+    targetEntity: "user",
 
-      targetId: user.id,
+    targetId: user.id,
 
-      userName:
-        "System Administrator",
+    userName:
+      "System Administrator",
 
-      description:
-        `Deleted user account: ${user.fullName}`,
-    });
-  }
+    description:
+      `Deleted user account: ${user.fullName}`,
+  });
 }

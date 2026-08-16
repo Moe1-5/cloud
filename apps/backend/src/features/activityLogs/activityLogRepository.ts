@@ -4,17 +4,18 @@ import type {
 } from "@ddac/shared";
 
 import { randomUUID } from "node:crypto";
-
-const activityLogs: ActivityLogRecord[] = [];
+import {
+  clearRecordsForTests,
+  listRecordsByEntity,
+  putRecord,
+} from "../../shared/dynamoRepository.js";
 
 export async function listActivityLogs(): Promise<
   ActivityLogRecord[]
 > {
-  return [...activityLogs].sort(
-    (left, right) =>
-      right.createdAt.localeCompare(
-        left.createdAt
-      )
+  return listRecordsByEntity<ActivityLogRecord>(
+    "activityLog",
+    "createdAt"
   );
 }
 
@@ -47,11 +48,9 @@ export async function createActivityLog(
       : {}),
   };
 
-  activityLogs.push(log);
-
-  return log;
+  return putRecord(log);
 }
 
 export function clearActivityLogs() {
-  activityLogs.length = 0;
+  clearRecordsForTests("activityLog");
 }

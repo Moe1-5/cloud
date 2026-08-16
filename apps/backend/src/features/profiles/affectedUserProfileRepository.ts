@@ -5,26 +5,16 @@ import type {
 } from "@ddac/shared";
 import { randomUUID } from "node:crypto";
 import { AppError, NotFoundError } from "../../shared/errors.js";
+import {
+  clearRecordsForTests,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord
+} from "../../shared/dynamoRepository.js";
 
-const INITIAL_PROFILES: AffectedUserProfileRecord[] = [
-  {
-    id: "b53162f1-4996-4e79-8839-3bb0767f0241",
-    entityType: "affected_user_profile",
-    fullName: "Aisha Rahman",
-    email: "aisha.rahman@example.com",
-    phone: "+60 12-555 0142",
-    address: "Taman Melawati, Kuala Lumpur",
-    householdSize: 4,
-    emergencyContact: "Imran Rahman - +60 12-555 0188",
-    createdAt: "2026-08-12T02:00:00.000Z",
-    updatedAt: "2026-08-12T02:00:00.000Z"
-  }
-];
-
-let profiles = INITIAL_PROFILES.map((profile) => ({ ...profile }));
-
-function assertUniqueEmail(email: string, excludedId?: string): void {
+async function assertUniqueEmail(email: string, excludedId?: string): Promise<void> {
   const normalizedEmail = email.toLowerCase();
+  const profiles = await listAffectedUserProfiles();
   const duplicateProfile = profiles.find(
     (profile) => profile.id !== excludedId && profile.email.toLowerCase() === normalizedEmail
   );
@@ -35,25 +25,25 @@ function assertUniqueEmail(email: string, excludedId?: string): void {
 }
 
 export async function listAffectedUserProfiles(): Promise<AffectedUserProfileRecord[]> {
-  return [...profiles]
-    .sort((left, right) => left.fullName.localeCompare(right.fullName))
-    .map((profile) => ({ ...profile }));
+  const profiles = await listRecordsByEntity<AffectedUserProfileRecord>(
+    "affected_user_profile",
+    "createdAt"
+  );
+  return profiles.sort((left, right) => left.fullName.localeCompare(right.fullName));
 }
 
 export async function getAffectedUserProfileById(id: string): Promise<AffectedUserProfileRecord> {
-  const profile = profiles.find((item) => item.id === id);
-
-  if (!profile) {
-    throw new NotFoundError("Affected-user profile");
-  }
-
-  return { ...profile };
+  return getRecordById<AffectedUserProfileRecord>(
+    id,
+    "affected_user_profile",
+    "Affected-user profile"
+  );
 }
 
 export async function createAffectedUserProfile(
   input: CreateAffectedUserProfileInput
 ): Promise<AffectedUserProfileRecord> {
-  assertUniqueEmail(input.email);
+  await assertUniqueEmail(input.email);
   const timestamp = new Date().toISOString();
   const profile: AffectedUserProfileRecord = {
     id: randomUUID(),
@@ -63,8 +53,7 @@ export async function createAffectedUserProfile(
     updatedAt: timestamp
   };
 
-  profiles = [...profiles, profile];
-  return { ...profile };
+  return putRecord(profile);
 }
 
 export async function updateAffectedUserProfile(
@@ -74,7 +63,7 @@ export async function updateAffectedUserProfile(
   const currentProfile = await getAffectedUserProfileById(id);
 
   if (input.email) {
-    assertUniqueEmail(input.email, id);
+    await assertUniqueEmail(input.email, id);
   }
 
   const updatedProfile: AffectedUserProfileRecord = {
@@ -88,10 +77,9 @@ export async function updateAffectedUserProfile(
     updatedAt: new Date().toISOString()
   };
 
-  profiles = profiles.map((profile) => (profile.id === id ? updatedProfile : profile));
-  return { ...updatedProfile };
+  return putRecord(updatedProfile);
 }
 
 export function resetAffectedUserProfilesForTests(): void {
-  profiles = INITIAL_PROFILES.map((profile) => ({ ...profile }));
+  clearRecordsForTests("affected_user_profile");
 }

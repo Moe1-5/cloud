@@ -10,6 +10,19 @@ describe("affected-user profile and emergency-request APIs", () => {
     resetEmergencyRequestsForTests();
   });
 
+  async function createAishaProfile(app: ReturnType<typeof createApp>) {
+    const response = await request(app).post("/api/affected-user-profiles").send({
+      fullName: "Aisha Rahman",
+      email: "aisha.rahman@example.com",
+      phone: "+60 12-555 0142",
+      address: "Taman Melawati, Kuala Lumpur",
+      householdSize: 4,
+      emergencyContact: "Imran Rahman - +60 12-555 0188"
+    });
+
+    return response.body.data as { id: string };
+  }
+
   it("registers and updates an affected-user profile", async () => {
     const app = createApp();
     const input = {
@@ -37,6 +50,7 @@ describe("affected-user profile and emergency-request APIs", () => {
 
   it("rejects a duplicate affected-user email", async () => {
     const app = createApp();
+    await createAishaProfile(app);
     const duplicate = await request(app).post("/api/affected-user-profiles").send({
       fullName: "Another User",
       email: "AISHA.RAHMAN@example.com",
@@ -51,7 +65,8 @@ describe("affected-user profile and emergency-request APIs", () => {
 
   it("lets an affected user submit, update, and cancel an eligible request", async () => {
     const app = createApp();
-    const requesterId = "b53162f1-4996-4e79-8839-3bb0767f0241";
+    const profile = await createAishaProfile(app);
+    const requesterId = profile.id;
     const input = {
       requesterId,
       assistanceType: "rescue",
@@ -86,7 +101,21 @@ describe("affected-user profile and emergency-request APIs", () => {
 
   it("enforces request ownership and affected-user edit status", async () => {
     const app = createApp();
-    const requestId = "d389f907-6f3f-4557-afc3-c860af0494ce";
+    const profile = await createAishaProfile(app);
+    const createdRequest = await request(app).post("/api/emergency-requests").send({
+      requesterId: profile.id,
+      assistanceType: "food_water",
+      description: "Household needs drinking water and shelf-stable food after road closure.",
+      location: "Taman Melawati, Kuala Lumpur",
+      peopleAffected: 4
+    });
+    const requestId = createdRequest.body.data.id as string;
+    await request(app)
+      .patch(`/api/emergency-requests/${requestId}/coordinator`)
+      .send({ status: "under_review" });
+    await request(app)
+      .patch(`/api/emergency-requests/${requestId}/coordinator`)
+      .send({ status: "assigned", assignedTo: "Nur Izzati - Relief Team 4" });
 
     const wrongOwner = await request(app).patch(`/api/emergency-requests/${requestId}`).send({
       requesterId: "28443d2e-9b48-428a-aa17-52b7d9d7d72e",
@@ -95,7 +124,7 @@ describe("affected-user profile and emergency-request APIs", () => {
     expect(wrongOwner.status).toBe(403);
 
     const assignedRequest = await request(app).patch(`/api/emergency-requests/${requestId}`).send({
-      requesterId: "b53162f1-4996-4e79-8839-3bb0767f0241",
+      requesterId: profile.id,
       description: "The assigned request should no longer be editable."
     });
     expect(assignedRequest.status).toBe(409);
@@ -103,7 +132,18 @@ describe("affected-user profile and emergency-request APIs", () => {
 
   it("supports coordinator review, priority, assignment, progress, and resolution", async () => {
     const app = createApp();
-    const requestId = "48c4c799-494b-4f9f-998c-0c85900ccb4d";
+    const profile = await createAishaProfile(app);
+    const createdRequest = await request(app).post("/api/emergency-requests").send({
+      requesterId: profile.id,
+      assistanceType: "medical",
+      description: "Elderly family member requires medication and a medical assessment.",
+      location: "Taman Melawati, Kuala Lumpur",
+      peopleAffected: 2
+    });
+    const requestId = createdRequest.body.data.id as string;
+    await request(app)
+      .patch(`/api/emergency-requests/${requestId}/coordinator`)
+      .send({ status: "under_review" });
 
     const assigned = await request(app)
       .patch(`/api/emergency-requests/${requestId}/coordinator`)
@@ -139,7 +179,8 @@ describe("affected-user profile and emergency-request APIs", () => {
 
   it("requires review and an officer before a request can be assigned", async () => {
     const app = createApp();
-    const requesterId = "b53162f1-4996-4e79-8839-3bb0767f0241";
+    const profile = await createAishaProfile(app);
+    const requesterId = profile.id;
     const created = await request(app).post("/api/emergency-requests").send({
       requesterId,
       assistanceType: "shelter",

@@ -30,7 +30,7 @@ describe("resource API", () => {
 
     const listed = await request(app).get("/api/resources");
     expect(listed.status).toBe(200);
-    expect(listed.body.data).toHaveLength(3);
+    expect(listed.body.data).toHaveLength(1);
 
     const read = await request(app).get(`/api/resources/${created.body.data.id}`);
     expect(read.status).toBe(200);
@@ -39,7 +39,15 @@ describe("resource API", () => {
 
   it("updates quantity, location, and derived stock state", async () => {
     const app = createApp();
-    const resourceId = "28443d2e-9b48-428a-aa17-52b7d9d7d72e";
+    const created = await request(app).post("/api/resources").send({
+      name: "Bottled drinking water",
+      category: "water",
+      quantity: 840,
+      unit: "cartons",
+      location: "Central Relief Warehouse",
+      reorderLevel: 250
+    });
+    const resourceId = created.body.data.id as string;
 
     const updated = await request(app).patch(`/api/resources/${resourceId}`).send({
       quantity: 200,
@@ -56,7 +64,15 @@ describe("resource API", () => {
 
   it("validates input and deletes an existing resource", async () => {
     const app = createApp();
-    const resourceId = "9a4abf2d-ab9f-4929-b798-b610c76b66fd";
+    const created = await request(app).post("/api/resources").send({
+      name: "Emergency medical kits",
+      category: "medical",
+      quantity: 36,
+      unit: "kits",
+      location: "Kuala Lumpur Operations Hub",
+      reorderLevel: 50
+    });
+    const resourceId = created.body.data.id as string;
 
     const invalid = await request(app).post("/api/resources").send({
       name: "A"

@@ -8,70 +8,12 @@ import type {
 import { randomUUID } from "node:crypto";
 import { AppError, NotFoundError } from "../../shared/errors.js";
 import { getAffectedUserProfileById } from "../profiles/affectedUserProfileRepository.js";
-
-const INITIAL_REQUESTS: EmergencyRequestRecord[] = [
-  {
-    id: "48c4c799-494b-4f9f-998c-0c85900ccb4d",
-    entityType: "emergency_request",
-    requesterId: "b53162f1-4996-4e79-8839-3bb0767f0241",
-    requesterName: "Aisha Rahman",
-    assistanceType: "medical",
-    description: "Elderly family member requires medication and a medical assessment.",
-    location: "Taman Melawati, Kuala Lumpur",
-    peopleAffected: 2,
-    priority: "high",
-    status: "under_review",
-    coordinatorNotes: "Confirm nearby mobile clinic availability.",
-    statusHistory: [
-      {
-        status: "submitted",
-        actor: "affected_user",
-        occurredAt: "2026-08-13T00:20:00.000Z"
-      },
-      {
-        status: "under_review",
-        actor: "coordinator",
-        occurredAt: "2026-08-13T00:50:00.000Z",
-        note: "Confirm nearby mobile clinic availability."
-      }
-    ],
-    createdAt: "2026-08-13T00:20:00.000Z",
-    updatedAt: "2026-08-13T00:50:00.000Z"
-  },
-  {
-    id: "d389f907-6f3f-4557-afc3-c860af0494ce",
-    entityType: "emergency_request",
-    requesterId: "b53162f1-4996-4e79-8839-3bb0767f0241",
-    requesterName: "Aisha Rahman",
-    assistanceType: "food_water",
-    description: "Household needs drinking water and shelf-stable food after road closure.",
-    location: "Taman Melawati, Kuala Lumpur",
-    peopleAffected: 4,
-    priority: "medium",
-    status: "assigned",
-    assignedTo: "Nur Izzati - Relief Team 4",
-    statusHistory: [
-      {
-        status: "submitted",
-        actor: "affected_user",
-        occurredAt: "2026-08-12T03:00:00.000Z"
-      },
-      {
-        status: "under_review",
-        actor: "coordinator",
-        occurredAt: "2026-08-12T04:15:00.000Z"
-      },
-      {
-        status: "assigned",
-        actor: "coordinator",
-        occurredAt: "2026-08-12T05:30:00.000Z",
-        note: "Assigned to Nur Izzati - Relief Team 4"
-      }
-    ],
-    createdAt: "2026-08-12T03:00:00.000Z",
-    updatedAt: "2026-08-12T05:30:00.000Z"
-  }
-];
+import {
+  clearRecordsForTests,
+  getRecordById,
+  listRecordsByEntity,
+  putRecord
+} from "../../shared/dynamoRepository.js";
 
 const ALLOWED_TRANSITIONS: Record<EmergencyRequestStatus, EmergencyRequestStatus[]> = {
   submitted: ["under_review"],
@@ -89,25 +31,22 @@ function cloneRequest(request: EmergencyRequestRecord): EmergencyRequestRecord {
   };
 }
 
-let requests = INITIAL_REQUESTS.map(cloneRequest);
-
 export async function listEmergencyRequests(
   requesterId?: string
 ): Promise<EmergencyRequestRecord[]> {
-  return [...requests]
+  const requests = await listRecordsByEntity<EmergencyRequestRecord>(
+    "emergency_request",
+    "updatedAt"
+  );
+  return requests
     .filter((request) => !requesterId || request.requesterId === requesterId)
-    .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
     .map(cloneRequest);
 }
 
 export async function getEmergencyRequestById(id: string): Promise<EmergencyRequestRecord> {
-  const request = requests.find((item) => item.id === id);
-
-  if (!request) {
-    throw new NotFoundError("Emergency request");
-  }
-
-  return cloneRequest(request);
+  return cloneRequest(
+    await getRecordById<EmergencyRequestRecord>(id, "emergency_request", "Emergency request")
+  );
 }
 
 export async function createEmergencyRequest(
@@ -137,8 +76,7 @@ export async function createEmergencyRequest(
     updatedAt: timestamp
   };
 
-  requests = [request, ...requests];
-  return cloneRequest(request);
+  return cloneRequest(await putRecord(request));
 }
 
 function assertAffectedUserCanChange(request: EmergencyRequestRecord, requesterId: string): void {
@@ -167,8 +105,7 @@ export async function updateEmergencyRequest(
     updatedAt: new Date().toISOString()
   };
 
-  requests = requests.map((request) => (request.id === id ? updatedRequest : request));
-  return cloneRequest(updatedRequest);
+  return cloneRequest(await putRecord(updatedRequest));
 }
 
 export async function cancelEmergencyRequest(
@@ -191,8 +128,7 @@ export async function cancelEmergencyRequest(
     updatedAt: new Date().toISOString()
   };
 
-  requests = requests.map((request) => (request.id === id ? cancelledRequest : request));
-  return cloneRequest(cancelledRequest);
+  return cloneRequest(await putRecord(cancelledRequest));
 }
 
 export async function updateEmergencyRequestByCoordinator(
@@ -249,10 +185,9 @@ export async function updateEmergencyRequestByCoordinator(
     updatedAt: timestamp
   };
 
-  requests = requests.map((request) => (request.id === id ? updatedRequest : request));
-  return cloneRequest(updatedRequest);
+  return cloneRequest(await putRecord(updatedRequest));
 }
 
 export function resetEmergencyRequestsForTests(): void {
-  requests = INITIAL_REQUESTS.map(cloneRequest);
+  clearRecordsForTests("emergency_request");
 }
