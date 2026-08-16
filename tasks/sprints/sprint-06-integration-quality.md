@@ -67,6 +67,18 @@
 - Why: The initial Vite failure explicitly reported an access-denied directory read, which required distinguishing a sandbox limitation from a project build defect.
 - Status: The production build passed. Combined with the prior lint, typecheck, and 15 passing backend tests, all local CI-equivalent gates pass under Node 22. The branch still requires CI confirmation under its configured Node 20 runtime after it is pushed.
 
+### 2026-08-16 - Validate the combined team integration branch
+
+- What changed: Merged the published Student 1 and Student 2 branches with the validated Student 3 branch into the isolated `integration/team-premerge-20260816` worktree, preserving all team API modules and adding role-based access to each frontend workspace.
+- Why: The branches must be tested together before any merge into main can be considered safe.
+- Status: Combined lint, typecheck, and all 15 backend tests pass. The final frontend production build stopped at one integration finding: `OrganisationManagement.tsx` imports `ORGANISATION_STATUS_VALUES`, but the shared package does not export that runtime value. The integration branch must not merge into main until that explicit export is added and a fresh validation pass succeeds.
+
+### 2026-08-16 - Complete clean combined-branch validation
+
+- What changed: Installed the lockfile-defined dependencies inside the integration worktree, which gives the combined branch its own workspace links instead of resolving packages through the parent checkout.
+- Why: The initial combined build used the parent checkout's Student 3-only shared-package build and incorrectly reported a missing organisation-status export that is present in the integrated source.
+- Status: The complete combined branch now passes lint, typecheck, all 15 backend tests, and the production build with no Git conflicts. It is ready for a local merge into main; remote CI should still confirm the configured Node 20 environment after a push.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".
