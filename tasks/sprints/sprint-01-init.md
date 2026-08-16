@@ -81,6 +81,11 @@
 - Why: The integrated frontend still used role-button development login and protected data routes did not require a real session.
 - Status: Root typecheck, backend tests, and production build pass; lint remains skipped by user direction. Cleanup audit found large ignored/generated folders under `tmp/`, `node_modules/`, and build `dist/` outputs, but no source folders were deleted during the auth change.
 
+### 2026-08-16 - Clarify frontend login routing
+- What changed: Added explicit frontend path replacement so unauthenticated users land on `/login`, logout returns to `/login`, and authenticated users are sent to a role-specific path after sign-in.
+- Why: An old Student 3 dev server could render protected workspaces at `/login`, making it unclear which branch and route were active.
+- Status: Root typecheck, backend tests, and production build pass; the auth-enabled app must be run from `tmp/main-merge-20260816` on `feature/dynamic-dynamodb-backend`.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

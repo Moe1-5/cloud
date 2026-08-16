@@ -1,13 +1,15 @@
 import type { AuthSession, UserAccountRecord } from "@ddac/shared";
 
 import { LogOut } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { clearStoredAuthSession, getStoredAuthSession } from "./api/authSession.js";
 import { AdminLayout } from "./layouts/AdminLayout.js";
 import { ReliefCoordinatorLayout } from "./layouts/ReliefCoordinatorLayout.js";
 import { EmergencyWorkspace } from "./features/emergency-requests/EmergencyWorkspace.js";
 import { LoginPage } from "./pages/LoginPage.js";
+
+const loginPath = "/login";
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<UserAccountRecord | null>(
@@ -16,12 +18,25 @@ export function App() {
 
   function handleLogin(session: AuthSession) {
     setCurrentUser(session.user);
+    replacePath(getRoleHomePath(session.user));
   }
 
   function handleLogout() {
     clearStoredAuthSession();
     setCurrentUser(null);
+    replacePath(loginPath);
   }
+
+  useEffect(() => {
+    if (!currentUser) {
+      replacePath(loginPath);
+      return;
+    }
+
+    if (window.location.pathname === loginPath) {
+      replacePath(getRoleHomePath(currentUser));
+    }
+  }, [currentUser]);
 
   if (!currentUser) {
     return <LoginPage onLogin={handleLogin} />;
@@ -55,4 +70,22 @@ export function App() {
 
 function AffectedUserPortal() {
   return <EmergencyWorkspace />;
+}
+
+function getRoleHomePath(user: UserAccountRecord): string {
+  if (user.role === "admin") {
+    return "/admin";
+  }
+
+  if (user.role === "reliefCoordinator") {
+    return "/relief-coordinator";
+  }
+
+  return "/affected-user";
+}
+
+function replacePath(path: string): void {
+  if (window.location.pathname !== path) {
+    window.history.replaceState(null, "", path);
+  }
 }
