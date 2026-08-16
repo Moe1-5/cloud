@@ -31,21 +31,42 @@ import { userRouter } from "./features/users/userRoutes.js";
 import { victimRouter } from "./features/victims/victimRoutes.js";
 import { volunteerRouter } from "./features/volunteers/volunteerRoutes.js";
 
-const __filename = fileURLToPath(
-  import.meta.url
-);
+const __filename = fileURLToPath(import.meta.url);
 
-const __dirname = path.dirname(
-  __filename
-);
+const __dirname = path.dirname(__filename);
 
 export function createApp() {
   const app = express();
 
-  // Security middleware
-  app.use(helmet());
+
+  // Security Middleware
+
+  //
+  // Elastic Beanstalk is currently running as a
+  // single-instance HTTP environment.
+  //
+  // Helmet normally adds:
+  //
+  // upgrade-insecure-requests
+  //
+  // which forces browsers to request JS/CSS over HTTPS.
+  // Since HTTPS is not configured yet, we disable only
+  // that directive while keeping Helmet's other protections.
+  //
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          upgradeInsecureRequests: null,
+        },
+      },
+    })
+  );
+
 
   // CORS
+
+
   app.use(
     cors({
       origin: env.CORS_ORIGIN,
@@ -53,122 +74,176 @@ export function createApp() {
     })
   );
 
-  // Allow JSON request bodies
+
+  // Request Body Parsing
+
+
   app.use(express.json());
 
-  // Request logging
+
+  // Request Logging
+
+
   app.use(
     pinoHttp({
       logger,
     })
   );
 
-  // ==========================================
+
   // Health Check
-  // ==========================================
 
-  app.get(
-    "/health",
-    (_request, response) => {
-      response.json({
-        data: {
-          status: "ok",
 
-          environment:
-            env.APP_ENV,
+  app.get("/health", (_request, response) => {
+    response.json({
+      data: {
+        status: "ok",
 
-          database: {
-            provider:
-              "dynamodb",
+        environment: env.APP_ENV,
 
-            tableName:
-              env.DYNAMODB_TABLE_NAME,
+        database: {
+          provider: "dynamodb",
 
-            region:
-              env.AWS_REGION,
-          },
+          tableName: env.DYNAMODB_TABLE_NAME,
+
+          region: env.AWS_REGION,
         },
-      });
-    }
-  );
+      },
+    });
+  });
 
-  // ==========================================
-  // API Routes
-  // ==========================================
 
-  app.use(
-    "/api/auth",
-    authRouter
-  );
+  // Authentication Routes
 
-  app.use(
-    "/api",
-    authenticateRequest
-  );
 
-  // Original starter route
-  app.use(
-    "/api/projects",
-    projectRouter
-  );
+  app.use("/api/auth", authRouter);
+
+  // Everything after /api/auth requires authentication
+  app.use("/api", authenticateRequest);
+
+
+  // Project Routes
+
+
+  app.use("/api/projects", projectRouter);
+
 
   // Disaster Information
-  app.use(
-    "/api/disasters",
-    disasterRouter
-  );
+
+
+  app.use("/api/disasters", disasterRouter);
+
 
   // Shelter / Evacuation Centre
-  app.use(
-    "/api/shelters",
-    shelterRouter
-  );
+
+
+  app.use("/api/shelters", shelterRouter);
+
 
   // Food Distribution + Medical Services
+
+
   app.use(
     "/api/relief-services",
     reliefServiceRouter
   );
 
+
   // User Account Management
-  app.use(
-    "/api/users",
-    userRouter
-  );
+
+
+  app.use("/api/users", userRouter);
+
 
   // Relief Organisation Management
+
+
   app.use(
     "/api/organisations",
     organisationRouter
   );
 
-  // System Activity Logs
+
+  // Activity Logs
+
+
   app.use(
     "/api/activity-logs",
     activityLogRouter
   );
 
-  // Victim and volunteer coordination
+
+  // Victim and Volunteer Coordination
+
+
   app.use("/api/victims", victimRouter);
-  app.use("/api/volunteers", volunteerRouter);
 
-  // Resource operations and emergency case management
-  app.use("/api/resources", resourceRouter);
-  app.use("/api/distributions", distributionRouter);
-  app.use("/api/relief-activities", reliefActivityRouter);
-  app.use("/api/affected-user-profiles", affectedUserProfileRouter);
-  app.use("/api/emergency-requests", emergencyRequestRouter);
-  app.use("/api/reports/student3-operational", student3ReportRouter);
+  app.use(
+    "/api/volunteers",
+    volunteerRouter
+  );
 
-  // ==========================================
-  // Static Frontend
-  // ==========================================
+
+  // Resource Operations
+
+
+  app.use(
+    "/api/resources",
+    resourceRouter
+  );
+
+
+  // Distribution Management
+
+
+  app.use(
+    "/api/distributions",
+    distributionRouter
+  );
+
+
+  // Relief Activities
+
+
+  app.use(
+    "/api/relief-activities",
+    reliefActivityRouter
+  );
+
+
+  // Affected User Profiles
+
+
+  app.use(
+    "/api/affected-user-profiles",
+    affectedUserProfileRouter
+  );
+
+
+  // Emergency Requests
+
+
+  app.use(
+    "/api/emergency-requests",
+    emergencyRequestRouter
+  );
+
+
+  // Reports
+
+
+  app.use(
+    "/api/reports/student3-operational",
+    student3ReportRouter
+  );
+
+
+  // Static React Frontend
+
 
   if (env.SERVE_STATIC_FRONTEND) {
     const frontendDistPath =
-      path.isAbsolute(
-        env.FRONTEND_DIST_PATH
-      )
+      path.isAbsolute(env.FRONTEND_DIST_PATH)
         ? env.FRONTEND_DIST_PATH
         : path.resolve(
             __dirname,
@@ -177,11 +252,10 @@ export function createApp() {
           );
 
     app.use(
-      express.static(
-        frontendDistPath
-      )
+      express.static(frontendDistPath)
     );
 
+    // React SPA fallback
     app.get(
       "*",
       (_request, response) => {
@@ -195,9 +269,9 @@ export function createApp() {
     );
   }
 
-  // ==========================================
+
   // Error Handling
-  // ==========================================
+
 
   app.use(
     (
@@ -207,19 +281,12 @@ export function createApp() {
       _next: express.NextFunction
     ) => {
       const normalizedError =
-        normalizeApiError(
-          error
-        );
+        normalizeApiError(error);
 
       const logMethod =
-        normalizedError.statusCode >=
-        500
-          ? logger.error.bind(
-              logger
-            )
-          : logger.warn.bind(
-              logger
-            );
+        normalizedError.statusCode >= 500
+          ? logger.error.bind(logger)
+          : logger.warn.bind(logger);
 
       logMethod(
         {
@@ -229,9 +296,7 @@ export function createApp() {
       );
 
       response
-        .status(
-          normalizedError.statusCode
-        )
+        .status(normalizedError.statusCode)
         .json({
           error: {
             message:

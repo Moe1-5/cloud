@@ -4,6 +4,8 @@ import { createApp } from "./app.js";
 
 const app = createApp();
 
-app.listen(env.APP_PORT, () => {
-  logger.info(`API server listening on port ${env.APP_PORT}`);
+const port = Number(process.env.PORT ?? env.APP_PORT);
+
+app.listen(port, () => {
+  logger.info(`API server listening on port ${port}`);
 });

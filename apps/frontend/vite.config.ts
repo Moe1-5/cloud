@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     envDir: rootEnvDir,
+    base: "./",
     plugins: [react()],
     server: {
       port: 5173,
