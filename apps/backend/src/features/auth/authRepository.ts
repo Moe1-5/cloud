@@ -1,6 +1,15 @@
-import type { AuthSession, LoginInput, UserAccountRecord } from "@ddac/shared";
+import type {
+  AffectedUserRegisterInput,
+  AuthSession,
+  LoginInput,
+  UserAccountRecord
+} from "@ddac/shared";
 import { env } from "../../config/env.js";
 import { AppError } from "../../shared/errors.js";
+import {
+  createAffectedUserProfile,
+  listAffectedUserProfiles
+} from "../profiles/affectedUserProfileRepository.js";
 import {
   createUser,
   getStoredUserByEmail,
@@ -58,7 +67,9 @@ async function ensureBootstrapAdmin(input: LoginInput): Promise<UserAccountRecor
 
 export async function login(input: LoginInput): Promise<AuthSession> {
   const bootstrapUser = await ensureBootstrapAdmin(input);
-  const storedUser = bootstrapUser ? await getStoredUserByEmail(bootstrapUser.email) : await getStoredUserByEmail(input.email);
+  const storedUser = bootstrapUser
+    ? await getStoredUserByEmail(bootstrapUser.email)
+    : await getStoredUserByEmail(input.email);
 
   if (!storedUser || storedUser.status !== "active" || !storedUser.passwordHash) {
     throw new AppError("Invalid email or password.", 401);
@@ -79,6 +90,54 @@ export async function login(input: LoginInput): Promise<AuthSession> {
     userId: storedUser.id,
     userName: storedUser.fullName,
     description: `${storedUser.fullName} signed in.`
+  });
+
+  return session;
+}
+
+export async function registerAffectedUser(input: AffectedUserRegisterInput): Promise<AuthSession> {
+  const normalizedEmail = input.email.trim().toLowerCase();
+  const existingUser = await getStoredUserByEmail(normalizedEmail);
+
+  if (existingUser) {
+    throw new AppError("A user account already uses this email address.", 409);
+  }
+
+  const existingProfile = (await listAffectedUserProfiles()).find(
+    (profile) => profile.email.toLowerCase() === normalizedEmail
+  );
+
+  if (existingProfile) {
+    throw new AppError("An affected-user profile already uses this email address.", 409);
+  }
+
+  const user = await createUser({
+    fullName: input.fullName,
+    email: normalizedEmail,
+    phoneNumber: input.phone,
+    role: "affectedUser",
+    status: "active",
+    organisation: "Community",
+    password: input.password
+  });
+
+  await createAffectedUserProfile({
+    fullName: input.fullName,
+    email: normalizedEmail,
+    phone: input.phone,
+    address: input.address,
+    householdSize: input.householdSize,
+    emergencyContact: input.emergencyContact
+  });
+
+  const session = createSession(user);
+
+  await createActivityLog({
+    action: "login",
+    targetEntity: "system",
+    userId: user.id,
+    userName: user.fullName,
+    description: `${user.fullName} registered as an affected user.`
   });
 
   return session;

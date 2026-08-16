@@ -1,14 +1,8 @@
-
 // Starter Project Types
 
-export const PROJECT_STATUS_VALUES = [
-  "planning",
-  "active",
-  "completed",
-] as const;
+export const PROJECT_STATUS_VALUES = ["planning", "active", "completed"] as const;
 
-export type ProjectStatus =
-  (typeof PROJECT_STATUS_VALUES)[number];
+export type ProjectStatus = (typeof PROJECT_STATUS_VALUES)[number];
 
 export interface ProjectRecord {
   id: string;
@@ -20,23 +14,14 @@ export interface ProjectRecord {
   updatedAt: string;
 }
 
-export type CreateProjectInput = Pick<
-  ProjectRecord,
-  "title" | "description" | "ownerName"
-> &
+export type CreateProjectInput = Pick<ProjectRecord, "title" | "description" | "ownerName"> &
   Partial<Pick<ProjectRecord, "status">>;
 
-type ProjectMutableFields = Pick<
-  ProjectRecord,
-  "title" | "description" | "ownerName" | "status"
->;
+type ProjectMutableFields = Pick<ProjectRecord, "title" | "description" | "ownerName" | "status">;
 
 export type UpdateProjectInput = {
-  [Key in keyof ProjectMutableFields]?:
-    | ProjectMutableFields[Key]
-    | undefined;
+  [Key in keyof ProjectMutableFields]?: ProjectMutableFields[Key] | undefined;
 };
-
 
 // API Response Types
 export interface ApiListResponse<T> {
@@ -58,27 +43,15 @@ export interface ApiErrorResponse {
   };
 }
 
-
 // Disaster Types
 
-export const DISASTER_SEVERITY_VALUES = [
-  "low",
-  "medium",
-  "high",
-  "critical",
-] as const;
+export const DISASTER_SEVERITY_VALUES = ["low", "medium", "high", "critical"] as const;
 
-export type DisasterSeverity =
-  (typeof DISASTER_SEVERITY_VALUES)[number];
+export type DisasterSeverity = (typeof DISASTER_SEVERITY_VALUES)[number];
 
-export const DISASTER_STATUS_VALUES = [
-  "active",
-  "monitoring",
-  "resolved",
-] as const;
+export const DISASTER_STATUS_VALUES = ["active", "monitoring", "resolved"] as const;
 
-export type DisasterStatus =
-  (typeof DISASTER_STATUS_VALUES)[number];
+export type DisasterStatus = (typeof DISASTER_STATUS_VALUES)[number];
 
 export interface DisasterRecord {
   id: string;
@@ -100,43 +73,24 @@ export interface DisasterRecord {
 
 export type CreateDisasterInput = Pick<
   DisasterRecord,
-  | "title"
-  | "disasterType"
-  | "location"
-  | "description"
-  | "severity"
-  | "startDate"
+  "title" | "disasterType" | "location" | "description" | "severity" | "startDate"
 > &
   Partial<Pick<DisasterRecord, "status">>;
 
 type DisasterMutableFields = Pick<
   DisasterRecord,
-  | "title"
-  | "disasterType"
-  | "location"
-  | "description"
-  | "severity"
-  | "status"
-  | "startDate"
+  "title" | "disasterType" | "location" | "description" | "severity" | "status" | "startDate"
 >;
 
 export type UpdateDisasterInput = {
-  [Key in keyof DisasterMutableFields]?:
-    | DisasterMutableFields[Key]
-    | undefined;
+  [Key in keyof DisasterMutableFields]?: DisasterMutableFields[Key] | undefined;
 };
-
 
 // Shelter Types
 
-export const SHELTER_STATUS_VALUES = [
-  "open",
-  "full",
-  "closed",
-] as const;
+export const SHELTER_STATUS_VALUES = ["open", "full", "closed"] as const;
 
-export type ShelterStatus =
-  (typeof SHELTER_STATUS_VALUES)[number];
+export type ShelterStatus = (typeof SHELTER_STATUS_VALUES)[number];
 
 export interface ShelterRecord {
   id: string;
@@ -160,50 +114,27 @@ export interface ShelterRecord {
 
 export type CreateShelterInput = Pick<
   ShelterRecord,
-  | "name"
-  | "location"
-  | "capacity"
-  | "currentOccupancy"
-  | "contactNumber"
-  | "notes"
+  "name" | "location" | "capacity" | "currentOccupancy" | "contactNumber" | "notes"
 > &
   Partial<Pick<ShelterRecord, "status">>;
 
 type ShelterMutableFields = Pick<
   ShelterRecord,
-  | "name"
-  | "location"
-  | "capacity"
-  | "currentOccupancy"
-  | "contactNumber"
-  | "status"
-  | "notes"
+  "name" | "location" | "capacity" | "currentOccupancy" | "contactNumber" | "status" | "notes"
 >;
 
 export type UpdateShelterInput = {
-  [Key in keyof ShelterMutableFields]?:
-    | ShelterMutableFields[Key]
-    | undefined;
+  [Key in keyof ShelterMutableFields]?: ShelterMutableFields[Key] | undefined;
 };
 
-
 // Relief Service Types
-export const RELIEF_SERVICE_TYPE_VALUES = [
-  "food",
-  "medical",
-] as const;
+export const RELIEF_SERVICE_TYPE_VALUES = ["food", "medical"] as const;
 
-export type ReliefServiceType =
-  (typeof RELIEF_SERVICE_TYPE_VALUES)[number];
+export type ReliefServiceType = (typeof RELIEF_SERVICE_TYPE_VALUES)[number];
 
-export const RELIEF_SERVICE_STATUS_VALUES = [
-  "available",
-  "limited",
-  "closed",
-] as const;
+export const RELIEF_SERVICE_STATUS_VALUES = ["available", "limited", "closed"] as const;
 
-export type ReliefServiceStatus =
-  (typeof RELIEF_SERVICE_STATUS_VALUES)[number];
+export type ReliefServiceStatus = (typeof RELIEF_SERVICE_STATUS_VALUES)[number];
 
 export interface ReliefServiceRecord {
   id: string;
@@ -227,16 +158,9 @@ export interface ReliefServiceRecord {
 
 export type CreateReliefServiceInput = Pick<
   ReliefServiceRecord,
-  | "name"
-  | "serviceType"
-  | "location"
-  | "description"
-  | "contactNumber"
-  | "operatingHours"
+  "name" | "serviceType" | "location" | "description" | "contactNumber" | "operatingHours"
 > &
-  Partial<
-    Pick<ReliefServiceRecord, "status">
-  >;
+  Partial<Pick<ReliefServiceRecord, "status">>;
 
 type ReliefServiceMutableFields = Pick<
   ReliefServiceRecord,
@@ -250,33 +174,21 @@ type ReliefServiceMutableFields = Pick<
 >;
 
 export type UpdateReliefServiceInput = {
-  [Key in keyof ReliefServiceMutableFields]?:
-    | ReliefServiceMutableFields[Key]
-    | undefined;
+  [Key in keyof ReliefServiceMutableFields]?: ReliefServiceMutableFields[Key] | undefined;
 };
-
 
 // User Account Types
 
 // These are the main system roles.
 // They should stay consistent throughout the system.
 
-export const USER_ROLE_VALUES = [
-  "admin",
-  "reliefCoordinator",
-  "affectedUser",
-] as const;
+export const USER_ROLE_VALUES = ["admin", "reliefCoordinator", "affectedUser"] as const;
 
-export type UserRole =
-  (typeof USER_ROLE_VALUES)[number];
+export type UserRole = (typeof USER_ROLE_VALUES)[number];
 
-export const USER_STATUS_VALUES = [
-  "active",
-  "inactive",
-] as const;
+export const USER_STATUS_VALUES = ["active", "inactive"] as const;
 
-export type UserStatus =
-  (typeof USER_STATUS_VALUES)[number];
+export type UserStatus = (typeof USER_STATUS_VALUES)[number];
 
 export interface UserAccountRecord {
   id: string;
@@ -297,40 +209,36 @@ export interface UserAccountRecord {
 
 export type CreateUserAccountInput = Pick<
   UserAccountRecord,
-  | "fullName"
-  | "email"
-  | "phoneNumber"
-  | "role"
-  | "organisation"
+  "fullName" | "email" | "phoneNumber" | "role" | "organisation"
 > &
-  Partial<
-    Pick<UserAccountRecord, "status">
-  >;
+  Partial<Pick<UserAccountRecord, "status">>;
 
 type UserAccountMutableFields = Pick<
   UserAccountRecord,
-  | "fullName"
-  | "email"
-  | "phoneNumber"
-  | "role"
-  | "status"
-  | "organisation"
+  "fullName" | "email" | "phoneNumber" | "role" | "status" | "organisation"
 >;
 
 export type UpdateUserAccountInput = {
-  [Key in keyof UserAccountMutableFields]?:
-    | UserAccountMutableFields[Key]
-    | undefined;
+  [Key in keyof UserAccountMutableFields]?: UserAccountMutableFields[Key] | undefined;
 };
 
-export type CreateUserAccountWithPasswordInput =
-  CreateUserAccountInput & {
-    password: string;
-  };
+export type CreateUserAccountWithPasswordInput = CreateUserAccountInput & {
+  password: string;
+};
 
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface AffectedUserRegisterInput {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+  householdSize: number;
+  emergencyContact: string;
 }
 
 export interface AuthSession {
@@ -338,7 +246,6 @@ export interface AuthSession {
   user: UserAccountRecord;
   expiresAt: string;
 }
-
 
 // Permissions
 
@@ -362,25 +269,20 @@ export const PERMISSION_VALUES = [
   // Affected User
   "viewDisasterInformation",
   "submitEmergencyRequest",
-  "manageOwnProfile",
+  "manageOwnProfile"
 ] as const;
 
-export type Permission =
-  (typeof PERMISSION_VALUES)[number];
-
+export type Permission = (typeof PERMISSION_VALUES)[number];
 
 // Default Permissions For Each Role
 
-export const ROLE_PERMISSIONS: Record<
-  UserRole,
-  Permission[]
-> = {
+export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   admin: [
     "manageUsers",
     "manageRoles",
     "manageOrganisations",
     "viewActivityLogs",
-    "viewSystemReports",
+    "viewSystemReports"
   ],
 
   reliefCoordinator: [
@@ -394,22 +296,14 @@ export const ROLE_PERMISSIONS: Record<
     "manageResources",
     "manageEmergencyRequests",
 
-    "viewSystemReports",
+    "viewSystemReports"
   ],
 
-  affectedUser: [
-    "viewDisasterInformation",
-    "submitEmergencyRequest",
-    "manageOwnProfile",
-  ],
+  affectedUser: ["viewDisasterInformation", "submitEmergencyRequest", "manageOwnProfile"]
 };
-export const ORGANISATION_STATUS_VALUES = [
-  "active",
-  "inactive",
-] as const;
+export const ORGANISATION_STATUS_VALUES = ["active", "inactive"] as const;
 
-export type OrganisationStatus =
-  (typeof ORGANISATION_STATUS_VALUES)[number];
+export type OrganisationStatus = (typeof ORGANISATION_STATUS_VALUES)[number];
 
 export interface ReliefOrganisationRecord {
   id: string;
@@ -429,36 +323,18 @@ export interface ReliefOrganisationRecord {
 
 export type CreateReliefOrganisationInput = Pick<
   ReliefOrganisationRecord,
-  | "name"
-  | "organisationType"
-  | "address"
-  | "contactNumber"
-  | "email"
+  "name" | "organisationType" | "address" | "contactNumber" | "email"
 > &
-  Partial<
-    Pick<
-      ReliefOrganisationRecord,
-      "status"
-    >
-  >;
+  Partial<Pick<ReliefOrganisationRecord, "status">>;
 
-type ReliefOrganisationMutableFields =
-  Pick<
-    ReliefOrganisationRecord,
-    | "name"
-    | "organisationType"
-    | "address"
-    | "contactNumber"
-    | "email"
-    | "status"
-  >;
+type ReliefOrganisationMutableFields = Pick<
+  ReliefOrganisationRecord,
+  "name" | "organisationType" | "address" | "contactNumber" | "email" | "status"
+>;
 
 export type UpdateReliefOrganisationInput = {
-  [Key in keyof ReliefOrganisationMutableFields]?:
-    | ReliefOrganisationMutableFields[Key]
-    | undefined;
+  [Key in keyof ReliefOrganisationMutableFields]?: ReliefOrganisationMutableFields[Key] | undefined;
 };
-
 
 // System Activity Log Types
 
@@ -468,11 +344,10 @@ export const ACTIVITY_ACTION_VALUES = [
   "delete",
   "login",
   "logout",
-  "statusChange",
+  "statusChange"
 ] as const;
 
-export type ActivityAction =
-  (typeof ACTIVITY_ACTION_VALUES)[number];
+export type ActivityAction = (typeof ACTIVITY_ACTION_VALUES)[number];
 
 export const ACTIVITY_ENTITY_VALUES = [
   "user",
@@ -480,11 +355,10 @@ export const ACTIVITY_ENTITY_VALUES = [
   "shelter",
   "reliefService",
   "organisation",
-  "system",
+  "system"
 ] as const;
 
-export type ActivityEntity =
-  (typeof ACTIVITY_ENTITY_VALUES)[number];
+export type ActivityEntity = (typeof ACTIVITY_ENTITY_VALUES)[number];
 
 export interface ActivityLogRecord {
   id: string;
@@ -517,14 +391,9 @@ export interface CreateActivityLogInput {
 
 // Victim and volunteer coordination types
 
-export const VICTIM_STATUS_VALUES = [
-  "registered",
-  "receiving_assistance",
-  "resolved",
-] as const;
+export const VICTIM_STATUS_VALUES = ["registered", "receiving_assistance", "resolved"] as const;
 
-export type VictimStatus =
-  (typeof VICTIM_STATUS_VALUES)[number];
+export type VictimStatus = (typeof VICTIM_STATUS_VALUES)[number];
 
 export interface AssistanceEntry {
   id: string;
@@ -548,42 +417,24 @@ export interface VictimRecord {
 
 export type CreateVictimInput = Pick<
   VictimRecord,
-  | "fullName"
-  | "identificationNumber"
-  | "phoneNumber"
-  | "location"
-  | "assistanceNeeds"
+  "fullName" | "identificationNumber" | "phoneNumber" | "location" | "assistanceNeeds"
 > &
   Partial<Pick<VictimRecord, "status">>;
 
 type VictimMutableFields = Pick<
   VictimRecord,
-  | "fullName"
-  | "phoneNumber"
-  | "location"
-  | "assistanceNeeds"
-  | "status"
+  "fullName" | "phoneNumber" | "location" | "assistanceNeeds" | "status"
 >;
 
 export type UpdateVictimInput = {
-  [Key in keyof VictimMutableFields]?:
-    | VictimMutableFields[Key]
-    | undefined;
+  [Key in keyof VictimMutableFields]?: VictimMutableFields[Key] | undefined;
 };
 
-export type AddAssistanceInput = Pick<
-  AssistanceEntry,
-  "description" | "providedBy"
->;
+export type AddAssistanceInput = Pick<AssistanceEntry, "description" | "providedBy">;
 
-export const VOLUNTEER_AVAILABILITY_VALUES = [
-  "available",
-  "assigned",
-  "unavailable",
-] as const;
+export const VOLUNTEER_AVAILABILITY_VALUES = ["available", "assigned", "unavailable"] as const;
 
-export type VolunteerAvailability =
-  (typeof VOLUNTEER_AVAILABILITY_VALUES)[number];
+export type VolunteerAvailability = (typeof VOLUNTEER_AVAILABILITY_VALUES)[number];
 
 export interface VolunteerRecord {
   id: string;
@@ -597,31 +448,28 @@ export interface VolunteerRecord {
   updatedAt: string;
 }
 
-export type CreateVolunteerInput = Pick<
-  VolunteerRecord,
-  "fullName" | "phoneNumber" | "skills"
-> &
+export type CreateVolunteerInput = Pick<VolunteerRecord, "fullName" | "phoneNumber" | "skills"> &
   Partial<Pick<VolunteerRecord, "availability">>;
 
 type VolunteerMutableFields = Pick<
   VolunteerRecord,
-  | "fullName"
-  | "phoneNumber"
-  | "skills"
-  | "availability"
-  | "assignedTask"
-  | "taskLocation"
+  "fullName" | "phoneNumber" | "skills" | "availability" | "assignedTask" | "taskLocation"
 >;
 
 export type UpdateVolunteerInput = {
-  [Key in keyof VolunteerMutableFields]?:
-    | VolunteerMutableFields[Key]
-    | undefined;
+  [Key in keyof VolunteerMutableFields]?: VolunteerMutableFields[Key] | undefined;
 };
 
 // Resource, distribution, and emergency operations types
 
-export const RESOURCE_CATEGORY_VALUES = ["food", "water", "medical", "shelter", "hygiene", "other"] as const;
+export const RESOURCE_CATEGORY_VALUES = [
+  "food",
+  "water",
+  "medical",
+  "shelter",
+  "hygiene",
+  "other"
+] as const;
 export type ResourceCategory = (typeof RESOURCE_CATEGORY_VALUES)[number];
 export const RESOURCE_STOCK_STATUS_VALUES = ["available", "low_stock", "out_of_stock"] as const;
 export type ResourceStockStatus = (typeof RESOURCE_STOCK_STATUS_VALUES)[number];
@@ -640,11 +488,24 @@ export interface ResourceRecord {
   updatedAt: string;
 }
 
-export type CreateResourceInput = Pick<ResourceRecord, "name" | "category" | "quantity" | "unit" | "location" | "reorderLevel">;
-type ResourceMutableFields = Pick<ResourceRecord, "name" | "category" | "quantity" | "unit" | "location" | "reorderLevel">;
-export type UpdateResourceInput = { [Key in keyof ResourceMutableFields]?: ResourceMutableFields[Key] | undefined };
+export type CreateResourceInput = Pick<
+  ResourceRecord,
+  "name" | "category" | "quantity" | "unit" | "location" | "reorderLevel"
+>;
+type ResourceMutableFields = Pick<
+  ResourceRecord,
+  "name" | "category" | "quantity" | "unit" | "location" | "reorderLevel"
+>;
+export type UpdateResourceInput = {
+  [Key in keyof ResourceMutableFields]?: ResourceMutableFields[Key] | undefined;
+};
 
-export const DISTRIBUTION_STATUS_VALUES = ["planned", "in_transit", "delivered", "cancelled"] as const;
+export const DISTRIBUTION_STATUS_VALUES = [
+  "planned",
+  "in_transit",
+  "delivered",
+  "cancelled"
+] as const;
 export type DistributionStatus = (typeof DISTRIBUTION_STATUS_VALUES)[number];
 
 export interface DistributionRecord {
@@ -664,7 +525,10 @@ export interface DistributionRecord {
   updatedAt: string;
 }
 
-export type CreateDistributionInput = Pick<DistributionRecord, "resourceId" | "quantity" | "destination" | "recipient" | "scheduledAt" | "notes">;
+export type CreateDistributionInput = Pick<
+  DistributionRecord,
+  "resourceId" | "quantity" | "destination" | "recipient" | "scheduledAt" | "notes"
+>;
 export type UpdateDistributionStatusInput = Pick<DistributionRecord, "status">;
 
 export const RELIEF_ACTIVITY_STATUS_VALUES = ["active", "attention", "completed"] as const;
@@ -707,14 +571,33 @@ export interface AffectedUserProfileRecord {
   updatedAt: string;
 }
 
-export type CreateAffectedUserProfileInput = Pick<AffectedUserProfileRecord, "fullName" | "email" | "phone" | "address" | "householdSize" | "emergencyContact">;
-export type UpdateAffectedUserProfileInput = { [Key in keyof CreateAffectedUserProfileInput]?: CreateAffectedUserProfileInput[Key] | undefined };
+export type CreateAffectedUserProfileInput = Pick<
+  AffectedUserProfileRecord,
+  "fullName" | "email" | "phone" | "address" | "householdSize" | "emergencyContact"
+>;
+export type UpdateAffectedUserProfileInput = {
+  [Key in keyof CreateAffectedUserProfileInput]?: CreateAffectedUserProfileInput[Key] | undefined;
+};
 
-export const ASSISTANCE_TYPE_VALUES = ["evacuation", "medical", "food_water", "shelter", "rescue", "other"] as const;
+export const ASSISTANCE_TYPE_VALUES = [
+  "evacuation",
+  "medical",
+  "food_water",
+  "shelter",
+  "rescue",
+  "other"
+] as const;
 export type AssistanceType = (typeof ASSISTANCE_TYPE_VALUES)[number];
 export const EMERGENCY_PRIORITY_VALUES = ["low", "medium", "high", "critical"] as const;
 export type EmergencyPriority = (typeof EMERGENCY_PRIORITY_VALUES)[number];
-export const EMERGENCY_REQUEST_STATUS_VALUES = ["submitted", "under_review", "assigned", "in_progress", "resolved", "cancelled"] as const;
+export const EMERGENCY_REQUEST_STATUS_VALUES = [
+  "submitted",
+  "under_review",
+  "assigned",
+  "in_progress",
+  "resolved",
+  "cancelled"
+] as const;
 export type EmergencyRequestStatus = (typeof EMERGENCY_REQUEST_STATUS_VALUES)[number];
 
 export interface EmergencyRequestStatusEvent {
@@ -742,16 +625,47 @@ export interface EmergencyRequestRecord {
   updatedAt: string;
 }
 
-export type CreateEmergencyRequestInput = Pick<EmergencyRequestRecord, "requesterId" | "assistanceType" | "description" | "location" | "peopleAffected">;
-type EmergencyRequestAffectedFields = Pick<EmergencyRequestRecord, "assistanceType" | "description" | "location" | "peopleAffected">;
-export type UpdateEmergencyRequestInput = Pick<EmergencyRequestRecord, "requesterId"> & { [Key in keyof EmergencyRequestAffectedFields]?: EmergencyRequestAffectedFields[Key] | undefined };
-type EmergencyRequestCoordinatorFields = Pick<EmergencyRequestRecord, "priority" | "status" | "assignedTo" | "coordinatorNotes">;
-export type CoordinatorEmergencyUpdateInput = { [Key in keyof EmergencyRequestCoordinatorFields]?: EmergencyRequestCoordinatorFields[Key] | undefined };
+export type CreateEmergencyRequestInput = Pick<
+  EmergencyRequestRecord,
+  "requesterId" | "assistanceType" | "description" | "location" | "peopleAffected"
+>;
+type EmergencyRequestAffectedFields = Pick<
+  EmergencyRequestRecord,
+  "assistanceType" | "description" | "location" | "peopleAffected"
+>;
+export type UpdateEmergencyRequestInput = Pick<EmergencyRequestRecord, "requesterId"> & {
+  [Key in keyof EmergencyRequestAffectedFields]?: EmergencyRequestAffectedFields[Key] | undefined;
+};
+type EmergencyRequestCoordinatorFields = Pick<
+  EmergencyRequestRecord,
+  "priority" | "status" | "assignedTo" | "coordinatorNotes"
+>;
+export type CoordinatorEmergencyUpdateInput = {
+  [Key in keyof EmergencyRequestCoordinatorFields]?:
+    EmergencyRequestCoordinatorFields[Key] | undefined;
+};
 
 export interface Student3OperationalReport {
   generatedAt: string;
-  inventory: { totalResources: number; stockAlerts: number; activeLocations: number; categoryCounts: Record<ResourceCategory, number> };
-  distributions: { total: number; active: number; delivered: number; cancelled: number; completionRate: number };
+  inventory: {
+    totalResources: number;
+    stockAlerts: number;
+    activeLocations: number;
+    categoryCounts: Record<ResourceCategory, number>;
+  };
+  distributions: {
+    total: number;
+    active: number;
+    delivered: number;
+    cancelled: number;
+    completionRate: number;
+  };
   affectedUsers: { registeredProfiles: number; representedHouseholdMembers: number };
-  emergencyRequests: { total: number; open: number; critical: number; unassigned: number; resolved: number };
+  emergencyRequests: {
+    total: number;
+    open: number;
+    critical: number;
+    unassigned: number;
+    resolved: number;
+  };
 }

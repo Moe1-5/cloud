@@ -10,6 +10,7 @@ import { EmergencyWorkspace } from "./features/emergency-requests/EmergencyWorks
 import { LoginPage } from "./pages/LoginPage.js";
 
 const loginPath = "/login";
+const registerPath = "/register";
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<UserAccountRecord | null>(
@@ -29,11 +30,13 @@ export function App() {
 
   useEffect(() => {
     if (!currentUser) {
-      replacePath(loginPath);
+      if (window.location.pathname !== loginPath && window.location.pathname !== registerPath) {
+        replacePath(loginPath);
+      }
       return;
     }
 
-    if (window.location.pathname === loginPath) {
+    if (window.location.pathname === loginPath || window.location.pathname === registerPath) {
       replacePath(getRoleHomePath(currentUser));
     }
   }, [currentUser]);

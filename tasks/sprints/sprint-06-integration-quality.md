@@ -121,6 +121,12 @@
 - Why: The operations report still overlapped the role navigation after the navigation hierarchy changed, and the same legacy offsets affected other shared workspaces.
 - Status: The live frontend hot-reloaded the changes and returns HTTP 200. Typecheck and the production build pass. Lint also passed before the user asked to skip further linting; no additional lint runs are planned for this design pass.
 
+### 2026-08-16 - Add affected-user registration and clearer database errors
+
+- What changed: Added a public affected-user registration flow at `/register`, kept sign-in at `/login`, and restyled the authentication screen with explicit form spacing, tab controls, and account-flow guidance. Added the backend registration endpoint, created matching affected-user profiles during registration, and converted DynamoDB failures into a clear database-configuration error.
+- Why: The app had authentication but no self-registration path for affected users, the login form spacing was visually broken, and DynamoDB connectivity failures surfaced as the generic `Unexpected server error`.
+- Status: Typecheck, 19 backend tests, and the production build pass. Lint remains intentionally skipped per the user's instruction.
+
 ---
 
 > When done: archive only after the user explicitly says "close sprint 6".
