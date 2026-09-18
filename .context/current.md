@@ -11,7 +11,7 @@
 ## Active Sprint
 **Sprint:** Team integration
 **Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
-**Blocking:** Capture final authenticated workflow, SNS-to-SQS/DLQ, CloudWatch/X-Ray, and performance evidence for both Task 2 microservices.
+**Blocking:** The configured AWS Academy CLI session is denied by `voc-cancel-cred`, preventing Elastic Beanstalk application creation and source upload; refresh the current lab's temporary credentials before the integrated web deployment and remaining Task 2 evidence can continue.
 
 ## Tech Stack
 

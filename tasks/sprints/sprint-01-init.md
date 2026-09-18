@@ -248,6 +248,12 @@
 - Why: The newly created Node.js 24 environment rejected the old Node 20 setting with `Unknown or duplicate parameter: NodeVersion`. Without a deployment build command, the TypeScript backend and React frontend would also not be present when `npm start` begins.
 - Status: The corrected source is ready to upload. The previous environment launch did not complete and should be terminated or recreated only after the AWS Academy credentials permit Elastic Beanstalk configuration access.
 
+### 2026-09-18 - Attempt clean integrated Elastic Beanstalk deployment
+
+- What changed: Verified that the failed environment is no longer present, prepared the committed Task 2 integrated source archive, and attempted to create a clean `ddac-disaster-relief` Elastic Beanstalk application in `us-east-1`.
+- Why: The prior Node.js 24 environment was unrecoverable after the obsolete `NodeVersion` validation error, so a clean deployment is the simplest safe recovery.
+- Status: No AWS resource was created. The current AWS Academy CLI session explicitly denies both `elasticbeanstalk:CreateApplication` and `s3:PutObject` through `voc-cancel-cred`; the learner lab credentials must be refreshed before creation and deployment can proceed.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
