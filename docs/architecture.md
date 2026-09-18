@@ -10,7 +10,8 @@
 | Frontend | React 19 + Vite + TypeScript                   | Fast local development, typed UI, production static build       |
 | Backend  | Node.js 20 + Express + TypeScript              | Simple AWS-compatible API runtime with explicit route ownership |
 | Database | Amazon DynamoDB via AWS SDK v3                 | Meets AWS cloud database requirement with low operational setup |
-| Auth     | Placeholder JWT env keys                       | Ready for role-based auth without pretending auth exists        |
+| Auth     | Signed bearer tokens with role claims          | Protects API access and supports service-level authorization    |
+| Serverless | Lambda + API Gateway + SNS/SQS                | Task 2 Victim/Volunteer service with asynchronous notifications |
 | Testing  | Vitest + Supertest                             | Lightweight backend behavior tests                              |
 | CI/CD    | GitHub Actions                                 | Runs install, lint, typecheck, tests, and build                 |
 | Deploy   | Elastic Beanstalk Procfile or EC2 Docker image | Matches assignment-approved AWS compute targets                 |
@@ -31,6 +32,7 @@ apps/
       features/users/         # Administrator user and role management
       features/victims/       # Victim records, search, needs, and assistance history
       features/volunteers/    # Volunteer availability and task assignment
+      features/people-serverless/ # Task 2 Lambda HTTP handler and SQS event processor
       features/resources/     # Student 3 relief-resource inventory API
       features/distributions/ # Student 3 supply movement and status API
       features/activities/    # Derived relief-activity operational feed
@@ -53,6 +55,7 @@ packages/
     src/                      # Cross-app TypeScript contracts
 infra/
   dynamodb/                   # AWS table definition scripts/templates
+  serverless/                  # CloudFormation for the Task 2 serverless microservice
 ```
 
 ## Key Patterns
@@ -61,8 +64,9 @@ infra/
 - **Data fetching:** Typed fetch wrapper in `apps/frontend/src/api/`.
 - **Error handling:** Backend normalizes errors before JSON responses; frontend shows request failures.
 - **Validation:** Zod validates API request params and bodies.
-- **Auth:** JWT configuration is reserved in env; implementation is intentionally future work.
-- **Local feature storage:** Development repositories use immutable in-memory records for live local workflows; DynamoDB persistence remains a Sprint 6 integration task.
+- **Auth:** The backend signs bearer tokens containing a user role. The Task 2 Lambda verifies those tokens and only permits configured coordinator roles.
+- **Persistence:** Backend production repositories use the shared DynamoDB table; Vitest uses an isolated in-memory store.
+- **Serverless people service:** API Gateway invokes the Victim/Volunteer Lambda, which reuses the existing validation and repository functions. Recording assistance publishes an SNS event to an SQS queue with a retry and dead-letter path.
 - **Distribution ledger:** Recording a distribution reserves inventory immediately; cancelling an active distribution restores it, and terminal statuses cannot transition again.
 - **Emergency cases:** Affected users may edit or cancel only submitted or under-review requests. Coordinators advance cases through review, assignment, response, and resolution while appending an immutable status timeline.
 - **Role boundary:** Profile and request ownership are validated now; authentication credentials and trusted role identity remain a shared Sprint 6 integration concern.
@@ -73,5 +77,8 @@ infra/
 | Service               | Purpose                                                        | Docs URL                                                                         |
 | --------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Amazon DynamoDB       | Cloud database for project records and CRUD demonstration      | https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/                |
+| AWS Lambda            | Serverless victim and volunteer API plus event processor       | https://docs.aws.amazon.com/lambda/latest/dg/                                    |
+| Amazon API Gateway    | HTTP endpoint for the Task 2 Lambda service                    | https://docs.aws.amazon.com/apigateway/latest/developerguide/                    |
+| Amazon SNS and SQS    | Assistance event delivery, retry, and dead-letter evidence     | https://docs.aws.amazon.com/sns/latest/dg/ and https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/ |
 | AWS Elastic Beanstalk | Approved managed compute deployment option                     | https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_nodejs.html |
 | Amazon EC2            | Approved virtual server deployment option, usually with Docker | https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/                             |

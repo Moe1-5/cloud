@@ -49,3 +49,10 @@
 **Decision:** A dedicated Student 3 operational report repository reads each feature through its public repository functions and returns one typed aggregate containing inventory, distribution, affected-user, and emergency-case metrics.
 **Alternatives:** Calculating metrics only in the browser was ruled out because it would duplicate business rules and require downloading every record; coupling the report directly to in-memory arrays was ruled out because it would prevent a clean storage migration.
 **Consequences:** The frontend consumes a stable reporting contract, repository storage can change independently, and the final shared dashboard can compose this report with Student 1 and Student 2 metrics.
+
+### [2026-09-18] Run Task 2 Victim and Volunteer operations as a Lambda service
+
+**Context:** Task 2 requires a serverless microservice without breaking the working Task 1 people-management interface or creating IAM roles unavailable in AWS Academy.
+**Decision:** Keep the existing shared contracts, Zod validation, and DynamoDB repository. Add an API Gateway HTTP API and Lambda adapter for the Victim and Volunteer routes, use the pre-provided LabRole by ARN, and publish assistance events from SNS to SQS with a consumer and dead-letter queue.
+**Alternatives:** Rewriting the frontend or duplicating repositories was ruled out because it would change Task 1 behavior and create conflicting business rules. Creating a custom IAM role was ruled out because the lab provides LabRole.
+**Consequences:** The browser can switch to the API Gateway URL without a UI redesign. Deployment requires LabRole permissions for DynamoDB, logs, tracing, SNS, and SQS; any lab restriction must be documented as deployment evidence.

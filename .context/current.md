@@ -11,19 +11,19 @@
 ## Active Sprint
 **Sprint:** Team integration
 **Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
-**Blocking:** Combined branch verification and shared authentication/DynamoDB decisions.
+**Blocking:** Capture final authenticated create/update and SNS-to-SQS/DLQ evidence for the Task 2 report and demo.
 
 ## Tech Stack
 
-React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
+React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, with a Task 2 Lambda/API Gateway Victim-Volunteer microservice and SNS/SQS messaging.
 
 ## Last Decision
-2026-08-16 Use an isolated integration branch before merging validated team work into main
+2026-09-18 Integrate Student 2 Lambda routes into the team-owned shared API Gateway and reuse the deployed Elastic Beanstalk JWT secret
 
 ## Status Flags
 
 - [x] Tests configured
 - [x] CI/CD active
-- [ ] Auth implemented
-- [ ] First deploy done
+- [x] Auth implemented
+- [x] First deploy done
 - [x] Database migrations tracked

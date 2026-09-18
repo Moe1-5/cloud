@@ -1,0 +1,213 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Task 2 Victim and Volunteer serverless microservice. Uses the AWS Academy LabRole supplied at deployment.
+
+Parameters:
+  LabRoleArn:
+    Type: String
+    Description: ARN of the existing AWS Academy LabRole. No IAM role is created by this template.
+  CodeS3Bucket:
+    Type: String
+    Description: S3 bucket holding the packaged backend Lambda artifact.
+  CodeS3Key:
+    Type: String
+    Description: S3 object key for the packaged backend Lambda artifact.
+  SharedApiId:
+    Type: String
+    Description: Existing team-owned HTTP API Gateway ID. Do not create a second shared API.
+  DynamoDbTableName:
+    Type: String
+    Default: ddac-projects
+  JwtSecret:
+    Type: String
+    NoEcho: true
+  JwtExpiresIn:
+    Type: String
+    Default: 7d
+  AllowedRoles:
+    Type: String
+    Default: admin,reliefCoordinator
+
+Resources:
+  VictimVolunteerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: victim-volunteer-service
+      Runtime: nodejs20.x
+      Handler: features/people-serverless/handler.handler
+      Role: !Ref LabRoleArn
+      Timeout: 15
+      MemorySize: 256
+      TracingConfig:
+        Mode: Active
+      Code:
+        S3Bucket: !Ref CodeS3Bucket
+        S3Key: !Ref CodeS3Key
+      Environment:
+        Variables:
+          APP_ENV: production
+          DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
+          JWT_SECRET: !Ref JwtSecret
+          JWT_EXPIRES_IN: !Ref JwtExpiresIn
+          SERVERLESS_SERVICE_NAME: victim-volunteer-service
+          SERVERLESS_ALLOWED_ROLES: !Ref AllowedRoles
+          VICTIM_VOLUNTEER_EVENTS_TOPIC_ARN: !Ref VictimVolunteerEventsTopic
+
+  VictimVolunteerIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref SharedApiId
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt VictimVolunteerFunction.Arn
+      PayloadFormatVersion: "2.0"
+
+  VictimRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: GET /api/victims
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  CreateVictimRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: POST /api/victims
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  VictimChildRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: GET /api/victims/{id}
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  UpdateVictimRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: PATCH /api/victims/{id}
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  AddVictimAssistanceRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: POST /api/victims/{id}/assistance
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  VolunteerRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: GET /api/volunteers
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  CreateVolunteerRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: POST /api/volunteers
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  VolunteerChildRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SharedApiId
+      RouteKey: PATCH /api/volunteers/{id}
+      Target: !Join ["/", [integrations, !Ref VictimVolunteerIntegration]]
+
+  ApiInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref VictimVolunteerFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${SharedApiId}/*/*
+
+  VictimVolunteerEventsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: victim-volunteer-events
+
+  VictimVolunteerDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: victim-volunteer-events-dlq
+      MessageRetentionPeriod: 1209600
+
+  VictimVolunteerEventQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: victim-volunteer-events
+      VisibilityTimeout: 60
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt VictimVolunteerDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  EventQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues: [!Ref VictimVolunteerEventQueue]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: !GetAtt VictimVolunteerEventQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref VictimVolunteerEventsTopic
+
+  EventQueueSubscription:
+    Type: AWS::SNS::Subscription
+    DependsOn: EventQueuePolicy
+    Properties:
+      Protocol: sqs
+      TopicArn: !Ref VictimVolunteerEventsTopic
+      Endpoint: !GetAtt VictimVolunteerEventQueue.Arn
+      RawMessageDelivery: false
+
+  VictimVolunteerEventProcessor:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: victim-volunteer-event-processor
+      Runtime: nodejs20.x
+      Handler: features/people-serverless/worker.handler
+      Role: !Ref LabRoleArn
+      Timeout: 15
+      MemorySize: 128
+      TracingConfig:
+        Mode: Active
+      Code:
+        S3Bucket: !Ref CodeS3Bucket
+        S3Key: !Ref CodeS3Key
+      Environment:
+        Variables:
+          APP_ENV: production
+          DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
+          JWT_SECRET: !Ref JwtSecret
+          SERVERLESS_SERVICE_NAME: victim-volunteer-event-processor
+          SIMULATE_EVENT_PROCESSING_FAILURE: "false"
+
+  EventProcessorMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt VictimVolunteerEventQueue.Arn
+      FunctionName: !Ref VictimVolunteerEventProcessor
+      BatchSize: 10
+      FunctionResponseTypes: [ReportBatchItemFailures]
+
+Outputs:
+  ApiBaseUrl:
+    Description: HTTP API base URL for the frontend VITE_API_BASE_URL value.
+    Value: !Sub https://${SharedApiId}.execute-api.${AWS::Region}.amazonaws.com
+  VictimVolunteerFunctionName:
+    Value: !Ref VictimVolunteerFunction
+  EventsTopicArn:
+    Value: !Ref VictimVolunteerEventsTopic
+  EventQueueUrl:
+    Value: !Ref VictimVolunteerEventQueue
+  DeadLetterQueueUrl:
+    Value: !Ref VictimVolunteerDeadLetterQueue

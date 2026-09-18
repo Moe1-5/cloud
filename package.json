@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "test": "npm run build --workspace packages/shared && npm run test --workspace apps/backend",
     "typecheck": "npm run build --workspace packages/shared && npm run typecheck --workspace apps/backend && npm run typecheck --workspace apps/frontend",
+    "package:task2-serverless": "npm run build --workspace packages/shared && npm run build --workspace apps/backend && node scripts/package-task2-serverless.mjs",
     "format": "prettier --write ."
   },
   "devDependencies": {

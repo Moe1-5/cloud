@@ -10,6 +10,7 @@
 | Tech stack, folder structure, patterns | `architecture.md`     | Framework choices, feature layout, resource, distribution, and emergency-case patterns  |
 | Decision log (ADR)                     | `decisions.md`        | Append-only record of architectural, inventory-ledger, and emergency-workflow decisions |
 | AWS deployment                         | `aws-deployment.md`   | DynamoDB, Elastic Beanstalk, and EC2 deployment steps                                   |
+| Task 2 serverless people service        | `task2-serverless-victim-volunteer.md` | Lambda, API Gateway, LabRole deployment, SNS/SQS, and evidence checklist |
 | Student 3 integration handoff          | `student3-handoff.md` | Implemented scope, API surface, verification, dependencies, and merge guidance          |
 
 ---

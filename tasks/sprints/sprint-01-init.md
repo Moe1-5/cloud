@@ -106,6 +106,48 @@
 - Why: The user requested linting to be fixed after the earlier lint skip, and ESLint reported 11 unused-variable errors across backend repositories and the shared request helper.
 - Status: Lint passes. Typecheck passes. All 19 backend tests pass. The production build passes when run outside the sandbox to avoid the known Vite config read restriction.
 
+### 2026-09-18 - Add Task 2 serverless people-service foundation
+
+- What changed: Added the Victim/Volunteer Lambda HTTP adapter, SQS event processor, SNS publisher, API Gateway and LabRole CloudFormation template, deployment evidence guide, environment configuration, and handler tests.
+- Why: Student 2 needs the approved Task 2 serverless microservice while preserving the existing Task 1 frontend routes, validation, and DynamoDB repository.
+- Status: Typecheck, lint, and all 21 backend tests pass with a test-only valid JWT secret. AWS Academy deployment and CloudWatch/DynamoDB evidence remain pending.
+
+### 2026-09-18 - Prepare Task 2 AWS deployment
+
+- What changed: Verified the AWS Academy default profile, LabRole, us-east-1 DynamoDB table, and an available S3 bucket. Added a repeatable Lambda packaging script and ignored generated deployment artifacts.
+- Why: The Task 2 Lambda artifact must contain compiled backend code and production dependencies before it can be uploaded and deployed with LabRole.
+- Status: Backend compilation completed. Production dependency installation into the generated artifact was blocked by the Codex service usage limit before any AWS resource was created.
+
+### 2026-09-18 - Diagnose first Task 2 CloudFormation deployment
+
+- What changed: Uploaded the packaged Lambda artifact to the AWS Academy S3 deployment bucket and inspected the failed stack event history.
+- Why: CloudFormation rolled back because Lambda reserves `AWS_REGION`; Lambda provides that value automatically, so the template must not configure it.
+- Status: The failed stack is rolling back. The template now removes the unsupported setting; clean recreation and deployed-service verification remain pending.
+
+### 2026-09-18 - Deploy Task 2 Victim/Volunteer serverless service
+
+- What changed: Uploaded the Lambda ZIP to the AWS Academy S3 bucket and deployed `g28-victim-volunteer-serverless` in us-east-1 with API Gateway, two LabRole Lambda functions, DynamoDB configuration, SNS, SQS, a three-receive DLQ policy, CloudWatch, and X-Ray.
+- Why: Student 2's Task 2 work requires a deployed serverless Victim/Volunteer microservice with messaging, resilience, and observability evidence.
+- Status: Stack creation completed. A deployed unauthenticated API call returned the expected 401 response and logged its request ID, duration, and X-Ray trace. SNS-to-SQS subscription and DLQ configuration are verified. Authenticated data and assistance-event tests remain pending shared JWT alignment and a valid coordinator token.
+
+### 2026-09-18 - Prepare approved shared API Gateway migration
+
+- What changed: Replaced the dedicated API Gateway and broad `ANY` routes in the Task 2 CloudFormation template with explicit HTTP routes targeting the team-owned shared API Gateway through a `SharedApiId` parameter.
+- Why: The Cloud Platform handover confirms `ddac-disaster-relief-api` is the sole shared HTTP API; Student 2 must integrate routes there rather than retain a duplicate gateway.
+- Status: Looth approved the migration. AWS Academy currently returns an explicit `voc-cancel-cred` deny for API Gateway operations, so the live stack update is pending refreshed service credentials.
+
+### 2026-09-18 - Validate shared-route compatibility
+
+- What changed: Updated the Lambda handler to decode frontend URL-encoded IDs before route dispatch and added a regression test for encoded victim update paths. Excluded generated Lambda package artifacts from ESLint.
+- Why: Existing frontend requests encode `victim#` IDs as `victim%23`; API Gateway forwards the raw path, which requires decoding before existing validation can be reused.
+- Status: Typecheck, three Task 2 serverless handler tests, lint, and whitespace checks pass. Live shared-API deployment remains blocked until refreshed AWS Academy service credentials remove the `voc-cancel-cred` deny.
+
+### 2026-09-18 - Migrate Task 2 routes to the team shared API
+
+- What changed: Updated the Task 2 stack to use the live `ddac-disaster-relief-api` ID, attached all eight explicit victim/volunteer routes to its Lambda integration, reused the Elastic Beanstalk JWT secret, and removed the duplicate dedicated API Gateway. Added both Task 2 Lambda functions to the shared CloudWatch dashboard.
+- Why: Looth approved the integration and the team handover requires one shared API Gateway, shared authentication, and final Lambda monitoring.
+- Status: CloudFormation update completed. An authenticated shared API `GET /api/victims` request returned 200 and DynamoDB records. Dashboard validation passed. SNS-to-SQS/DLQ success and controlled-failure evidence remain for final testing.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

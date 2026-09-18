@@ -19,6 +19,16 @@ const envSchema = z.object({
   AWS_REGION: z.string().min(1).default("ap-southeast-1"),
   DYNAMODB_TABLE_NAME: z.string().min(1).default("ddac-projects"),
   DYNAMODB_ENDPOINT: z.preprocess(emptyStringToUndefined, z.string().url().optional()),
+  SERVERLESS_SERVICE_NAME: z.string().min(1).default("victim-volunteer-service"),
+  SERVERLESS_ALLOWED_ROLES: z.string().min(1).default("admin,reliefCoordinator"),
+  VICTIM_VOLUNTEER_EVENTS_TOPIC_ARN: z.preprocess(
+    emptyStringToUndefined,
+    z.string().min(1).optional()
+  ),
+  SIMULATE_EVENT_PROCESSING_FAILURE: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
   JWT_SECRET: z.string().min(16).default("development-only-secret-change-before-production"),
   JWT_EXPIRES_IN: z.string().min(1).default("7d"),
   AUTH_BOOTSTRAP_EMAIL: z.string().email().default("admin@example.com"),

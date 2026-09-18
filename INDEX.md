@@ -21,8 +21,11 @@
 | Backend API                              | `apps/backend/`                                |
 | Shared TypeScript contracts              | `packages/shared/`                             |
 | DynamoDB table definition                | `infra/dynamodb/projects-table.json`           |
+| Task 2 serverless infrastructure         | `infra/serverless/victim-volunteer-service.yaml` |
+| Task 2 monitoring dashboard              | `infra/monitoring/ddac-dashboard.json`            |
 | Env variable template                    | `.env.example`                                 |
 | CI pipeline                              | `.github/workflows/ci.yml`                     |
+| Task 2 Lambda packaging                  | `scripts/package-task2-serverless.mjs`         |
 
 ---
 
@@ -63,6 +66,7 @@
 | `apps/backend/src/features/disasters/`           | Disaster, shelter, and relief-service administration APIs.                              |
 | `apps/backend/src/features/victims/`             | Victim records, assistance history, and search API.                                     |
 | `apps/backend/src/features/volunteers/`          | Volunteer availability and task-assignment API.                                         |
+| `apps/backend/src/features/people-serverless/`   | Task 2 Lambda HTTP adapter, SNS publisher, and SQS event processor.                    |
 | `apps/backend/src/features/resources/`           | Student 3 relief-resource validation, routes, and local immutable repository.           |
 | `apps/backend/src/features/distributions/`       | Student 3 distribution validation, guarded status workflow, and inventory reservation.  |
 | `apps/backend/src/features/activities/`          | Derived operational activity feed and summary API.                                      |
@@ -77,6 +81,7 @@
 | `apps/backend/tests/emergencyRequests.test.ts`   | Profile, ownership, public request, and coordinator workflow coverage.                  |
 | `apps/backend/tests/reports.test.ts`             | Student 3 operational-report aggregation coverage.                                      |
 | `apps/backend/tests/people.test.ts`              | Victim and volunteer local-workflow coverage without AWS credentials.                   |
+| `apps/backend/tests/peopleServerless.test.ts`    | Task 2 Lambda authentication, authorization, validation, and API contract coverage.    |
 | `apps/frontend/`                                 | Role-aware Vite React frontend for all team coordination workflows.                     |
 | `apps/frontend/public/favicon.svg`               | ReliefOps teal, mint, and white browser identity mark.                                  |
 | `apps/frontend/src/layouts/RoleNavigation.tsx`   | Shared context-based role navigation inserted beneath each page hero.                   |
@@ -102,6 +107,8 @@
 | File / Folder                        | What's inside                                                    |
 | ------------------------------------ | ---------------------------------------------------------------- |
 | `infra/dynamodb/projects-table.json` | AWS CLI table definition for the DynamoDB project records table. |
+| `infra/serverless/victim-volunteer-service.yaml` | CloudFormation API Gateway, Lambda, SNS, SQS, DLQ, and LabRole references. |
+| `infra/monitoring/ddac-dashboard.json` | Shared CloudWatch dashboard configuration including Task 2 Lambda metrics. |
 
 ---
 
@@ -114,6 +121,7 @@
 | `decisions.md`        | Append-only Architecture Decision Record log.                                      |
 | `aws-deployment.md`   | DynamoDB, Elastic Beanstalk, and EC2 deployment guide.                             |
 | `student3-handoff.md` | Student 3 scope, APIs, verification evidence, and controlled integration guidance. |
+| `task2-serverless-victim-volunteer.md` | Student 2 serverless scope, LabRole deployment, API, messaging, and evidence checklist. |
 
 ---
 
@@ -142,6 +150,7 @@
 | ----------------------------------------- | ------------------------------------------------------------ |
 | `scripts/sprint-log/record-edit.mjs`      | PostToolUse hook that records source edits.                  |
 | `scripts/sprint-log/check-sprint-log.mjs` | Stop hook that checks sprint log updates after source edits. |
+| `scripts/package-task2-serverless.mjs` | Builds the Task 2 Lambda artifact with production dependencies. |
 
 ---
 

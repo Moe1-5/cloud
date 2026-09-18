@@ -92,4 +92,5 @@ Cargo.lock
 *.bak
 .cache/
 tmp/
+artifacts/
 .turbo/

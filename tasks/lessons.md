@@ -21,6 +21,12 @@
 
 <!-- Add new lessons here -->
 
+### 2026-09-18 - Use the AWS Academy LabRole
+
+**Problem:** The initial Task 2 implementation plan referred generally to IAM roles even though this lab provides a fixed LabRole.
+**Rule:** For this project, infrastructure must reference the supplied LabRole and must not create or modify IAM roles unless the user explicitly authorizes it.
+**Why:** AWS Academy lab permissions are controlled by the course environment, and an unnecessary custom role can make deployment fail.
+
 ### 2026-08-16 - Restore lint as soon as the user asks for it
 
 **Problem:** Linting had previously been skipped by user direction, leaving unused imports and unused destructuring variables in the integrated code.
