@@ -11,14 +11,14 @@
 ## Active Sprint
 **Sprint:** Team integration
 **Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
-**Blocking:** The configured AWS Academy CLI session is denied by `voc-cancel-cred`, preventing Elastic Beanstalk application creation and source upload; refresh the current lab's temporary credentials before the integrated web deployment and remaining Task 2 evidence can continue.
+**Blocking:** Capture final authenticated workflow, SNS-to-SQS/DLQ, CloudWatch/X-Ray, and performance evidence for both Task 2 microservices.
 
 ## Tech Stack
 
 React 19 + Vite + Express + TypeScript + DynamoDB, with the Task 1 API on Elastic Beanstalk or EC2 and Node.js 24 Lambda microservices behind the shared API Gateway using SNS, SQS, CloudWatch, and X-Ray.
 
 ## Last Decision
-2026-09-18 Integrate the victim/volunteer and emergency-request Lambdas through Looth's shared API Gateway, standardizing both Lambda runtimes on Node.js 24
+2026-09-18 Deploy the integrated frontend and Task 1 backend to the existing healthy Node.js 24 Elastic Beanstalk environment, routing both Task 2 workflows through Looth's shared API Gateway
 
 ## Status Flags
 

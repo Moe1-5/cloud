@@ -21,6 +21,12 @@
 
 <!-- Add new lessons here -->
 
+### 2026-09-18 - Do not treat an empty AWS lookup under stale credentials as proof of absence
+
+**Problem:** An Elastic Beanstalk lookup made with a cancelled AWS Academy CLI session appeared empty, leading to the incorrect conclusion that no existing healthy environment was present.
+**Rule:** Before declaring an AWS resource absent, confirm the temporary session permits the relevant describe operation, refresh expired Academy credentials, and repeat the exact resource lookup in the agreed region.
+**Why:** Reusing a healthy shared environment is safer and faster than creating duplicate infrastructure, and stale sessions can provide misleading or incomplete results.
+
 ### 2026-09-18 - Use the AWS Academy LabRole
 
 **Problem:** The initial Task 2 implementation plan referred generally to IAM roles even though this lab provides a fixed LabRole.

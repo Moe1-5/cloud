@@ -254,6 +254,12 @@
 - Why: The prior Node.js 24 environment was unrecoverable after the obsolete `NodeVersion` validation error, so a clean deployment is the simplest safe recovery.
 - Status: No AWS resource was created. The current AWS Academy CLI session explicitly denies both `elasticbeanstalk:CreateApplication` and `s3:PutObject` through `voc-cancel-cred`; the learner lab credentials must be refreshed before creation and deployment can proceed.
 
+### 2026-09-18 - Deploy the complete Task 2 integration to Elastic Beanstalk
+
+- What changed: Refreshed the AWS Academy session, discovered and reused the healthy `ddac-disaster-relief-env` Node.js 24 environment, published application version `task2-integrated-5273765`, and configured the deployed frontend to route both Musleh's emergency workflow and Mehrab's victim/volunteer workflow through the shared API Gateway. The environment also uses `ddac-projects`, `LabInstanceProfile`, `LabRole`, and the existing Lambda-compatible JWT configuration.
+- Why: The team needs one deployable web application that preserves the Task 1 backend while invoking both independently deployed Task 2 Lambda services, without duplicating the existing Elastic Beanstalk infrastructure.
+- Status: AWS reports the environment `Ready`, `Green`, and `Ok`. A single live smoke-test pass confirmed HTTP 200 for `/health`, `/`, and `/runtime-config.js`, and confirmed that runtime configuration contains the shared Task 2 API Gateway URL. Authenticated workflow, messaging, DLQ, monitoring, and performance evidence remain separate final verification work.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
