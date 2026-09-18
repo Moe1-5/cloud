@@ -1,13 +1,9 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
 import { z } from "zod";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootEnvPath = path.resolve(__dirname, "../../../../.env");
-
-config({ path: rootEnvPath });
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  config({ path: `${process.cwd()}/.env` });
+}
 
 const emptyStringToUndefined = (value: unknown) => (value === "" ? undefined : value);
 

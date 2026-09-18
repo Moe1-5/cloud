@@ -21,6 +21,12 @@
 
 <!-- Add new lessons here -->
 
+### 2026-09-18 - Bundle Lambda dependencies in CommonJS when they use dynamic Node loading
+
+**Problem:** The emergency Lambda's ES-module bundle failed at startup because a bundled dependency dynamically required Node's `fs` module, which esbuild's ESM compatibility shim does not support.
+**Rule:** Build this Node.js Lambda entry point as a CommonJS `.js` bundle and test the exact artifact with Node before uploading it to Lambda.
+**Why:** Lambda must load the handler before any API route can run; a valid TypeScript build does not prove an ESM bundle is compatible with all runtime dependencies.
+
 ### 2026-09-18 - Declare the Lambda proxy invocation method explicitly
 
 **Problem:** The HTTP API Lambda proxy integration omitted `IntegrationMethod`, leaving the deployed API returning a generic HTTP 500 even after the missing handler package was corrected.

@@ -165,6 +165,18 @@
 - Why: The user requested the submission-ready Word contribution before a separate diagnostic of the post-package HTTP 500 response; AWS's Lambda proxy integration example uses `POST`, while the project template had omitted the method.
 - Status: The DOCX is a valid OpenXML file and the corrected SAM template validates and builds. The integration-method diagnosis remains an inference until the Academy Learner Lab is restarted, credentials are refreshed, the stack is redeployed, and a new one-pass API check returns the expected structured HTTP 401.
 
+### 2026-09-18 - Fix Lambda ES-module startup incompatibility
+
+- What changed: Changed the emergency Lambda esbuild output from ES module to CommonJS, generated a deployable CommonJS package manifest, made environment loading safe for the Lambda runtime, and updated the diagnostic evidence.
+- Why: Lambda console testing reported `Dynamic require of "fs" is not supported` from the bundled `.mjs` artifact, preventing the handler from initializing.
+- Status: The exact CommonJS production handler loads successfully with Node.js and SAM builds the deployment artifact successfully. The cloud package still needs deployment before API Gateway, DynamoDB, SQS, and monitoring tests can continue.
+
+### 2026-09-18 - Upload the corrected emergency Lambda package
+
+- What changed: Built a clean CommonJS Lambda zip from the SAM artifact and uploaded it directly to the existing `ddac-emergency-request-function`.
+- Why: The deployed ES-module handler failed during initialization with an unsupported dynamic `fs` require, so its runtime code needed replacement without changing the shared API Gateway or other team infrastructure.
+- Status: AWS confirmed the function is `Active` and its update status is `Successful`. The initial direct CLI test was rejected before Lambda invocation because the request payload was malformed by shell quoting; per the single-pass testing protocol, the next verification must be one Lambda Console test using the valid unauthenticated event, followed by API Gateway testing only if it returns HTTP 401.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

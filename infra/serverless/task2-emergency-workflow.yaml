@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Task 2 emergency-request Lambda, API Gateway route, SQS notification queue, and monitoring.
+
+Parameters:
+  ExistingHttpApiId:
+    Type: String
+    Default: 1v1tnqew79
+    Description: Looth's existing ddac-disaster-relief-api HTTP API ID in us-east-1.
+  DynamoTableName:
+    Type: String
+    Default: ddac-projects
+  JwtSecret:
+    Type: String
+    NoEcho: true
+  CorsOrigin:
+    Type: String
+    Default: '*'
+Resources:
+  EmergencyRequestDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ddac-emergency-request-dlq
+      MessageRetentionPeriod: 1209600
+
+  EmergencyRequestQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ddac-emergency-request-queue
+      VisibilityTimeout: 60
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt EmergencyRequestDeadLetterQueue.Arn
+        maxReceiveCount: 3
+
+  EmergencyRequestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ddac-emergency-request-function
+      CodeUri: ../../apps/backend/lambda-dist
+      Handler: emergencyRequestLambda.handler
+      Runtime: nodejs24.x
+      MemorySize: 512
+      Timeout: 15
+      Tracing: Active
+      Role: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/LabRole
+      Environment:
+        Variables:
+          APP_ENV: production
+          DYNAMODB_TABLE_NAME: !Ref DynamoTableName
+          EMERGENCY_REQUEST_QUEUE_URL: !Ref EmergencyRequestQueue
+          JWT_SECRET: !Ref JwtSecret
+          CORS_ORIGIN: !Ref CorsOrigin
+  EmergencyRequestIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !GetAtt EmergencyRequestFunction.Arn
+      PayloadFormatVersion: '2.0'
+      TimeoutInMillis: 30000
+
+  EmergencyRequestListRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: GET /emergency-requests
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestCreateRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: POST /emergency-requests
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestGetRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: GET /emergency-requests/{id}
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestUpdateRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: PATCH /emergency-requests/{id}
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestCancelRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: PATCH /emergency-requests/{id}/cancel
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestCoordinatorRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ExistingHttpApiId
+      RouteKey: PATCH /emergency-requests/{id}/coordinator
+      Target: !Sub integrations/${EmergencyRequestIntegration}
+
+  EmergencyRequestApiPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref EmergencyRequestFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ExistingHttpApiId}/*
+
+  EmergencyRequestLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${EmergencyRequestFunction}
+      RetentionInDays: 30
+
+Outputs:
+  EmergencyRequestApiUrl:
+    Description: Existing shared API Gateway base URL used by the emergency-request Lambda
+    Value: !Sub https://${ExistingHttpApiId}.execute-api.${AWS::Region}.${AWS::URLSuffix}
+  EmergencyRequestFunctionName:
+    Description: Lambda function name for Looth's CloudWatch dashboard
+    Value: !Ref EmergencyRequestFunction
+  EmergencyRequestQueueUrl:
+    Description: SQS queue receiving emergency_request.submitted events
+    Value: !Ref EmergencyRequestQueue
+  EmergencyRequestDeadLetterQueueUrl:
+    Description: SQS dead-letter queue for failed notification delivery
+    Value: !Ref EmergencyRequestDeadLetterQueue

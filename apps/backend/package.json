@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json && npm run build:lambda",
-    "build:lambda": "esbuild ./src/serverless/emergencyRequestLambda.ts --bundle --platform=node --target=node24 --format=esm --outfile=./lambda-dist/emergencyRequestLambda.mjs",
+    "build:lambda": "node -e \"require('node:fs').rmSync('./lambda-dist/emergencyRequestLambda.mjs', { force: true })\" && esbuild ./src/serverless/emergencyRequestLambda.ts --bundle --platform=node --target=node24 --format=cjs --outfile=./lambda-dist/emergencyRequestLambda.js && node -e \"require('node:fs').writeFileSync('./lambda-dist/package.json', JSON.stringify({ name: 'ddac-emergency-lambda', version: '1.0.0', private: true, type: 'commonjs' }))\"",
     "start": "node dist/server.js",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
