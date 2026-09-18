@@ -270,7 +270,13 @@
 
 - What changed: Updated the victim/volunteer packaging script to replace npm's local `@ddac/shared` Windows junction with a real directory before ZIP creation.
 - Why: Live Lambda logs showed `ERR_MODULE_NOT_FOUND` for `@ddac/shared`, causing both Victims and Volunteers API requests to return HTTP 500 during function initialization.
-- Status: Lint and packaging pass; both exact packaged handlers load locally; and the verified ZIP contains the API handler, worker handler, shared package manifest, and shared runtime module. AWS upload and post-update verification remain.
+- Status: Lint and packaging pass; both exact packaged handlers load locally; and the verified ZIP contains the API handler, worker handler, shared package manifest, and shared runtime module. The corrected package is deployed to both AWS Lambda functions, and an authenticated live `GET /api/victims` request now returns HTTP 200.
+
+### 2026-09-18 - Deploy and verify Mehrab's corrected Lambda package
+
+- What changed: Uploaded the corrected package to `victim-volunteer-service` and `victim-volunteer-event-processor`, waited for both updates, and confirmed their Node.js 24 handlers are Active with successful update states.
+- Why: The People workspace was the final browser area returning HTTP 500 because the deployed Lambda could not import the internal shared package.
+- Status: A single authenticated request through the shared API Gateway returned HTTP 200 and one victim record. The Victims and Volunteers page should now load after a full browser refresh; final SNS, SQS, DLQ, and monitoring evidence remains separate submission work.
 
 ---
 
