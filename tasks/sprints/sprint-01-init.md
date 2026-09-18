@@ -224,6 +224,12 @@
 - Why: The deployed ES-module handler failed during initialization with an unsupported dynamic `fs` require, so its runtime code needed replacement without changing the shared API Gateway or other team infrastructure.
 - Status: AWS confirmed the function is `Active` and its update status is `Successful`. The initial direct CLI test was rejected before Lambda invocation because the request payload was malformed by shell quoting; per the single-pass testing protocol, the next verification must be one Lambda Console test using the valid unauthenticated event, followed by API Gateway testing only if it returns HTTP 401.
 
+### 2026-09-18 - Align Mehrab's deployed Task 2 Lambda configuration
+
+- What changed: Updated `victim-volunteer-service` and `victim-volunteer-event-processor` from Node.js 20 to Node.js 24, and removed the unused unintegrated `ANY /api/victims` route from the shared HTTP API.
+- Why: The integrated submission configuration standardizes both Task 2 services on Node.js 24, and frontend source inspection confirmed that all victim requests use the eight explicit integrated routes rather than the legacy catch-all route.
+- Status: Both functions are Active with successful updates and X-Ray tracing enabled. All eight explicit victim/volunteer routes target the shared Lambda integration, and the SQS event-source mapping remains enabled with partial-batch failure reporting. Functional authentication, SNS-to-SQS, DLQ, monitoring, and performance evidence are still pending.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
