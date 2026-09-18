@@ -32,7 +32,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: victim-volunteer-service
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Handler: features/people-serverless/handler.handler
       Role: !Ref LabRoleArn
       Timeout: 15
@@ -173,7 +173,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: victim-volunteer-event-processor
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Handler: features/people-serverless/worker.handler
       Role: !Ref LabRoleArn
       Timeout: 15

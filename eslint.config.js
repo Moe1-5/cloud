@@ -4,7 +4,16 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/coverage/**", "node_modules/**", ".claude/**", "tmp/**", "artifacts/**"]
+    ignores: [
+      "**/dist/**",
+      "**/lambda-dist/**",
+      ".aws-sam/**",
+      "**/coverage/**",
+      "node_modules/**",
+      ".claude/**",
+      "tmp/**",
+      "artifacts/**"
+    ]
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

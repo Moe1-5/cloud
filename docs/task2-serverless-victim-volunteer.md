@@ -2,7 +2,7 @@
 
 ## Scope
 
-Student 2 owns the Victim and Volunteer microservice. It preserves the Task 1 frontend contract while exposing the victim and volunteer APIs through an API Gateway HTTP API and a Node.js 20 Lambda handler.
+Student 2 owns the Victim and Volunteer microservice. It preserves the Task 1 frontend contract while exposing the victim and volunteer APIs through an API Gateway HTTP API and Node.js 24 Lambda handlers, matching the emergency-request service runtime.
 
 ## Deployment model
 

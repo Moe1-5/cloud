@@ -153,6 +153,76 @@
 - What changed: Updated both deployed Task 2 Lambda functions from the current S3 deployment ZIP after detecting that CloudFormation had retained an earlier package because the S3 object key did not change.
 - Why: The deployed function hash did not match the latest package hash, which meant the shared-route compatibility update was not yet live.
 - Status: `victim-volunteer-service` and `victim-volunteer-event-processor` are Active, report successful updates, and both match the current deployment ZIP hash.
+### 2026-08-17 - Create Student 2 and Student 3 presentation scripts
+- What changed: Added a Word document containing recording scripts, browser routes, source-code locations, and AWS Console demonstration paths for Student 2 and Student 3.
+- Why: The team needs a clear, shareable guide for the required role-based video presentation.
+- Status: The DOCX archive structure and required Student 2 and Student 3 sections were validated. Visual rendering could not run because LibreOffice is not installed on this machine.
+
+### 2026-09-14 - Implement Mohamed Musleh’s Task 2 emergency serverless workflow
+
+- What changed: Added an API Gateway-compatible emergency-request Lambda, signed-token ownership and role checks, SQS notification publishing with a dead-letter queue, request ID and latency logging, React API Gateway configuration, AWS SAM infrastructure, focused Lambda tests, and deployment/evidence documentation.
+- Why: Task 2 assigns Mohamed Musleh the emergency or resource serverless workflow, frontend integration, AWS supporting-service integration, monitoring, testing, and performance evidence.
+- Status: Typecheck, lint, all 22 backend tests, and the production build pass. Real AWS deployment, CloudWatch/X-Ray evidence, equivalent Task 1 versus Task 2 performance measurements, diagrams, report, video, and submission packaging remain manual team work.
+
+### 2026-09-14 - Prepare the Task 2 workflow for AWS Academy handoff
+
+- What changed: Ignored generated SAM build artifacts, documented the Learner Lab temporary-credential process, recorded the cross-account DynamoDB and JWT limitation, and updated the current architecture state.
+- Why: The available AWS account is a separate AWS Academy student lab, while Task 1 resources were created in a teammate's account, and the standard AWS CLI browser login returned a bad request.
+- Status: Local SAM validation and build are complete. Deployment is waiting for locally configured Learner Lab temporary credentials and confirmation that the active account contains, or will recreate, the Task 1 table and authentication data.
+
+### 2026-09-17 - Adapt Task 2 deployment to restricted Academy IAM access
+
+- What changed: Removed SAM-generated IAM policies and role creation, configured the emergency Lambda to reuse the existing Academy `LabRole`, and corrected the deployment guide.
+- Why: The team's AWS Academy student account does not provide IAM administration, so generated execution roles would fail during CloudFormation deployment.
+- Status: The stack creates no IAM resources. SAM validation and build are pending after this template correction.
+
+### 2026-09-17 - Align Musleh's stack with Looth's AWS handover
+
+- What changed: Pointed the Task 2 stack at the existing us-east-1 HTTP API, added six explicit emergency routes and their Lambda integration, standardized the Lambda and SQS names, retained the Academy LabRole, and updated the environment and deployment documentation.
+- Why: Looth already created the shared API, default auto-deploy stage, CORS configuration, dashboard, alarm, and SNS topic; Musleh's stack must extend that foundation without duplicating it.
+- Status: Local configuration is aligned with the handover, SAM lint validation passes, and the deployment package builds successfully. AWS inspection and deployment remain blocked until fresh Learner Lab CLI credentials are configured.
+
+### 2026-09-18 - Verify Looth's live AWS resources
+
+- What changed: Corrected the shared HTTP API ID from the handover's `1v1tngew79` to the live account's `1v1tnqew79` in the SAM template, environment example, and deployment guide.
+- Why: Read-only AWS checks confirmed the Academy credentials, active `ddac-projects` table, and dashboard, but found a one-character API ID mismatch in the handover.
+- Status: The correct Looth account and us-east-1 resources are now identified. Stage, CORS, routes, table entity types, and the corrected build still require verification before deployment.
+
+### 2026-09-18 - Deploy Musleh's AWS stack and run the first system check
+
+- What changed: Renamed the local AWS credential file correctly, verified Looth's live account and shared resources, reused the deployed Task 1 JWT secret without exposing it, and deployed the `ddac-task2-emergency` CloudFormation stack with Musleh's Lambda, SQS queue, dead-letter queue, log group, API integration, and six routes.
+- Why: Musleh's remaining AWS work required extending Looth's shared us-east-1 API and DynamoDB foundation without duplicating the API, IAM role, stage, CORS, dashboard, alarm, or SNS topic.
+- Status: CloudFormation is `CREATE_COMPLETE`; Lambda uses Node.js 24, `LabRole`, and active X-Ray tracing; all six routes and both queues exist. The first behavioral check failed because unauthenticated `GET /emergency-requests` returned HTTP 500 instead of the expected structured HTTP 401, so the system-test pass stopped before authenticated DynamoDB/SQS, frontend, metrics, and evidence checks.
+
+### 2026-09-18 - Correct Lambda packaging and draft Musleh's report
+
+- What changed: Diagnosed the deployed 500 as a missing packaged handler, added a dedicated esbuild Lambda bundle and generated-output lint exclusions, prepared the live-API frontend build, and added Musleh's report, performance table, evidence register, and reflection draft.
+- Why: SAM's original npm package omitted the Git-ignored backend `dist` directory even though infrastructure deployment succeeded, and the requested submission documentation needed to distinguish verified evidence from pending measurements.
+- Status: The exact 1.6 MB production handler bundle loads successfully; typecheck and lint pass; all 22 backend tests pass; and the frontend production build passes with the live API URL. Corrected AWS redeployment, end-to-end verification, frontend Elastic Beanstalk deployment, final evidence, and measured report values are waiting for the Learner Lab to be restarted and its temporary credentials refreshed.
+
+### 2026-09-18 - Redeploy the corrected handler and stop on the remaining API failure
+
+- What changed: Refreshed the Academy session, updated only the Lambda package and API integration in the existing stack, and ran the first post-fix behavioral check.
+- Why: The original deployed package lacked the handler; the corrected 1.6 MB production bundle needed cloud verification before authenticated or frontend testing.
+- Status: CloudFormation reached `UPDATE_COMPLETE`, but unauthenticated `GET /emergency-requests` still returned API Gateway HTTP 500 instead of the expected structured HTTP 401. In accordance with the one-pass system-testing protocol, authenticated DynamoDB/SQS checks, frontend deployment, final evidence, and commit/push remain stopped pending a separate diagnostic/fix request.
+
+### 2026-09-18 - Generate Musleh's Word report and diagnose the remaining API integration failure
+
+- What changed: Generated and validated `docs/Musleh_Task_2_Report.docx`, expanded the Markdown source with an evidence-based diagnostic section, set the HTTP API Lambda proxy `IntegrationMethod` explicitly to `POST`, rebuilt the SAM artifact, and updated the project state and lesson register.
+- Why: The user requested the submission-ready Word contribution before a separate diagnostic of the post-package HTTP 500 response; AWS's Lambda proxy integration example uses `POST`, while the project template had omitted the method.
+- Status: The DOCX is a valid OpenXML file and the corrected SAM template validates and builds. The integration-method diagnosis remains an inference until the Academy Learner Lab is restarted, credentials are refreshed, the stack is redeployed, and a new one-pass API check returns the expected structured HTTP 401.
+
+### 2026-09-18 - Fix Lambda ES-module startup incompatibility
+
+- What changed: Changed the emergency Lambda esbuild output from ES module to CommonJS, generated a deployable CommonJS package manifest, made environment loading safe for the Lambda runtime, and updated the diagnostic evidence.
+- Why: Lambda console testing reported `Dynamic require of "fs" is not supported` from the bundled `.mjs` artifact, preventing the handler from initializing.
+- Status: The exact CommonJS production handler loads successfully with Node.js and SAM builds the deployment artifact successfully. The cloud package still needs deployment before API Gateway, DynamoDB, SQS, and monitoring tests can continue.
+
+### 2026-09-18 - Upload the corrected emergency Lambda package
+
+- What changed: Built a clean CommonJS Lambda zip from the SAM artifact and uploaded it directly to the existing `ddac-emergency-request-function`.
+- Why: The deployed ES-module handler failed during initialization with an unsupported dynamic `fs` require, so its runtime code needed replacement without changing the shared API Gateway or other team infrastructure.
+- Status: AWS confirmed the function is `Active` and its update status is `Successful`. The initial direct CLI test was rejected before Lambda invocation because the request payload was malformed by shell quoting; per the single-pass testing protocol, the next verification must be one Lambda Console test using the valid unauthenticated event, followed by API Gateway testing only if it returns HTTP 401.
 
 ---
 

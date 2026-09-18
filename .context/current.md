@@ -11,14 +11,14 @@
 ## Active Sprint
 **Sprint:** Team integration
 **Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
-**Blocking:** Capture final authenticated create/update and SNS-to-SQS/DLQ evidence for the Task 2 report and demo.
+**Blocking:** Capture final authenticated workflow, SNS-to-SQS/DLQ, CloudWatch/X-Ray, and performance evidence for both Task 2 microservices.
 
 ## Tech Stack
 
-React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, with a Task 2 Lambda/API Gateway Victim-Volunteer microservice and SNS/SQS messaging.
+React 19 + Vite + Express + TypeScript + DynamoDB, with the Task 1 API on Elastic Beanstalk or EC2 and Node.js 24 Lambda microservices behind the shared API Gateway using SNS, SQS, CloudWatch, and X-Ray.
 
 ## Last Decision
-2026-09-18 Integrate Student 2 Lambda routes into the team-owned shared API Gateway and reuse the deployed Elastic Beanstalk JWT secret
+2026-09-18 Integrate the victim/volunteer and emergency-request Lambdas through Looth's shared API Gateway, standardizing both Lambda runtimes on Node.js 24
 
 ## Status Flags
 

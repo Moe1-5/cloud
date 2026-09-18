@@ -1,13 +1,9 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
 import { z } from "zod";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootEnvPath = path.resolve(__dirname, "../../../../.env");
-
-config({ path: rootEnvPath });
+if (!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  config({ path: `${process.cwd()}/.env` });
+}
 
 const emptyStringToUndefined = (value: unknown) => (value === "" ? undefined : value);
 
@@ -29,6 +25,10 @@ const envSchema = z.object({
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
+  EMERGENCY_REQUEST_QUEUE_URL: z.preprocess(
+    emptyStringToUndefined,
+    z.string().url().optional()
+  ),
   JWT_SECRET: z.string().min(16).default("development-only-secret-change-before-production"),
   JWT_EXPIRES_IN: z.string().min(1).default("7d"),
   AUTH_BOOTSTRAP_EMAIL: z.string().email().default("admin@example.com"),

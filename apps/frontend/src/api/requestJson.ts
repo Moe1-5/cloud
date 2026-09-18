@@ -12,9 +12,13 @@ interface ErrorBody {
   };
 }
 
-export async function requestJson<T>(path: string, init?: JsonRequestInit): Promise<T> {
+export async function requestJson<T>(
+  path: string,
+  init?: JsonRequestInit,
+  baseUrl = apiBaseUrl
+): Promise<T> {
   const { skipAuth = false, ...requestInit } = init ?? {};
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await fetch(`${baseUrl}${path}`, {
     ...requestInit,
     headers: {
       "Content-Type": "application/json",
