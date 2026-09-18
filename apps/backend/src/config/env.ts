@@ -29,6 +29,7 @@ const envSchema = z.object({
     emptyStringToUndefined,
     z.string().url().optional()
   ),
+  TASK2_API_BASE_URL: z.preprocess(emptyStringToUndefined, z.string().url().optional()),
   JWT_SECRET: z.string().min(16).default("development-only-secret-change-before-production"),
   JWT_EXPIRES_IN: z.string().min(1).default("7d"),
   AUTH_BOOTSTRAP_EMAIL: z.string().email().default("admin@example.com"),

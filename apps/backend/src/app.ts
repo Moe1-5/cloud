@@ -112,6 +112,15 @@ export function createApp() {
     });
   });
 
+  app.get("/runtime-config.js", (_request, response) => {
+    response
+      .type("application/javascript")
+      .set("Cache-Control", "no-store")
+      .send(`window.__DDAC_RUNTIME_CONFIG__=${JSON.stringify({
+        task2ApiBaseUrl: env.TASK2_API_BASE_URL
+      })};`);
+  });
+
 
   // Authentication Routes
 

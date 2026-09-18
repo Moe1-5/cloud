@@ -230,6 +230,18 @@
 - Why: The integrated submission configuration standardizes both Task 2 services on Node.js 24, and frontend source inspection confirmed that all victim requests use the eight explicit integrated routes rather than the legacy catch-all route.
 - Status: Both functions are Active with successful updates and X-Ray tracing enabled. All eight explicit victim/volunteer routes target the shared Lambda integration, and the SQS event-source mapping remains enabled with partial-batch failure reporting. Functional authentication, SNS-to-SQS, DLQ, monitoring, and performance evidence are still pending.
 
+### 2026-09-18 - Deploy Mehrab's integrated Lambda code package
+
+- What changed: Built a recursive Linux-compatible deployment archive from the integrated source, verified it contains `features/people-serverless/handler.js` and `features/people-serverless/worker.js`, and uploaded it to both deployed victim/volunteer Lambda functions.
+- Why: The previous deployment archive used Windows path separators and did not expose the nested handler files correctly in Lambda, leaving the console without the expected source structure.
+- Status: Both functions are Active, report successful code updates, and share the new deployed code hash. The packaged API handler was verified locally in production mode to return HTTP 401 for a request without a token. The remaining AWS end-to-end authentication, SNS-to-SQS, DLQ, and monitoring evidence must be collected separately.
+
+### 2026-09-18 - Connect the deployed web application to both Task 2 workflows
+
+- What changed: Added a backend-generated runtime configuration endpoint and updated the frontend's emergency-request and victim/volunteer API clients to use the shared API Gateway when `TASK2_API_BASE_URL` is configured. Updated the deployment documentation and sample environment configuration accordingly.
+- Why: A browser build-time URL cannot be changed by Elastic Beanstalk after deployment. The runtime configuration lets the same deployed frontend retain the Task 1 backend for login, profiles, reports, and other monolith features, while routing both Task 2 ownership areas to their live Lambda integrations through the one shared API Gateway.
+- Status: The complete production build passes and retains the runtime configuration script in the generated frontend. The next step is creating an Elastic Beanstalk environment in the current Learner Lab account, then setting the shared API Gateway URL and matching JWT configuration as environment values.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

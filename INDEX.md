@@ -92,6 +92,7 @@
 | `apps/frontend/src/features/reports/`            | Student 3 operational reporting workspace.                                              |
 | `apps/frontend/src/features/people/`             | Victim and volunteer coordination workspace.                                            |
 | `apps/frontend/src/api/`                         | Typed auth, project, resource, distribution, profile, emergency, and shared JSON API clients. |
+| `apps/frontend/src/api/runtimeConfig.ts`          | Runtime API Gateway configuration used by both Task 2 frontend workflows after Elastic Beanstalk deployment. |
 
 ---
 

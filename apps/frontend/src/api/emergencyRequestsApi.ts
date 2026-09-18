@@ -10,15 +10,14 @@ import type {
   UpdateEmergencyRequestInput
 } from "@ddac/shared";
 import { requestJson } from "./requestJson.js";
-
-const emergencyGatewayBaseUrl = import.meta.env.VITE_EMERGENCY_API_BASE_URL ?? "";
+import { getTask2ApiBaseUrl } from "./runtimeConfig.js";
 
 function emergencyPath(path: string): string {
-  return emergencyGatewayBaseUrl ? `/emergency-requests${path}` : `/api/emergency-requests${path}`;
+  return getTask2ApiBaseUrl() ? `/emergency-requests${path}` : `/api/emergency-requests${path}`;
 }
 
 function requestEmergencyJson<T>(path: string, init?: RequestInit): Promise<T> {
-  return requestJson<T>(emergencyPath(path), init, emergencyGatewayBaseUrl || undefined);
+  return requestJson<T>(emergencyPath(path), init, getTask2ApiBaseUrl() || undefined);
 }
 
 export async function listAffectedUserProfiles(): Promise<AffectedUserProfileRecord[]> {

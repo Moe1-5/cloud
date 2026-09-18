@@ -8,7 +8,9 @@ This is Mohamed Mohammed Musleh Mohammed’s Task 2 implementation boundary. The
 - `apps/backend/src/features/emergency-requests/emergencyRequestNotifications.ts` publishes submitted requests to SQS when a queue URL is configured. The queue uses a dead-letter queue and three delivery attempts in the SAM template.
 - The Lambda verifies the existing signed bearer token, enforces affected-user ownership, restricts coordinator actions to coordinator and admin roles, validates input with the existing Zod schemas, and uses the existing DynamoDB repository.
 - Every Lambda invocation logs a request ID, route, HTTP method, status code, and duration. Lambda tracing is enabled in the SAM template for AWS X-Ray.
-- The React emergency-request API uses `VITE_EMERGENCY_API_BASE_URL` when present. Profile management continues to use the Task 1 API because the selected serverless boundary is the emergency-request workflow.
+- The React emergency-request API uses the shared Task 2 API Gateway URL when configured. Profile management continues to use the Task 1 API because the selected serverless boundary is the emergency-request workflow.
+
+For the deployed Elastic Beanstalk frontend, both Task 2 clients read `TASK2_API_BASE_URL` from the backend's `/runtime-config.js` response. Set this value to the shared API Gateway base URL. This keeps login, profiles, reporting, and other Task 1 routes on Elastic Beanstalk while routing emergency requests and victim/volunteer operations to their independent Lambda services.
 
 ## Shared AWS handover values
 
@@ -61,13 +63,13 @@ During guided deployment, use region `us-east-1`, keep `ExistingHttpApiId` as `1
 
 The template deliberately creates no IAM roles or policies. It attaches the existing AWS Academy `LabRole` to the Lambda by constructing its ARN from the current account ID. The lab must allow CloudFormation to pass that role, and the existing role must already permit Lambda logging, X-Ray, DynamoDB access, and SQS `SendMessage`. Do not open IAM or attempt to create or edit a role in the restricted student account.
 
-After deployment, copy the `EmergencyRequestApiUrl` stack output into the root `.env` file:
+For a local frontend build, put the shared API Gateway base URL in the root `.env` file:
 
 ```bash
-VITE_EMERGENCY_API_BASE_URL=https://1v1tnqew79.execute-api.us-east-1.amazonaws.com
+VITE_TASK2_API_BASE_URL=https://1v1tnqew79.execute-api.us-east-1.amazonaws.com
 ```
 
-Rebuild and redeploy the frontend after changing that value. Do not commit `.env`, JWT secrets, AWS keys, or generated `dist` and dependency folders.
+For Elastic Beanstalk, set `TASK2_API_BASE_URL` instead; the backend supplies it at runtime, so the frontend does not need rebuilding. Do not commit `.env`, JWT secrets, AWS keys, or generated `dist` and dependency folders.
 
 ## Simple demonstration order
 

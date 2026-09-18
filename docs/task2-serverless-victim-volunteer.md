@@ -4,12 +4,14 @@
 
 Student 2 owns the Victim and Volunteer microservice. It preserves the Task 1 frontend contract while exposing the victim and volunteer APIs through an API Gateway HTTP API and Node.js 24 Lambda handlers, matching the emergency-request service runtime.
 
+When the React frontend is served from Elastic Beanstalk, configure `TASK2_API_BASE_URL` with the shared API Gateway base URL. The frontend receives this runtime setting from `/runtime-config.js`, allowing both the victim/volunteer and emergency-request clients to use their Task 2 Lambda routes while the remaining Task 1 APIs continue to use Elastic Beanstalk.
+
 ## Deployment model
 
 - Deploy `infra/serverless/victim-volunteer-service.yaml` through CloudFormation with the team-owned `SharedApiId`. The template must not create a second API Gateway or stage.
 - Provide the existing AWS Academy `LabRole` ARN as `LabRoleArn`. The template creates no IAM role.
 - Build and package the artifact with `npm run package:task2-serverless`, then archive `artifacts/task2-serverless` as a ZIP file and upload it to the S3 bucket referenced by `CodeS3Bucket` and `CodeS3Key`.
-- Use the output `ApiBaseUrl` as the deployed frontend `VITE_API_BASE_URL` value.
+- Use the output `ApiBaseUrl` as the deployed Elastic Beanstalk `TASK2_API_BASE_URL` environment value.
 
 ### Deployed team integration
 
