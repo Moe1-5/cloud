@@ -260,6 +260,12 @@
 - Why: The team needs one deployable web application that preserves the Task 1 backend while invoking both independently deployed Task 2 Lambda services, without duplicating the existing Elastic Beanstalk infrastructure.
 - Status: AWS reports the environment `Ready`, `Green`, and `Ok`. A single live smoke-test pass confirmed HTTP 200 for `/health`, `/`, and `/runtime-config.js`, and confirmed that runtime configuration contains the shared Task 2 API Gateway URL. Authenticated workflow, messaging, DLQ, monitoring, and performance evidence remain separate final verification work.
 
+### 2026-09-18 - Allow browser access to the Task 2 API Gateway
+
+- What changed: Added the configured `TASK2_API_BASE_URL` to Helmet's `connect-src` Content Security Policy and added a regression test for the generated security header.
+- Why: The deployed frontend loaded its runtime configuration and same-origin Task 1 API successfully, but the browser blocked cross-origin requests to API Gateway before they reached Lambda, displaying `Failed to fetch` for the affected-user and coordinator emergency views.
+- Status: Lint and type checking pass, all 26 backend tests pass, and the production build passes. The corrected application version is ready for Elastic Beanstalk deployment and one live CSP/API verification pass.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

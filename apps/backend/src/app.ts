@@ -57,6 +57,10 @@ export function createApp() {
     helmet({
       contentSecurityPolicy: {
         directives: {
+          connectSrc: [
+            "'self'",
+            ...(env.TASK2_API_BASE_URL ? [env.TASK2_API_BASE_URL] : []),
+          ],
           upgradeInsecureRequests: null,
         },
       },
