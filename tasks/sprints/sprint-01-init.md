@@ -264,7 +264,7 @@
 
 - What changed: Added the configured `TASK2_API_BASE_URL` to Helmet's `connect-src` Content Security Policy and added a regression test for the generated security header.
 - Why: The deployed frontend loaded its runtime configuration and same-origin Task 1 API successfully, but the browser blocked cross-origin requests to API Gateway before they reached Lambda, displaying `Failed to fetch` for the affected-user and coordinator emergency views.
-- Status: Lint and type checking pass, all 26 backend tests pass, and the production build passes. The corrected application version is ready for Elastic Beanstalk deployment and one live CSP/API verification pass.
+- Status: Lint and type checking pass, all 26 backend tests pass, and the production build passes. Elastic Beanstalk version `task2-csp-2189374` is deployed with `Ready` and `Green` status. A live HTTP 200 response confirms that `connect-src` now permits the shared API Gateway; browser tabs opened before deployment require a full document reload to receive the new policy.
 
 ---
 
