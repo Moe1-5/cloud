@@ -21,16 +21,16 @@ The application uses AWS SDK default credentials in production. On Elastic Beans
 
 ## Elastic Beanstalk
 
-1. Create a Node.js 20 Elastic Beanstalk application.
-2. Configure environment variables in the Elastic Beanstalk console.
-3. Build locally or let the environment run the npm scripts.
-4. Deploy the project ZIP containing this repository.
+1. Create a Node.js 24 Elastic Beanstalk application on 64-bit Amazon Linux 2023.
+2. Configure the production environment variables in the Elastic Beanstalk console, including `TASK2_API_BASE_URL` with the shared API Gateway base URL.
+3. Deploy the project ZIP containing this repository. Elastic Beanstalk installs development build tools, then the included configuration runs `npm run build` before the application starts.
 
-The included `Procfile` runs `npm start`. The `.ebextensions/node.config` file enables static frontend serving through the backend by setting:
+The included `Procfile` runs `npm start`. The `.ebextensions/node.config` file deliberately does not set `NodeVersion`, because the selected Elastic Beanstalk Node.js 24 platform owns that selection. It enables the production build and static frontend serving through the backend by setting:
 
 ```bash
 SERVE_STATIC_FRONTEND=true
 FRONTEND_DIST_PATH=apps/frontend/dist
+NPM_CONFIG_PRODUCTION=false
 ```
 
 ## EC2 With Docker

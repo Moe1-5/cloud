@@ -242,6 +242,12 @@
 - Why: A browser build-time URL cannot be changed by Elastic Beanstalk after deployment. The runtime configuration lets the same deployed frontend retain the Task 1 backend for login, profiles, reports, and other monolith features, while routing both Task 2 ownership areas to their live Lambda integrations through the one shared API Gateway.
 - Status: The complete production build passes and retains the runtime configuration script in the generated frontend. The next step is creating an Elastic Beanstalk environment in the current Learner Lab account, then setting the shared API Gateway URL and matching JWT configuration as environment values.
 
+### 2026-09-18 - Correct Elastic Beanstalk Node.js 24 configuration
+
+- What changed: Removed the obsolete Elastic Beanstalk `NodeVersion: 20` option, added the production build command to the application deployment configuration, and revised the deployment guide for the Node.js 24 Amazon Linux 2023 platform.
+- Why: The newly created Node.js 24 environment rejected the old Node 20 setting with `Unknown or duplicate parameter: NodeVersion`. Without a deployment build command, the TypeScript backend and React frontend would also not be present when `npm start` begins.
+- Status: The corrected source is ready to upload. The previous environment launch did not complete and should be terminated or recreated only after the AWS Academy credentials permit Elastic Beanstalk configuration access.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
