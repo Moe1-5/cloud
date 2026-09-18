@@ -148,6 +148,12 @@
 - Why: Looth approved the integration and the team handover requires one shared API Gateway, shared authentication, and final Lambda monitoring.
 - Status: CloudFormation update completed. An authenticated shared API `GET /api/victims` request returned 200 and DynamoDB records. Dashboard validation passed. SNS-to-SQS/DLQ success and controlled-failure evidence remain for final testing.
 
+### 2026-09-18 - Refresh deployed Task 2 Lambda code
+
+- What changed: Updated both deployed Task 2 Lambda functions from the current S3 deployment ZIP after detecting that CloudFormation had retained an earlier package because the S3 object key did not change.
+- Why: The deployed function hash did not match the latest package hash, which meant the shared-route compatibility update was not yet live.
+- Status: `victim-volunteer-service` and `victim-volunteer-event-processor` are Active, report successful updates, and both match the current deployment ZIP hash.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.
