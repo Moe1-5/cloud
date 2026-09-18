@@ -11,6 +11,9 @@
 | Decision log (ADR)                     | `decisions.md`        | Append-only record of architectural, inventory-ledger, and emergency-workflow decisions |
 | AWS deployment                         | `aws-deployment.md`   | DynamoDB, Elastic Beanstalk, and EC2 deployment steps                                   |
 | Student 3 integration handoff          | `student3-handoff.md` | Implemented scope, API surface, verification, dependencies, and merge guidance          |
+| Task 2 emergency workflow               | `task2-emergency-workflow.md` | Mohamed Musleh’s Lambda, API Gateway, SQS, frontend, testing, and evidence checklist |
+| Musleh Task 2 report draft              | `task2-musleh-report.md` | Report-ready implementation, security, messaging, monitoring, evidence, performance, and reflection sections |
+| Musleh Task 2 Word report               | `Musleh_Task_2_Report.docx` | Generated Word version of Musleh's report section for editing and submission assembly |
 
 ---
 

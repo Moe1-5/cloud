@@ -21,6 +21,60 @@
 
 <!-- Add new lessons here -->
 
+### 2026-09-18 - Declare the Lambda proxy invocation method explicitly
+
+**Problem:** The HTTP API Lambda proxy integration omitted `IntegrationMethod`, leaving the deployed API returning a generic HTTP 500 even after the missing handler package was corrected.
+**Rule:** Set `IntegrationMethod: POST` explicitly on API Gateway version 2 Lambda proxy integrations and inspect the deployed integration before behavioral testing.
+**Why:** A valid Lambda artifact still cannot serve requests when API Gateway's invocation configuration is incomplete or ambiguous.
+
+### 2026-09-18 - Package Lambda handlers from source, not ignored build output
+
+**Problem:** The first SAM package used a handler under `apps/backend/dist`, but SAM's npm packaging omitted the Git-ignored `dist` directory and deployed a function with no handler module.
+**Rule:** Bundle TypeScript Lambda entry points directly with SAM esbuild metadata and verify the exact built handler exists before deployment.
+**Why:** A successful SAM build and CloudFormation deployment do not prove the runtime handler was included; a missing handler causes every API request to fail before application code runs.
+
+### 2026-09-18 - Verify handed-over AWS identifiers against the live account
+
+**Problem:** Looth's handover listed HTTP API ID `1v1tngew79`, but the live AWS account contains `ddac-disaster-relief-api` under ID `1v1tnqew79`.
+**Rule:** Confirm every handed-over AWS identifier with a read-only CLI lookup before embedding it in infrastructure or frontend configuration.
+**Why:** A one-character resource-ID error causes deployment references and frontend requests to target a nonexistent API.
+
+### 2026-09-17 - Integrate with handed-over shared AWS resources
+
+**Problem:** The first Task 2 SAM design implicitly created a second HTTP API before Looth's handover identified the team's existing API, stage, CORS configuration, region, and monitoring foundation.
+**Rule:** Before deploying a teammate-owned microservice, reconcile its infrastructure template with the latest handover and reference shared resource identifiers instead of creating duplicates.
+**Why:** Duplicate APIs split routes, monitoring evidence, and frontend configuration and can break the architecture the team agreed to demonstrate.
+
+### 2026-09-17 - Do not create IAM resources in the AWS Academy account
+
+**Problem:** The initial Task 2 SAM template generated a Lambda execution role and policies even though the team's restricted AWS Academy student account does not provide IAM administration.
+**Rule:** For this course deployment, reference the existing Academy `LabRole` and avoid CloudFormation resources or SAM policy shortcuts that create or modify IAM roles and policies.
+**Why:** IAM creation will be denied in the student lab and would prevent the otherwise supported Lambda, API Gateway, DynamoDB, SQS, CloudWatch, and X-Ray resources from deploying.
+
+### 2026-09-14 - Verify new Lambda imports with repository lint
+
+**Problem:** The first lint pass found two unused imports in the new emergency-request Lambda handler.
+**Rule:** Run repository lint after adding a new source boundary and remove imports that are not used before considering the implementation verified.
+**Why:** Unused imports obscure the ownership of a new serverless entry point and fail the project’s CI quality gate.
+
+### 2026-09-14 - Leave Lambda reserved environment variables to AWS
+
+**Problem:** The first SAM template review attempted to set `AWS_REGION` as a function environment variable even though Lambda provides it automatically.
+**Rule:** Keep AWS-managed Lambda environment variables out of custom SAM environment blocks and let the runtime expose them.
+**Why:** CloudFormation can reject reserved variables and block deployment before the application is tested.
+
+### 2026-09-14 - Keep serverless handlers independent from Express routes
+
+**Problem:** The Lambda handler imported an Express route module only to reuse generic error normalization.
+**Rule:** Keep serverless entry points dependent on shared domain code and serverless-safe utilities, not on monolith route modules.
+**Why:** This keeps the Lambda bundle smaller and makes the microservice boundary explicit and independently deployable.
+
+### 2026-09-14 - Validate Lambda runtimes against current AWS rules
+
+**Problem:** SAM lint identified Node.js 20 as deprecated for Lambda and a redundant log-group dependency in the first Task 2 template.
+**Rule:** Run current SAM lint before deployment, use an AWS-supported Lambda runtime, and remove dependencies already implied by intrinsic references.
+**Why:** Runtime lifecycle changes and redundant dependencies can block deployment or create avoidable maintenance warnings even when application tests pass.
+
 ### 2026-08-16 - Restore lint as soon as the user asks for it
 
 **Problem:** Linting had previously been skipped by user direction, leaving unused imports and unused destructuring variables in the integrated code.

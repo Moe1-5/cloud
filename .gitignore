@@ -12,7 +12,9 @@ vendor/
 
 # === Build outputs ===
 dist/
+lambda-dist/
 build/
+.aws-sam/
 out/
 .next/
 .nuxt/

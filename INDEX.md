@@ -44,6 +44,7 @@
 | `Dockerfile`         | Production container build for EC2 or compatible container hosts.                                              |
 | `docker-compose.yml` | Local or EC2 Docker runner.                                                                                    |
 | `README.md`          | Project overview, setup, scripts, API surface, and AWS deployment pointer.                                     |
+| `Student-2-and-3-Video-Recording-Scripts.docx` | Presentation scripts and screen-location guide for Student 2 and Student 3.                 |
 
 ---
 
@@ -99,6 +100,8 @@
 
 ## `infra/` - cloud infrastructure helpers
 
+| `infra/serverless/task2-emergency-workflow.yaml` | AWS SAM template for the Task 2 emergency Lambda, routes in Looth's shared API Gateway, SQS queue, DLQ, LabRole, X-Ray, and log retention. |
+
 | File / Folder                        | What's inside                                                    |
 | ------------------------------------ | ---------------------------------------------------------------- |
 | `infra/dynamodb/projects-table.json` | AWS CLI table definition for the DynamoDB project records table. |
@@ -114,6 +117,9 @@
 | `decisions.md`        | Append-only Architecture Decision Record log.                                      |
 | `aws-deployment.md`   | DynamoDB, Elastic Beanstalk, and EC2 deployment guide.                             |
 | `student3-handoff.md` | Student 3 scope, APIs, verification evidence, and controlled integration guidance. |
+| `task2-emergency-workflow.md` | Mohamed Musleh’s Task 2 emergency-request serverless implementation, deployment, evidence, and manual checklist. |
+| `task2-musleh-report.md` | Mohamed Musleh’s Task 2 report draft, evidence register, performance table, and individual reflection. |
+| `Musleh_Task_2_Report.docx` | Generated Word version of Mohamed Musleh's Task 2 report contribution. |
 
 ---
 
@@ -142,6 +148,7 @@
 | ----------------------------------------- | ------------------------------------------------------------ |
 | `scripts/sprint-log/record-edit.mjs`      | PostToolUse hook that records source edits.                  |
 | `scripts/sprint-log/check-sprint-log.mjs` | Stop hook that checks sprint log updates after source edits. |
+| `scripts/generate-musleh-report.ps1`      | Generates the formatted Musleh Task 2 Word report from the Markdown source. |
 
 ---
 

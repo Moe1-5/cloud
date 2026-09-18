@@ -11,19 +11,19 @@
 ## Active Sprint
 **Sprint:** Team integration
 **Goal:** Validate the combined Student 1, Student 2, and Student 3 application.
-**Blocking:** Combined branch verification and shared authentication/DynamoDB decisions.
+**Blocking:** Musleh's explicit API Gateway Lambda integration-method correction needs a fresh Academy session for redeployment and one-pass cloud verification.
 
 ## Tech Stack
 
-React 19 + Vite + Node.js 20 + Express + TypeScript + DynamoDB, deployed on AWS Elastic Beanstalk or EC2.
+React 19 + Vite + Express + TypeScript + DynamoDB, with the Task 1 API on Elastic Beanstalk or EC2 and a Node.js 24 Task 2 Lambda behind API Gateway with SQS, CloudWatch, and X-Ray.
 
 ## Last Decision
-2026-08-16 Use an isolated integration branch before merging validated team work into main
+2026-09-18 Set the shared HTTP API Lambda proxy integration method explicitly to POST before the next Academy redeployment
 
 ## Status Flags
 
 - [x] Tests configured
 - [x] CI/CD active
-- [ ] Auth implemented
-- [ ] First deploy done
+- [x] Auth implemented
+- [x] First deploy done
 - [x] Database migrations tracked

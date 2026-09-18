@@ -19,6 +19,10 @@ const envSchema = z.object({
   AWS_REGION: z.string().min(1).default("ap-southeast-1"),
   DYNAMODB_TABLE_NAME: z.string().min(1).default("ddac-projects"),
   DYNAMODB_ENDPOINT: z.preprocess(emptyStringToUndefined, z.string().url().optional()),
+  EMERGENCY_REQUEST_QUEUE_URL: z.preprocess(
+    emptyStringToUndefined,
+    z.string().url().optional()
+  ),
   JWT_SECRET: z.string().min(16).default("development-only-secret-change-before-production"),
   JWT_EXPIRES_IN: z.string().min(1).default("7d"),
   AUTH_BOOTSTRAP_EMAIL: z.string().email().default("admin@example.com"),

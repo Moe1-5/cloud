@@ -6,13 +6,15 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && npm run build:lambda",
+    "build:lambda": "esbuild ./src/serverless/emergencyRequestLambda.ts --bundle --platform=node --target=node24 --format=esm --outfile=./lambda-dist/emergencyRequestLambda.mjs",
     "start": "node dist/server.js",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.864.0",
+    "@aws-sdk/client-sqs": "^3.864.0",
     "@aws-sdk/lib-dynamodb": "^3.864.0",
     "@ddac/shared": "0.1.0",
     "cors": "^2.8.5",
@@ -29,6 +31,7 @@
     "@types/express": "^4.17.23",
     "@types/node": "^22.17.1",
     "@types/supertest": "^6.0.3",
+    "esbuild": "^0.28.2",
     "supertest": "^7.1.4",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2",
