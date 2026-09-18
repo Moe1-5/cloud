@@ -266,6 +266,12 @@
 - Why: The deployed frontend loaded its runtime configuration and same-origin Task 1 API successfully, but the browser blocked cross-origin requests to API Gateway before they reached Lambda, displaying `Failed to fetch` for the affected-user and coordinator emergency views.
 - Status: Lint and type checking pass, all 26 backend tests pass, and the production build passes. Elastic Beanstalk version `task2-csp-2189374` is deployed with `Ready` and `Green` status. A live HTTP 200 response confirms that `connect-src` now permits the shared API Gateway; browser tabs opened before deployment require a full document reload to receive the new policy.
 
+### 2026-09-18 - Materialize Mehrab's shared Lambda dependency
+
+- What changed: Updated the victim/volunteer packaging script to replace npm's local `@ddac/shared` Windows junction with a real directory before ZIP creation.
+- Why: Live Lambda logs showed `ERR_MODULE_NOT_FOUND` for `@ddac/shared`, causing both Victims and Volunteers API requests to return HTTP 500 during function initialization.
+- Status: Lint and packaging pass; both exact packaged handlers load locally; and the verified ZIP contains the API handler, worker handler, shared package manifest, and shared runtime module. AWS upload and post-update verification remain.
+
 ---
 
 > When done: move this file to `tasks/archive/sprint-01-init.md`, remove from `tasks/active.md`.

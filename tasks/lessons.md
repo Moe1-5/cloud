@@ -21,6 +21,12 @@
 
 <!-- Add new lessons here -->
 
+### 2026-09-18 - Materialize local workspace dependencies before Lambda ZIP deployment
+
+**Problem:** npm installed `@ddac/shared` as a Windows junction inside the victim/volunteer artifact, but the ZIP did not preserve the junction target, causing Lambda to fail at initialization with `ERR_MODULE_NOT_FOUND`.
+**Rule:** Replace local workspace links with real package directories before creating a Lambda ZIP, inspect the ZIP for the package manifest and runtime entry point, and load the exact packaged handlers locally before upload.
+**Why:** A deployment folder can work locally while its ZIP silently omits linked internal packages, producing API Gateway HTTP 500 responses before the handler executes.
+
 ### 2026-09-18 - Do not treat an empty AWS lookup under stale credentials as proof of absence
 
 **Problem:** An Elastic Beanstalk lookup made with a cancelled AWS Academy CLI session appeared empty, leading to the incorrect conclusion that no existing healthy environment was present.

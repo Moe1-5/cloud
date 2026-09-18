@@ -8,12 +8,19 @@ const projectRoot = path.resolve(scriptDirectory, "..");
 const artifactDirectory = path.join(projectRoot, "artifacts", "task2-serverless");
 const backendDistDirectory = path.join(projectRoot, "apps", "backend", "dist");
 const sharedPackageDirectory = path.join(projectRoot, "packages", "shared");
+const artifactSharedDirectory = path.join(artifactDirectory, "shared");
+const installedSharedDirectory = path.join(
+  artifactDirectory,
+  "node_modules",
+  "@ddac",
+  "shared"
+);
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 
 await rm(artifactDirectory, { recursive: true, force: true });
 await mkdir(artifactDirectory, { recursive: true });
 await cp(backendDistDirectory, artifactDirectory, { recursive: true });
-await cp(sharedPackageDirectory, path.join(artifactDirectory, "shared"), { recursive: true });
+await cp(sharedPackageDirectory, artifactSharedDirectory, { recursive: true });
 
 await writeFile(
   path.join(artifactDirectory, "package.json"),
@@ -41,5 +48,11 @@ execFileSync(npmCommand, ["install", "--omit=dev", "--ignore-scripts", "--packag
   stdio: "inherit",
   shell: process.platform === "win32"
 });
+
+// npm links local file dependencies in workspace-compatible environments. ZIP archives do not
+// preserve Windows junction targets, so materialize the internal package before deployment.
+await rm(installedSharedDirectory, { recursive: true, force: true });
+await mkdir(path.dirname(installedSharedDirectory), { recursive: true });
+await cp(artifactSharedDirectory, installedSharedDirectory, { recursive: true });
 
 console.log(`Task 2 Lambda package prepared in ${artifactDirectory}`);
